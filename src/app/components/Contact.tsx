@@ -16,13 +16,13 @@ const contactDetails = [
   {
     icon: Mail,
     label: "Email",
-    value: "naufal.ds@email.com",
+    value: "naufalsaputro219@gmail.com",
     color: "#4FACFE",
   },
   {
     icon: MapPin,
     label: "Location",
-    value: "Jakarta, Indonesia",
+    value: "Surakarta, Indonesia",
     color: "#A855F7",
   },
   {
