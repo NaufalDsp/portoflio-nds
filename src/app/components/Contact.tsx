@@ -218,12 +218,24 @@ export function Contact() {
               </p>
               <div className="flex gap-3">
                 {[
-                  { Icon: Github, label: "GitHub", color: "#E8EAF0" },
-                  { Icon: Linkedin, label: "LinkedIn", color: "#4FACFE" },
-                ].map(({ Icon, label, color: c }) => (
+                  {
+                    Icon: Github,
+                    label: "GitHub",
+                    color: "#E8EAF0",
+                    href: "https://github.com/NaufalDsp",
+                  },
+                  {
+                    Icon: Linkedin,
+                    label: "LinkedIn",
+                    color: "#4FACFE",
+                    href: "https://www.linkedin.com/in/naufal-dwi-saputro-b14a03299/",
+                  },
+                ].map(({ Icon, label, color: c, href }) => (
                   <motion.a
                     key={label}
-                    href="#"
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label={label}
                     whileHover={{ scale: 1.12, y: -2 }}
                     whileTap={{ scale: 0.9 }}
