@@ -1,11 +1,13 @@
 import { ExternalLink, Github, ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
 import { useTheme } from "../context/ThemeContext";
-import labaraImg from "../../assets/images/labara.png";
-import masposImg from "../../assets/images/maspos.png";
-import akpkASNImg from "../../assets/images/akpkASN.png";
-import hotelBookingImg from "../../assets/images/hotelBooking.png";
-import slicebreadImg from "../../assets/images/slicebread.png";
+
+const images = import.meta.glob<{ default: string }>(
+  "../../assets/images/*.png",
+  { eager: true },
+);
+const img = (name: string) =>
+  images[`../../assets/images/${name}.png`]?.default ?? "";
 
 const projects = [
   {
@@ -13,7 +15,7 @@ const projects = [
     title: "Labara",
     description:
       "A real-time analytics platform powered by machine learning, featuring interactive charts, predictive insights, and a highly responsive dark-mode interface.",
-    image: labaraImg,
+    image: img("labara"),
     tags: ["Vue", "Laravel", "TailwindCSS", "MySQL"],
     tagColors: ["#4FACFE", "#A855F7", "#34D399", "#F59E0B"],
     github: "#",
@@ -25,7 +27,7 @@ const projects = [
     title: "Mas. POS",
     description:
       "Full-stack e-commerce solution with a sleek product catalog, cart system, secure payment integration, and a comprehensive admin panel.",
-    image: masposImg,
+    image: img("maspos"),
     tags: ["Vue", "Laravel", "TailwindCSS", "MySQL"],
     tagColors: ["#4FACFE", "#A855F7", "#34D399", "#F59E0B"],
     github: "#",
@@ -37,7 +39,7 @@ const projects = [
     title: "AKPK ASN",
     description:
       "Modern social platform with real-time messaging, dynamic feeds, story reels, and smooth cross-platform animations for an engaging UX.",
-    image: akpkASNImg,
+    image: img("akpkASN"),
     tags: ["Blade", "Laravel", "MySQL"],
     tagColors: ["#4FACFE", "#A855F7", "#F59E0B"],
     github: "#",
@@ -49,7 +51,7 @@ const projects = [
     title: "Hotel Booking",
     description:
       "Award-winning interactive portfolio website with immersive 3D animations, smooth page transitions, and a fully custom design system.",
-    image: hotelBookingImg,
+    image: img("hotelBooking"),
     tags: ["Next.js", "TypeScript", "Prisma", "TailwindCSS"],
     tagColors: ["#34D399", "#4FACFE", "#A855F7", "#F59E0B"],
     github: "#",
@@ -61,7 +63,7 @@ const projects = [
     title: "Slice Bread Bakery Web",
     description:
       "Award-winning interactive portfolio website with immersive 3D animations, smooth page transitions, and a fully custom design system.",
-    image: slicebreadImg,
+    image: img("slicebread"),
     tags: ["Blade", "Laravel", "MySQL", "TailwindCSS"],
     tagColors: ["#34D399", "#A855F7", "#F59E0B", "#4FACFE"],
     github: "#",
