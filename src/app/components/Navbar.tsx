@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 import { Sun, Moon, Download, Menu, X } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import { NAVIGATION_LINKS } from "../data/navigation";
+import { CV_URL } from "../data/profile";
+import { scrollToSection } from "../utils/scrollToSection";
 import { motion, AnimatePresence } from "motion/react";
-
-const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
-  { label: "Contact", href: "#contact" },
-];
 
 export function Navbar() {
   const { isDark, toggleTheme } = useTheme();
@@ -22,11 +18,10 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollTo = (href: string, label: string) => {
+  const navigateTo = (href: `#${string}`, label: string) => {
     setActiveLink(label);
     setMobileOpen(false);
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    scrollToSection(href);
   };
 
   const glassStyle = isDark
@@ -48,7 +43,7 @@ export function Navbar() {
           {/* Logo */}
           <motion.a
             href="#home"
-            onClick={() => scrollTo("#home", "Home")}
+            onClick={() => navigateTo("#home", "Home")}
             className="relative flex items-center group cursor-pointer"
             whileHover={{ scale: 1.04 }}>
             <span
@@ -70,10 +65,10 @@ export function Navbar() {
 
           {/* Desktop Nav Links */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+            {NAVIGATION_LINKS.map((link) => (
               <button
                 key={link.label}
-                onClick={() => scrollTo(link.href, link.label)}
+                onClick={() => navigateTo(link.href, link.label)}
                 className={`relative text-sm transition-colors duration-200 group ${
                   activeLink === link.label
                     ? ""
@@ -145,7 +140,10 @@ export function Navbar() {
 
             {/* CV Button */}
             <motion.a
-              href="#"
+              href={CV_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Buka CV Naufal Dwi Saputro"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
               className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm text-white transition-all duration-300"
@@ -194,10 +192,10 @@ export function Navbar() {
               isDark ? "border-white/[0.06]" : "border-black/[0.06]"
             }`}>
             <div className="px-6 py-4 flex flex-col gap-3">
-              {navLinks.map((link) => (
+              {NAVIGATION_LINKS.map((link) => (
                 <button
                   key={link.label}
-                  onClick={() => scrollTo(link.href, link.label)}
+                  onClick={() => navigateTo(link.href, link.label)}
                   className={`text-left text-sm py-2 transition-colors duration-200 ${
                     isDark
                       ? "text-[#A0A8C0] hover:text-white"
@@ -207,7 +205,10 @@ export function Navbar() {
                 </button>
               ))}
               <a
-                href="#"
+                href={CV_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Buka CV Naufal Dwi Saputro"
                 className="flex items-center gap-2 mt-2 px-5 py-2.5 rounded-xl text-sm text-white w-fit"
                 style={{
                   background:
@@ -215,7 +216,7 @@ export function Navbar() {
                   fontWeight: 600,
                 }}>
                 <Download size={15} />
-                Resume
+                CV
               </a>
             </div>
           </motion.div>
