@@ -1,62 +1,53 @@
+import type { CSSProperties } from 'react';
 import { motion } from 'motion/react';
-import {
-  SiReact, SiNextdotjs, SiTypescript, SiVuedotjs,
-  SiNodedotjs, SiPython, SiLaravel, SiMysql,
-  SiPostgresql, SiMongodb, SiDocker, SiGit, SiFigma,
-} from 'react-icons/si';
 import { useTheme } from '../context/ThemeContext';
-
-/* ─────────────────────────────────────────────────────────────
-   Tech Stack Data  — brand icon + brand colour
-───────────────────────────────────────────────────────────── */
-const techStack = [
-  { name: 'React',      Icon: SiReact,      color: '#61DAFB' },
-  { name: 'Next.js',    Icon: SiNextdotjs,  color: '#E8EAF0' },
-  { name: 'TypeScript', Icon: SiTypescript, color: '#3178C6' },
-  { name: 'Vue',        Icon: SiVuedotjs,   color: '#4FC08D' },
-  { name: 'Node.js',    Icon: SiNodedotjs,  color: '#339933' },
-  { name: 'Python',     Icon: SiPython,     color: '#3776AB' },
-  { name: 'Laravel',    Icon: SiLaravel,    color: '#FF2D20' },
-  { name: 'MySQL',      Icon: SiMysql,      color: '#4479A1' },
-  { name: 'PostgreSQL', Icon: SiPostgresql, color: '#4169E1' },
-  { name: 'MongoDB',    Icon: SiMongodb,    color: '#47A248' },
-  { name: 'Docker',     Icon: SiDocker,     color: '#2496ED' },
-  { name: 'Git',        Icon: SiGit,        color: '#F05032' },
-  { name: 'Figma',      Icon: SiFigma,      color: '#F24E1E' },
-];
+import { TECHNOLOGIES } from '../data/technologies';
+import type { Technology } from '../types/portfolio';
 
 /* ─────────────────────────────────────────────────────────────
    Aurora Mesh Background
    Four large blobs in portfolio accent colours that drift slowly
 ───────────────────────────────────────────────────────────── */
-const blobs = [
+interface AuroraBlob {
+  color: string;
+  size: number;
+  position: Pick<CSSProperties, 'top' | 'right' | 'bottom' | 'left'>;
+  animation: {
+    x: number[];
+    y: number[];
+    scale: number[];
+  };
+  duration: number;
+}
+
+const AURORA_BLOBS: AuroraBlob[] = [
   {
     color: 'rgba(79,172,254,0.28)',
     size: 720,
-    top: '-18%', left: '-12%',
-    anim: { x: [0, 80, -30, 0], y: [0, -50, 60, 0], scale: [1, 1.12, 0.92, 1] },
-    dur: 28,
+    position: { top: '-18%', left: '-12%' },
+    animation: { x: [0, 80, -30, 0], y: [0, -50, 60, 0], scale: [1, 1.12, 0.92, 1] },
+    duration: 28,
   },
   {
     color: 'rgba(168,85,247,0.25)',
     size: 680,
-    top: '20%', right: '-15%',
-    anim: { x: [0, -70, 40, 0], y: [0, 60, -40, 0], scale: [1, 0.9, 1.15, 1] },
-    dur: 34,
+    position: { top: '20%', right: '-15%' },
+    animation: { x: [0, -70, 40, 0], y: [0, 60, -40, 0], scale: [1, 0.9, 1.15, 1] },
+    duration: 34,
   },
   {
     color: 'rgba(52,211,153,0.20)',
     size: 560,
-    bottom: '-20%', left: '20%',
-    anim: { x: [0, 50, -60, 0], y: [0, -70, 30, 0], scale: [1, 1.1, 0.88, 1] },
-    dur: 40,
+    position: { bottom: '-20%', left: '20%' },
+    animation: { x: [0, 50, -60, 0], y: [0, -70, 30, 0], scale: [1, 1.1, 0.88, 1] },
+    duration: 40,
   },
   {
     color: 'rgba(6,182,212,0.18)',
     size: 500,
-    top: '40%', left: '40%',
-    anim: { x: [0, -40, 70, 0], y: [0, 50, -60, 0], scale: [1, 1.08, 0.94, 1] },
-    dur: 32,
+    position: { top: '40%', left: '40%' },
+    animation: { x: [0, -40, 70, 0], y: [0, 50, -60, 0], scale: [1, 1.08, 0.94, 1] },
+    duration: 32,
   },
 ];
 
@@ -66,22 +57,19 @@ function AuroraBg() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
       {/* Animated aurora blobs */}
-      {blobs.map((b, i) => (
+      {AURORA_BLOBS.map((blob) => (
         <motion.div
-          key={i}
-          animate={b.anim}
-          transition={{ duration: b.dur, repeat: Infinity, ease: 'easeInOut', repeatType: 'mirror' }}
+          key={blob.color}
+          animate={blob.animation}
+          transition={{ duration: blob.duration, repeat: Infinity, ease: 'easeInOut', repeatType: 'mirror' }}
           style={{
             position: 'absolute',
-            width: b.size,
-            height: b.size,
+            width: blob.size,
+            height: blob.size,
             borderRadius: '50%',
-            background: `radial-gradient(circle, ${b.color} 0%, transparent 68%)`,
+            background: `radial-gradient(circle, ${blob.color} 0%, transparent 68%)`,
             filter: 'blur(72px)',
-            top: (b as any).top,
-            left: (b as any).left,
-            right: (b as any).right,
-            bottom: (b as any).bottom,
+            ...blob.position,
           }}
         />
       ))}
@@ -148,11 +136,11 @@ function TechCard({
   tech,
   index,
 }: {
-  tech: (typeof techStack)[0];
+  tech: Technology;
   index: number;
 }) {
   const { isDark } = useTheme();
-  const { Icon, name, color } = tech;
+  const { icon: Icon, name, color } = tech;
 
   return (
     <motion.div
@@ -323,7 +311,7 @@ export function Skills() {
           className="grid gap-4"
           style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(105px, 1fr))' }}
         >
-          {techStack.map((tech, i) => (
+          {TECHNOLOGIES.map((tech, i) => (
             <TechCard key={tech.name} tech={tech} index={i} />
           ))}
         </div>
@@ -353,7 +341,7 @@ export function Skills() {
               }}
             />
             <span style={{ fontSize: '0.78rem', color: isDark ? '#6B7080' : '#9CA3AF', fontWeight: 500 }}>
-              {techStack.length} technologies & counting
+              {TECHNOLOGIES.length} technologies & counting
             </span>
           </div>
         </motion.div>

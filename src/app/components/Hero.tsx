@@ -1,22 +1,12 @@
 import {
   ArrowRight,
   MessageSquare,
-  Github,
-  Linkedin,
-  Twitter,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useTheme } from "../context/ThemeContext";
+import { SOCIAL_LINKS } from "../data/profile";
+import { scrollToSection } from "../utils/scrollToSection";
 import { TechOrb } from "./TechOrb";
-
-const socialLinks = [
-  { icon: Github, href: "https://github.com/NaufalDsp", label: "GitHub" },
-  {
-    icon: Linkedin,
-    href: "https://www.linkedin.com/in/naufal-dwi-saputro-b14a03299/",
-    label: "LinkedIn",
-  },
-];
 
 const fadeUp = (delay: number) => ({
   initial: { opacity: 0, y: 28 },
@@ -26,11 +16,6 @@ const fadeUp = (delay: number) => ({
 
 export function Hero() {
   const { isDark } = useTheme();
-
-  const scrollTo = (href: string) => {
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
 
   return (
     <section
@@ -164,7 +149,7 @@ export function Hero() {
                     letterSpacing: "0.08em",
                     textTransform: "uppercase",
                   }}>
-                  Web Developer
+                  Full Stack Developer
                 </p>
               </div>
             </motion.div>
@@ -208,7 +193,7 @@ export function Hero() {
                   boxShadow: "0 8px 35px rgba(79,172,254,0.45)",
                 }}
                 whileTap={{ scale: 0.96 }}
-                onClick={() => scrollTo("#projects")}
+                onClick={() => scrollToSection("#projects")}
                 className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-white transition-all duration-300"
                 style={{
                   background:
@@ -225,7 +210,7 @@ export function Hero() {
               <motion.button
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.96 }}
-                onClick={() => scrollTo("#contact")}
+                onClick={() => scrollToSection("#contact")}
                 className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl transition-all duration-300"
                 style={{
                   border: `1.5px solid ${isDark ? "rgba(160,168,192,0.3)" : "rgba(107,114,128,0.3)"}`,
@@ -262,7 +247,7 @@ export function Hero() {
                 }}
               />
               <div className="flex items-center gap-3">
-                {socialLinks.map(({ icon: Icon, href, label }) => (
+                {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
                   <motion.a
                     key={label}
                     href={href}
