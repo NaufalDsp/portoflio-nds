@@ -1,82 +1,14 @@
 import { ExternalLink, Github, ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
+import { PROJECTS } from "../data/projects";
+import type { Project } from "../types/portfolio";
 import { useTheme } from "../context/ThemeContext";
-
-const images = import.meta.glob<{ default: string }>(
-  "../../assets/images/*.png",
-  { eager: true },
-);
-const img = (name: string) =>
-  images[`../../assets/images/${name}.png`]?.default ?? "";
-
-const projects = [
-  {
-    id: 1,
-    title: "Labara",
-    description:
-      "A real-time analytics platform powered by machine learning, featuring interactive charts, predictive insights, and a highly responsive dark-mode interface.",
-    image: img("labara"),
-    tags: ["Vue", "Laravel", "TailwindCSS", "MySQL"],
-    tagColors: ["#4FACFE", "#A855F7", "#34D399", "#F59E0B"],
-    github: "#",
-    live: "#",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Mas. POS",
-    description:
-      "Full-stack e-commerce solution with a sleek product catalog, cart system, secure payment integration, and a comprehensive admin panel.",
-    image: img("maspos"),
-    tags: ["Vue", "Laravel", "TailwindCSS", "MySQL"],
-    tagColors: ["#4FACFE", "#A855F7", "#34D399", "#F59E0B"],
-    github: "#",
-    live: "#",
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "AKPK ASN",
-    description:
-      "Modern social platform with real-time messaging, dynamic feeds, story reels, and smooth cross-platform animations for an engaging UX.",
-    image: img("akpkASN"),
-    tags: ["Blade", "Laravel", "MySQL"],
-    tagColors: ["#4FACFE", "#A855F7", "#F59E0B"],
-    github: "#",
-    live: "#",
-    featured: false,
-  },
-  {
-    id: 4,
-    title: "Hotel Booking",
-    description:
-      "Award-winning interactive portfolio website with immersive 3D animations, smooth page transitions, and a fully custom design system.",
-    image: img("hotelBooking"),
-    tags: ["Next.js", "TypeScript", "Prisma", "TailwindCSS"],
-    tagColors: ["#34D399", "#4FACFE", "#A855F7", "#F59E0B"],
-    github: "#",
-    live: "#",
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "Slice Bread Bakery Web",
-    description:
-      "Award-winning interactive portfolio website with immersive 3D animations, smooth page transitions, and a fully custom design system.",
-    image: img("slicebread"),
-    tags: ["Blade", "Laravel", "MySQL", "TailwindCSS"],
-    tagColors: ["#34D399", "#A855F7", "#F59E0B", "#4FACFE"],
-    github: "#",
-    live: "#",
-    featured: false,
-  },
-];
 
 function ProjectCard({
   project,
   index,
 }: {
-  project: (typeof projects)[0];
+  project: Project;
   index: number;
 }) {
   const { isDark } = useTheme();
@@ -130,13 +62,13 @@ function ProjectCard({
         {/* Hover overlay links */}
         <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <a
-            href={project.github}
+            href={project.links.github}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs backdrop-blur-md border border-white/20"
             style={{ background: "rgba(0,0,0,0.55)", fontWeight: 600 }}>
             <Github size={14} /> GitHub
           </a>
           <a
-            href={project.live}
+            href={project.links.live}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs"
             style={{
               background: "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
@@ -160,7 +92,7 @@ function ProjectCard({
             {project.title}
           </h3>
           <motion.a
-            href={project.live}
+            href={project.links.live}
             whileHover={{ scale: 1.15 }}
             className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg border transition-all duration-200"
             style={{
@@ -183,17 +115,17 @@ function ProjectCard({
         </p>
 
         <div className="flex flex-wrap gap-2">
-          {project.tags.map((tag, i) => (
+          {project.technologies.map(({ name, color }) => (
             <span
-              key={tag}
+              key={name}
               className="px-3 py-1 rounded-full text-xs"
               style={{
-                background: `${project.tagColors[i]}15`,
-                color: project.tagColors[i],
-                border: `1px solid ${project.tagColors[i]}30`,
+                background: `${color}15`,
+                color,
+                border: `1px solid ${color}30`,
                 fontWeight: 600,
               }}>
-              {tag}
+              {name}
             </span>
           ))}
         </div>
@@ -272,7 +204,7 @@ export function Projects() {
 
         {/* Project Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
-          {projects.map((project, index) => (
+          {PROJECTS.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
         </div>
