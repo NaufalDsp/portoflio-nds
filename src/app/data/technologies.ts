@@ -1,0 +1,51 @@
+import {
+  SiDocker,
+  SiFigma,
+  SiGit,
+  SiLaravel,
+  SiMongodb,
+  SiMysql,
+  SiNextdotjs,
+  SiNodedotjs,
+  SiPostgresql,
+  SiPython,
+  SiReact,
+  SiTypescript,
+  SiVuedotjs,
+} from "react-icons/si";
+import type { Technology } from "../types/portfolio";
+
+export const TECHNOLOGY_COLORS = {
+  React: "#61DAFB",
+  "Next.js": "#E8EAF0",
+  TypeScript: "#3178C6",
+  Vue: "#4FC08D",
+  "Node.js": "#339933",
+  Python: "#3776AB",
+  Laravel: "#FF2D20",
+  Blade: "#F05340",
+  TailwindCSS: "#38BDF8",
+  MySQL: "#4479A1",
+  PostgreSQL: "#4169E1",
+  MongoDB: "#47A248",
+  Docker: "#2496ED",
+  Git: "#F05032",
+  Figma: "#F24E1E",
+  Prisma: "#A855F7",
+} as const;
+
+export const TECHNOLOGIES: Technology[] = [
+  { name: "React", icon: SiReact, color: TECHNOLOGY_COLORS.React },
+  { name: "Next.js", icon: SiNextdotjs, color: TECHNOLOGY_COLORS["Next.js"] },
+  { name: "TypeScript", icon: SiTypescript, color: TECHNOLOGY_COLORS.TypeScript },
+  { name: "Vue", icon: SiVuedotjs, color: TECHNOLOGY_COLORS.Vue },
+  { name: "Node.js", icon: SiNodedotjs, color: TECHNOLOGY_COLORS["Node.js"] },
+  { name: "Python", icon: SiPython, color: TECHNOLOGY_COLORS.Python },
+  { name: "Laravel", icon: SiLaravel, color: TECHNOLOGY_COLORS.Laravel },
+  { name: "MySQL", icon: SiMysql, color: TECHNOLOGY_COLORS.MySQL },
+  { name: "PostgreSQL", icon: SiPostgresql, color: TECHNOLOGY_COLORS.PostgreSQL },
+  { name: "MongoDB", icon: SiMongodb, color: TECHNOLOGY_COLORS.MongoDB },
+  { name: "Docker", icon: SiDocker, color: TECHNOLOGY_COLORS.Docker },
+  { name: "Git", icon: SiGit, color: TECHNOLOGY_COLORS.Git },
+  { name: "Figma", icon: SiFigma, color: TECHNOLOGY_COLORS.Figma },
+];
