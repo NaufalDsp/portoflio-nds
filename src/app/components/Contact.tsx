@@ -1,56 +1,54 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import {
+  AlertCircle,
   Send,
-  Mail,
-  MapPin,
-  Clock,
-  Github,
-  Linkedin,
-  Twitter,
   CheckCircle,
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import { CONTACT_DETAILS, SOCIAL_LINKS } from "../data/profile";
+import {
+  sendContactMessage,
+  type ContactMessage,
+} from "../services/contactService";
 
-const contactDetails = [
-  {
-    icon: Mail,
-    label: "Email",
-    value: "naufalsaputro219@gmail.com",
-    color: "#4FACFE",
-  },
-  {
-    icon: MapPin,
-    label: "Location",
-    value: "Surakarta, Indonesia",
-    color: "#A855F7",
-  },
-  {
-    icon: Clock,
-    label: "Response Time",
-    value: "Within 24 hours",
-    color: "#34D399",
-  },
-];
+const EMPTY_FORM_DATA: ContactMessage = {
+  name: "",
+  email: "",
+  subject: "",
+  message: "",
+};
 
 export function Contact() {
   const { isDark } = useTheme();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
+  const [formData, setFormData] = useState<ContactMessage>(EMPTY_FORM_DATA);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setErrorMessage(null);
+
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+
+    try {
+      await sendContactMessage(formData);
       setSubmitted(true);
-    }, 1500);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to send your message. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateField = (field: keyof ContactMessage, value: string) => {
+    setErrorMessage(null);
+    setFormData((currentData) => ({ ...currentData, [field]: value }));
   };
 
   const inputStyle: React.CSSProperties = {
@@ -154,7 +152,7 @@ export function Contact() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             className="lg:col-span-2 flex flex-col gap-6">
-            {contactDetails.map(({ icon: Icon, label, value, color }) => (
+            {CONTACT_DETAILS.map(({ icon: Icon, label, value, color }) => (
               <div
                 key={label}
                 className="flex items-center gap-5 p-5 rounded-2xl border"
@@ -217,20 +215,7 @@ export function Contact() {
                 Connect
               </p>
               <div className="flex gap-3">
-                {[
-                  {
-                    Icon: Github,
-                    label: "GitHub",
-                    color: "#E8EAF0",
-                    href: "https://github.com/NaufalDsp",
-                  },
-                  {
-                    Icon: Linkedin,
-                    label: "LinkedIn",
-                    color: "#4FACFE",
-                    href: "https://www.linkedin.com/in/naufal-dwi-saputro-b14a03299/",
-                  },
-                ].map(({ Icon, label, color: c, href }) => (
+                {SOCIAL_LINKS.map(({ icon: Icon, label, color, href }) => (
                   <motion.a
                     key={label}
                     href={href}
@@ -247,7 +232,7 @@ export function Contact() {
                       background: isDark
                         ? "rgba(255,255,255,0.04)"
                         : "rgba(0,0,0,0.02)",
-                      color: isDark ? c : "#6B7280",
+                      color: isDark ? color : "#6B7280",
                     }}>
                     <Icon size={16} />
                   </motion.a>
@@ -308,12 +293,7 @@ export function Contact() {
                     whileHover={{ scale: 1.04 }}
                     onClick={() => {
                       setSubmitted(false);
-                      setFormData({
-                        name: "",
-                        email: "",
-                        subject: "",
-                        message: "",
-                      });
+                      setFormData(EMPTY_FORM_DATA);
                     }}
                     className="mt-8 px-6 py-2.5 rounded-xl text-white text-sm"
                     style={{
@@ -331,11 +311,11 @@ export function Contact() {
                       <label style={labelStyle}>Your Name</label>
                       <input
                         type="text"
+                        name="name"
+                        autoComplete="name"
                         placeholder="Naufal Dwi"
                         value={formData.name}
-                        onChange={(e) =>
-                          setFormData({ ...formData, name: e.target.value })
-                        }
+                        onChange={(e) => updateField("name", e.target.value)}
                         required
                         style={inputStyle}
                         onFocus={(e) => {
@@ -355,11 +335,11 @@ export function Contact() {
                       <label style={labelStyle}>Email Address</label>
                       <input
                         type="email"
+                        name="email"
+                        autoComplete="email"
                         placeholder="hello@email.com"
                         value={formData.email}
-                        onChange={(e) =>
-                          setFormData({ ...formData, email: e.target.value })
-                        }
+                        onChange={(e) => updateField("email", e.target.value)}
                         required
                         style={inputStyle}
                         onFocus={(e) => {
@@ -380,11 +360,10 @@ export function Contact() {
                     <label style={labelStyle}>Subject</label>
                     <input
                       type="text"
+                      name="subject"
                       placeholder="Project Inquiry / Collaboration"
                       value={formData.subject}
-                      onChange={(e) =>
-                        setFormData({ ...formData, subject: e.target.value })
-                      }
+                      onChange={(e) => updateField("subject", e.target.value)}
                       required
                       style={inputStyle}
                       onFocus={(e) => {
@@ -403,12 +382,11 @@ export function Contact() {
                   <div>
                     <label style={labelStyle}>Message</label>
                     <textarea
+                      name="message"
                       rows={5}
                       placeholder="Tell me about your project or idea..."
                       value={formData.message}
-                      onChange={(e) =>
-                        setFormData({ ...formData, message: e.target.value })
-                      }
+                      onChange={(e) => updateField("message", e.target.value)}
                       required
                       style={{ ...inputStyle, resize: "none" }}
                       onFocus={(e) => {
@@ -424,6 +402,23 @@ export function Contact() {
                       }}
                     />
                   </div>
+                  {errorMessage && (
+                    <div
+                      role="alert"
+                      className="flex items-start gap-2.5 rounded-xl border px-4 py-3 text-sm"
+                      style={{
+                        color: isDark ? "#FCA5A5" : "#B91C1C",
+                        background: isDark
+                          ? "rgba(239,68,68,0.08)"
+                          : "rgba(239,68,68,0.06)",
+                        borderColor: isDark
+                          ? "rgba(239,68,68,0.25)"
+                          : "rgba(185,28,28,0.2)",
+                      }}>
+                      <AlertCircle size={18} className="mt-0.5 shrink-0" />
+                      <span>{errorMessage}</span>
+                    </div>
+                  )}
                   <motion.button
                     whileHover={{
                       scale: 1.02,
