@@ -11,18 +11,29 @@ export interface ProjectTechnology {
   color: `#${string}`;
 }
 
-export interface Project {
+interface ProjectDetails {
   id: number;
   title: string;
   description: string;
   image: string;
   technologies: ProjectTechnology[];
-  links: {
-    github: string;
-    live: string;
-  };
   featured: boolean;
 }
+
+type ProjectAccess =
+  | {
+      isPrivate: true;
+      links?: never;
+    }
+  | {
+      isPrivate?: false;
+      links: {
+        github: string;
+        live: string;
+      };
+    };
+
+export type Project = ProjectDetails & ProjectAccess;
 
 export interface SocialLink {
   icon: LucideIcon;

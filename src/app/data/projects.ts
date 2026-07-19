@@ -23,7 +23,7 @@ export const PROJECTS: Project[] = [
       { name: "TailwindCSS", color: TECHNOLOGY_COLORS.TailwindCSS },
       { name: "MySQL", color: TECHNOLOGY_COLORS.MySQL },
     ],
-    links: { github: "#", live: "#" },
+    isPrivate: true,
     featured: true,
   },
   {
@@ -52,7 +52,7 @@ export const PROJECTS: Project[] = [
       { name: "Laravel", color: TECHNOLOGY_COLORS.Laravel },
       { name: "MySQL", color: TECHNOLOGY_COLORS.MySQL },
     ],
-    links: { github: "#", live: "#" },
+    isPrivate: true,
     featured: false,
   },
   {
@@ -97,7 +97,7 @@ export const PROJECTS: Project[] = [
       { name: "TailwindCSS", color: TECHNOLOGY_COLORS.TailwindCSS },
       { name: "MySQL", color: TECHNOLOGY_COLORS.MySQL },
     ],
-    links: { github: "#", live: "#" },
+    isPrivate: true,
     featured: false,
   },
 ];

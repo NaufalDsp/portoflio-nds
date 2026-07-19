@@ -1,4 +1,4 @@
-import { ExternalLink, Github, ArrowUpRight } from "lucide-react";
+import { ExternalLink, Github, ArrowUpRight, Lock } from "lucide-react";
 import { motion } from "motion/react";
 import { PROJECTS } from "../data/projects";
 import type { Project } from "../types/portfolio";
@@ -60,23 +60,26 @@ function ProjectCard({
           }}
         />
         {/* Hover overlay links */}
-        <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <a
-            href={project.links.github}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs backdrop-blur-md border border-white/20"
-            style={{ background: "rgba(0,0,0,0.55)", fontWeight: 600 }}>
-            <Github size={14} /> GitHub
-          </a>
-          <a
-            href={project.links.live}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs"
-            style={{
-              background: "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-              fontWeight: 600,
-            }}>
-            <ExternalLink size={14} /> Live Demo
-          </a>
-        </div>
+        {!project.isPrivate && (
+          <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <a
+              href={project.links.github}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs backdrop-blur-md border border-white/20"
+              style={{ background: "rgba(0,0,0,0.55)", fontWeight: 600 }}>
+              <Github size={14} /> GitHub
+            </a>
+            <a
+              href={project.links.live}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs"
+              style={{
+                background:
+                  "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
+                fontWeight: 600,
+              }}>
+              <ExternalLink size={14} /> Live Demo
+            </a>
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -91,18 +94,37 @@ function ProjectCard({
             }}>
             {project.title}
           </h3>
-          <motion.a
-            href={project.links.live}
-            whileHover={{ scale: 1.15 }}
-            className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg border transition-all duration-200"
-            style={{
-              borderColor: isDark
-                ? "rgba(255,255,255,0.1)"
-                : "rgba(0,0,0,0.08)",
-              color: isDark ? "#7880A0" : "#9CA3AF",
-            }}>
-            <ArrowUpRight size={15} />
-          </motion.a>
+          {project.isPrivate ? (
+            <span
+              className="flex flex-shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs"
+              style={{
+                borderColor: isDark
+                  ? "rgba(168,85,247,0.3)"
+                  : "rgba(124,58,237,0.2)",
+                background: isDark
+                  ? "rgba(168,85,247,0.1)"
+                  : "rgba(124,58,237,0.07)",
+                color: isDark ? "#C084FC" : "#7C3AED",
+                fontWeight: 600,
+              }}>
+              <Lock size={12} aria-hidden="true" />
+              Private Project
+            </span>
+          ) : (
+            <motion.a
+              href={project.links.live}
+              aria-label={`Open ${project.title} live demo`}
+              whileHover={{ scale: 1.15 }}
+              className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg border transition-all duration-200"
+              style={{
+                borderColor: isDark
+                  ? "rgba(255,255,255,0.1)"
+                  : "rgba(0,0,0,0.08)",
+                color: isDark ? "#7880A0" : "#9CA3AF",
+              }}>
+              <ArrowUpRight size={15} />
+            </motion.a>
+          )}
         </div>
 
         <p
