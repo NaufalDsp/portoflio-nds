@@ -15,7 +15,7 @@ export const PROJECTS: Project[] = [
     id: 1,
     title: "Labara",
     description:
-      "A real-time analytics platform powered by machine learning, featuring interactive charts, predictive insights, and a highly responsive dark-mode interface.",
+      "A Hajj and Umrah booking platform with an admin panel for dynamically managing packages and keeping travel information up to date.",
     image: getProjectImage("labara"),
     technologies: [
       { name: "Vue", color: TECHNOLOGY_COLORS.Vue },
