@@ -2,11 +2,18 @@ import {
   ArrowRight,
   MessageSquare,
 } from "lucide-react";
-import { motion } from "motion/react";
+import type { PointerEvent as ReactPointerEvent } from "react";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+} from "motion/react";
 import { useTheme } from "../context/ThemeContext";
-import { SOCIAL_LINKS } from "../data/profile";
+import { PROFESSIONAL_TITLES, SOCIAL_LINKS } from "../data/profile";
 import { scrollToSection } from "../utils/scrollToSection";
 import { TechOrb } from "./TechOrb";
+import { TypewriterText } from "./TypewriterText";
 
 const fadeUp = (delay: number) => ({
   initial: { opacity: 0, y: 28 },
@@ -16,10 +23,33 @@ const fadeUp = (delay: number) => ({
 
 export function Hero() {
   const { isDark } = useTheme();
+  const prefersReducedMotion = useReducedMotion();
+  const orbOffsetX = useMotionValue(0);
+  const orbOffsetY = useMotionValue(0);
+  const smoothOrbX = useSpring(orbOffsetX, { stiffness: 90, damping: 18 });
+  const smoothOrbY = useSpring(orbOffsetY, { stiffness: 90, damping: 18 });
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLElement>) => {
+    if (prefersReducedMotion || event.pointerType !== "mouse") return;
+
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - bounds.left;
+    const y = event.clientY - bounds.top;
+
+    orbOffsetX.set((x / bounds.width - 0.5) * 18);
+    orbOffsetY.set((y / bounds.height - 0.5) * 14);
+  };
+
+  const handlePointerLeave = () => {
+    orbOffsetX.set(0);
+    orbOffsetY.set(0);
+  };
 
   return (
     <section
       id="home"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
       className="relative min-h-screen flex items-center overflow-hidden"
       style={{
         background: isDark
@@ -141,16 +171,17 @@ export function Hero() {
                     background: "linear-gradient(90deg, transparent, #A0A8C0)",
                   }}
                 />
-                <p
+                <TypewriterText
+                  words={PROFESSIONAL_TITLES}
+                  className="min-w-[22ch]"
                   style={{
                     color: isDark ? "#A0A8C0" : "#6B7280",
                     fontSize: "clamp(1rem, 2.5vw, 1.4rem)",
                     fontWeight: 500,
                     letterSpacing: "0.08em",
                     textTransform: "uppercase",
-                  }}>
-                  Full Stack Developer
-                </p>
+                  }}
+                />
               </div>
             </motion.div>
 
@@ -279,7 +310,9 @@ export function Hero() {
             animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="flex-shrink-0 hidden md:flex items-center justify-center">
-            <TechOrb />
+            <motion.div style={{ x: smoothOrbX, y: smoothOrbY }}>
+              <TechOrb />
+            </motion.div>
           </motion.div>
         </div>
 
