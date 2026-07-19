@@ -35,7 +35,7 @@ export function Footer() {
           </p>
 
           {/* Nav Links */}
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
             {NAVIGATION_LINKS.map((link) => (
               <button
                 key={link.label}
