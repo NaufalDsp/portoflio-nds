@@ -64,7 +64,7 @@ export function Navbar() {
           </motion.a>
 
           {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-5 lg:gap-8">
             {NAVIGATION_LINKS.map((link) => (
               <button
                 key={link.label}

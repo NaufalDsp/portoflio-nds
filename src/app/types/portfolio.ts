@@ -43,3 +43,23 @@ export interface Technology {
   icon: IconType;
   color: `#${string}`;
 }
+
+export interface EducationEntry {
+  id: number;
+  degree: string;
+  institution: string;
+  period: string;
+  gpa: string;
+  status: string;
+  highlights: string[];
+}
+
+export interface WorkExperienceEntry {
+  id: number;
+  role: string;
+  company: string;
+  period: string;
+  employmentType: string;
+  description: string;
+  achievements: string[];
+}
