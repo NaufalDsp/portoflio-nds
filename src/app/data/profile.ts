@@ -3,6 +3,11 @@ import type { ContactDetail, SocialLink } from "../types/portfolio";
 
 export const CV_URL = "/CV%20ATS-Naufal%20Dwi%20Saputro.pdf";
 
+export const PROFESSIONAL_TITLES = [
+  "Full Stack Developer",
+  "Software Engineer",
+] as const;
+
 export const SOCIAL_LINKS: SocialLink[] = [
   {
     icon: Github,
