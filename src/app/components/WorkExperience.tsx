@@ -140,6 +140,19 @@ export function WorkExperience() {
                           }}>
                           {experience.employmentType}
                         </span>
+                        {experience.workMode && (
+                          <span
+                            className="rounded-full border px-2.5 py-1 text-[0.68rem] uppercase"
+                            style={{
+                              color: "#4FACFE",
+                              background: "rgba(79,172,254,0.07)",
+                              borderColor: "rgba(79,172,254,0.2)",
+                              fontWeight: 700,
+                              letterSpacing: "0.06em",
+                            }}>
+                            {experience.workMode}
+                          </span>
+                        )}
                       </div>
                       <p
                         style={{

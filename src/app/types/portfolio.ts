@@ -71,6 +71,7 @@ export interface WorkExperienceEntry {
   company: string;
   period: string;
   employmentType: string;
+  workMode?: string;
   description: string;
   achievements: string[];
 }
