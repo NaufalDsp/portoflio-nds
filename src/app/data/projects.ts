@@ -100,4 +100,20 @@ export const PROJECTS: Project[] = [
     isPrivate: true,
     featured: false,
   },
+  {
+    id: 7,
+    title: "Nexora Space",
+    description:
+      "A responsive company profile website for a renovation and interior design company, showcasing its services, projects, and brand identity.",
+    image: getProjectImage("nexoraSpace"),
+    technologies: [
+      { name: "React", color: TECHNOLOGY_COLORS.React },
+      { name: "TailwindCSS", color: TECHNOLOGY_COLORS.TailwindCSS },
+    ],
+    links: {
+      github: "https://github.com/NaufalDsp/company-nexora",
+      live: "https://nexora-space.netlify.app/",
+    },
+    featured: false,
+  },
 ];

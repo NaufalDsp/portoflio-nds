@@ -60,26 +60,35 @@ function ProjectCard({
           }}
         />
         {/* Hover overlay links */}
-        {!project.isPrivate && (
-          <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <a
-              href={project.links.github}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs backdrop-blur-md border border-white/20"
-              style={{ background: "rgba(0,0,0,0.55)", fontWeight: 600 }}>
-              <Github size={14} /> GitHub
-            </a>
-            <a
-              href={project.links.live}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs"
-              style={{
-                background:
-                  "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                fontWeight: 600,
-              }}>
-              <ExternalLink size={14} /> Live Demo
-            </a>
-          </div>
-        )}
+        {!project.isPrivate &&
+          (project.links.github || project.links.live) && (
+            <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              {project.links.github && (
+                <a
+                  href={project.links.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs backdrop-blur-md border border-white/20"
+                  style={{ background: "rgba(0,0,0,0.55)", fontWeight: 600 }}>
+                  <Github size={14} /> GitHub
+                </a>
+              )}
+              {project.links.live && (
+                <a
+                  href={project.links.live}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
+                    fontWeight: 600,
+                  }}>
+                  <ExternalLink size={14} /> Live Demo
+                </a>
+              )}
+            </div>
+          )}
       </div>
 
       {/* Content */}
@@ -110,9 +119,11 @@ function ProjectCard({
               <Lock size={12} aria-hidden="true" />
               Private Project
             </span>
-          ) : (
+          ) : project.links.live ? (
             <motion.a
               href={project.links.live}
+              target="_blank"
+              rel="noreferrer"
               aria-label={`Open ${project.title} live demo`}
               whileHover={{ scale: 1.15 }}
               className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg border transition-all duration-200"
@@ -124,7 +135,7 @@ function ProjectCard({
               }}>
               <ArrowUpRight size={15} />
             </motion.a>
-          )}
+          ) : null}
         </div>
 
         <p

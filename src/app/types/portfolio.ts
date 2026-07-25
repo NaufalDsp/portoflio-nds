@@ -28,8 +28,8 @@ type ProjectAccess =
   | {
       isPrivate?: false;
       links: {
-        github: string;
-        live: string;
+        github?: string;
+        live?: string;
       };
     };
 
