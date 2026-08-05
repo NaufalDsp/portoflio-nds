@@ -112,7 +112,7 @@ export const PROJECTS: Project[] = [
     ],
     links: {
       github: "https://github.com/NaufalDsp/company-nexora",
-      live: "https://nexora-space.netlify.app/",
+      live: "https://nexora-space.vercel.app",
     },
     featured: false,
   },
