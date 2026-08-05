@@ -116,4 +116,17 @@ export const PROJECTS: Project[] = [
     },
     featured: false,
   },
+  {
+    id: 8,
+    title: "VidDrop",
+    description:
+      "A TikTok video downloader that lets users quickly save content in MP4 video or MP3 audio formats through a clean, responsive interface.",
+    image: getProjectImage("vidrop"),
+    technologies: [
+      { name: "React", color: TECHNOLOGY_COLORS.React },
+      { name: "TailwindCSS", color: TECHNOLOGY_COLORS.TailwindCSS },
+    ],
+    links: {},
+    featured: false,
+  },
 ];
