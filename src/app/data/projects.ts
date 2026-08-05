@@ -126,7 +126,10 @@ export const PROJECTS: Project[] = [
       { name: "React", color: TECHNOLOGY_COLORS.React },
       { name: "TailwindCSS", color: TECHNOLOGY_COLORS.TailwindCSS },
     ],
-    links: {},
+    links: {
+      github: "https://github.com/NaufalDsp/vidrop",
+      live: "https://vidrop.vercel.app/",
+    },
     featured: false,
   },
 ];
