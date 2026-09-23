@@ -132,19 +132,6 @@ export function Hero() {
             {/* Main Name */}
             <motion.div {...fadeUp(0.2)}>
               <h1
-                className="mb-2 leading-[1.05] tracking-tight"
-                style={{
-                  fontSize: "clamp(2.6rem, 6vw, 5rem)",
-                  fontWeight: 800,
-                  background:
-                    "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}>
-                Naufal Dwi
-              </h1>
-              <h1
                 className="leading-[1.05] tracking-tight"
                 style={{
                   fontSize: "clamp(2.6rem, 6vw, 5rem)",
@@ -155,7 +142,8 @@ export function Hero() {
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
                 }}>
-                Saputro.
+                <span className="block mb-2">Naufal Dwi</span>
+                <span className="block">Saputro.</span>
               </h1>
             </motion.div>
 
