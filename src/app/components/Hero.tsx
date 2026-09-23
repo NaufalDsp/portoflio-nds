@@ -1,7 +1,4 @@
-import {
-  ArrowRight,
-  MessageSquare,
-} from "lucide-react";
+import { ArrowRight, MessageSquare } from "lucide-react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import {
   motion,
@@ -315,28 +312,28 @@ export function Hero() {
             </motion.div>
           </motion.div>
         </div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span
-            className="text-xs tracking-widest uppercase"
-            style={{ color: isDark ? "#4A5268" : "#9CA3AF", fontWeight: 500 }}>
-            Scroll
-          </span>
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            className="w-px h-10"
-            style={{
-              background: `linear-gradient(to bottom, ${isDark ? "rgba(79,172,254,0.5)" : "rgba(79,172,254,0.4)"}, transparent)`,
-            }}
-          />
-        </motion.div>
       </div>
+
+      {/* Scroll indicator - hidden on mobile to avoid overlapping content, visible on md+ */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2, duration: 0.8 }}
+        className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 pointer-events-none z-10">
+        <span
+          className="text-xs tracking-widest uppercase"
+          style={{ color: isDark ? "#4A5268" : "#9CA3AF", fontWeight: 500 }}>
+          Scroll
+        </span>
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          className="w-px h-10"
+          style={{
+            background: `linear-gradient(to bottom, ${isDark ? "rgba(79,172,254,0.5)" : "rgba(79,172,254,0.4)"}, transparent)`,
+          }}
+        />
+      </motion.div>
 
       <style>{`
         @keyframes pulse {
