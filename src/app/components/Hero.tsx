@@ -18,6 +18,26 @@ const fadeUp = (delay: number) => ({
   transition: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] as const },
 });
 
+const HERO_STATS = [
+  {
+    value: "3+",
+    label: "Internship & Industry Exp.",
+  },
+  {
+    value: "8+",
+    label: "Modern Web Projects",
+  },
+  {
+    value: "10",
+    label: "Verified Certifications",
+  },
+  {
+    value: "3.91",
+    suffix: "/ 4.00",
+    label: "Informatics Eng. GPA (UNS)",
+  },
+];
+
 export function Hero() {
   const { isDark } = useTheme();
   const prefersReducedMotion = useReducedMotion();
@@ -242,10 +262,50 @@ export function Hero() {
               </motion.button>
             </motion.div>
 
+            {/* Quick Stats */}
+            <motion.div
+              {...fadeUp(0.66)}
+              className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mt-10 pt-7 border-t"
+              style={{
+                borderColor: isDark
+                  ? "rgba(255,255,255,0.08)"
+                  : "rgba(0,0,0,0.08)",
+              }}>
+              {HERO_STATS.map((item) => (
+                <div key={item.label} className="flex flex-col">
+                  <div className="flex items-baseline gap-1">
+                    <span
+                      className="text-2xl sm:text-3xl font-extrabold tracking-tight"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}>
+                      {item.value}
+                    </span>
+                    {item.suffix && (
+                      <span
+                        className="text-xs font-semibold"
+                        style={{ color: isDark ? "#8890A8" : "#9CA3AF" }}>
+                        {item.suffix}
+                      </span>
+                    )}
+                  </div>
+                  <span
+                    className="text-xs font-medium leading-snug mt-1"
+                    style={{ color: isDark ? "#8890A8" : "#6B7280" }}>
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </motion.div>
+
             {/* Social Links */}
             <motion.div
-              {...fadeUp(0.68)}
-              className="flex items-center gap-4 mt-10">
+              {...fadeUp(0.76)}
+              className="flex items-center gap-4 mt-8">
               <span
                 className="text-xs tracking-widest uppercase"
                 style={{
