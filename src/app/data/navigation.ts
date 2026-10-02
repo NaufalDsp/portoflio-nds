@@ -7,5 +7,6 @@ export const NAVIGATION_LINKS: NavigationLink[] = [
   { label: "Experience", href: "#experience" },
   { label: "Education", href: "#education" },
   { label: "Certificates", href: "#certificates" },
+  { label: "Activity", href: "#activity" },
   { label: "Contact", href: "#contact" },
 ];
