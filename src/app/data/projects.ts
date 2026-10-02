@@ -54,6 +54,14 @@ export const PROJECTS: Project[] = [
     ],
     isPrivate: true,
     featured: false,
+    caseStudy: {
+      role: "Frontend Developer Intern · BKPSDM Kota Surakarta",
+      contributions: [
+        "Developed responsive interfaces for assessment and training proposal workflows.",
+        "Improved internal functionality and usability for ASN users.",
+        "Designed pages following government digital service standards.",
+      ],
+    },
   },
   {
     id: 4,
@@ -99,6 +107,14 @@ export const PROJECTS: Project[] = [
     ],
     isPrivate: true,
     featured: false,
+    caseStudy: {
+      role: "Software Developer Intern · Solutionlabs Group Indonesia",
+      contributions: [
+        "Designed the Template and Contract Management module, including contract categories, DOCX templates, dynamic fields, and contract creation workflows.",
+        "Produced system requirements and technical designs, including use case diagrams, activity diagrams, ERD, and database relationships.",
+        "Implemented the initial RBAC foundation using React and Laravel REST API, including API testing with Postman and frontend integration.",
+      ],
+    },
   },
   {
     id: 7,

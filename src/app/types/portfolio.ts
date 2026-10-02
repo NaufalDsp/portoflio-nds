@@ -11,6 +11,24 @@ export interface ProjectTechnology {
   color: `#${string}`;
 }
 
+export interface ProjectCaseStudy {
+  role: string;
+  contributions: string[];
+}
+
+export interface Certificate {
+  id: string;
+  title: string;
+  issuer?: string;
+  fileUrl: string;
+  previewUrl: string;
+  issuedAt: {
+    year: number;
+    month: number;
+    day?: number;
+  };
+}
+
 interface ProjectDetails {
   id: number;
   title: string;
@@ -18,6 +36,7 @@ interface ProjectDetails {
   image: string;
   technologies: ProjectTechnology[];
   featured: boolean;
+  caseStudy?: ProjectCaseStudy;
 }
 
 type ProjectAccess =

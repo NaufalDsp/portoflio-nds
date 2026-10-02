@@ -1,15 +1,19 @@
-import { ExternalLink, Github, ArrowUpRight, Lock } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Lock } from "lucide-react";
+import { useState } from "react";
 import { motion } from "motion/react";
 import { PROJECTS } from "../data/projects";
 import type { Project } from "../types/portfolio";
 import { useTheme } from "../context/ThemeContext";
+import { ProjectDetailsDialog } from "./ProjectDetailsDialog";
 
 function ProjectCard({
   project,
   index,
+  onOpenDetails,
 }: {
   project: Project;
   index: number;
+  onOpenDetails: (project: Project) => void;
 }) {
   const { isDark } = useTheme();
 
@@ -59,36 +63,6 @@ function ProjectCard({
               : "linear-gradient(to bottom, transparent 30%, rgba(255,255,255,0.95) 100%)",
           }}
         />
-        {/* Hover overlay links */}
-        {!project.isPrivate &&
-          (project.links.github || project.links.live) && (
-            <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              {project.links.github && (
-                <a
-                  href={project.links.github}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs backdrop-blur-md border border-white/20"
-                  style={{ background: "rgba(0,0,0,0.55)", fontWeight: 600 }}>
-                  <Github size={14} /> GitHub
-                </a>
-              )}
-              {project.links.live && (
-                <a
-                  href={project.links.live}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                    fontWeight: 600,
-                  }}>
-                  <ExternalLink size={14} /> Live Demo
-                </a>
-              )}
-            </div>
-          )}
       </div>
 
       {/* Content */}
@@ -119,7 +93,7 @@ function ProjectCard({
               <Lock size={12} aria-hidden="true" />
               Private Project
             </span>
-          ) : project.links.live ? (
+          ) : project.links.live && project.links.live !== "#" ? (
             <motion.a
               href={project.links.live}
               target="_blank"
@@ -162,6 +136,16 @@ function ProjectCard({
             </span>
           ))}
         </div>
+
+        <button
+          type="button"
+          onClick={() => onOpenDetails(project)}
+          aria-label={`View details for ${project.title}`}
+          className="mt-6 inline-flex items-center gap-2 text-sm font-semibold transition-colors hover:text-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-4"
+          style={{ color: isDark ? "#A0A8C0" : "#4B5563" }}>
+          View project details
+          <ArrowRight size={16} aria-hidden="true" />
+        </button>
       </div>
     </motion.div>
   );
@@ -169,6 +153,7 @@ function ProjectCard({
 
 export function Projects() {
   const { isDark } = useTheme();
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
     <section
@@ -238,34 +223,21 @@ export function Projects() {
         {/* Project Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
           {PROJECTS.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={index}
+              onOpenDetails={setSelectedProject}
+            />
           ))}
         </div>
-
-        {/* View All Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex justify-center mt-14">
-          <motion.a
-            href="#"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            className="flex items-center gap-2 px-8 py-3.5 rounded-xl border text-sm transition-all duration-300"
-            style={{
-              borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
-              color: isDark ? "#A0A8C0" : "#6B7280",
-              background: isDark
-                ? "rgba(255,255,255,0.03)"
-                : "rgba(0,0,0,0.02)",
-              fontWeight: 600,
-            }}>
-            View All Projects <ArrowUpRight size={16} />
-          </motion.a>
-        </motion.div>
       </div>
+      <ProjectDetailsDialog
+        project={selectedProject}
+        onOpenChange={(open) => {
+          if (!open) setSelectedProject(null);
+        }}
+      />
     </section>
   );
 }
