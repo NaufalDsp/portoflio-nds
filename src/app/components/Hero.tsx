@@ -60,40 +60,19 @@ export function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Column: Narrative Content (7 cols) */}
           <div className="lg:col-span-7 flex flex-col items-start">
-            {/* Availability & Location Pill */}
+            {/* Meta Eyebrow */}
             <motion.div
               {...fadeUp(0.08)}
-              className="flex flex-wrap items-center gap-2.5 mb-6">
-              <div
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold"
-                style={{
-                  background: isDark
-                    ? "rgba(20, 107, 102, 0.12)"
-                    : "var(--portfolio-accent-soft)",
-                  borderColor: isDark
-                    ? "rgba(121, 198, 188, 0.3)"
-                    : "rgba(20, 107, 102, 0.25)",
-                  color: isDark
-                    ? "var(--portfolio-accent)"
-                    : "var(--portfolio-accent-strong)",
-                }}>
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-teal-500" />
-                </span>
-                Available for software engineering roles
-              </div>
-
-              <div
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium"
-                style={{
-                  background: "var(--portfolio-surface)",
-                  borderColor: "var(--portfolio-border)",
-                  color: "var(--portfolio-muted)",
-                }}>
-                <MapPin size={12} aria-hidden="true" />
+              className="flex flex-wrap items-center gap-2 mb-4 font-mono text-xs uppercase tracking-wider font-semibold"
+              style={{ color: "var(--portfolio-accent)" }}>
+              <span>Software Engineer</span>
+              <span style={{ color: "var(--portfolio-border)" }}>·</span>
+              <span
+                className="inline-flex items-center gap-1 font-sans font-normal text-xs normal-case tracking-normal"
+                style={{ color: "var(--portfolio-muted)" }}>
+                <MapPin size={13} aria-hidden="true" />
                 Surakarta, Indonesia
-              </div>
+              </span>
             </motion.div>
 
             {/* Authoritative Clean Headline */}

@@ -19,7 +19,7 @@ export function Education() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}
-          className="mb-14 max-w-2xl">
+          className="mx-auto mb-14 max-w-2xl text-center">
           <p
             className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider"
             style={{ color: "var(--portfolio-accent)" }}>
@@ -34,7 +34,7 @@ export function Education() {
             Education &amp; Milestones
           </h2>
           <p
-            className="max-w-xl text-sm leading-relaxed sm:text-base"
+            className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
             style={{ color: "var(--portfolio-muted)" }}>
             The formal engineering background and coursework supporting my work
             as a software developer.

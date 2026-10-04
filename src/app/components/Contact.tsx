@@ -85,7 +85,7 @@ export function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}
-          className="mb-14 max-w-2xl">
+          className="mx-auto mb-14 max-w-2xl text-center">
           <p
             className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider"
             style={{ color: "var(--portfolio-accent)" }}>
@@ -100,7 +100,7 @@ export function Contact() {
             Get In Touch
           </h2>
           <p
-            className="max-w-xl text-sm leading-relaxed sm:text-base"
+            className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
             style={{ color: "var(--portfolio-muted)" }}>
             Have a project in mind, an opportunity to discuss, or just want to
             say hello? My inbox is always open.

@@ -77,7 +77,7 @@ export function GithubActivity() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}
-          className="mb-14 max-w-2xl">
+          className="mx-auto mb-14 max-w-2xl text-center">
           <div
             className="inline-flex items-center gap-2 rounded px-2.5 py-1 text-xs font-mono font-semibold mb-3 border"
             style={{
@@ -97,7 +97,7 @@ export function GithubActivity() {
             Open Source &amp; Activity
           </h2>
           <p
-            className="max-w-xl text-sm leading-relaxed sm:text-base"
+            className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
             style={{ color: "var(--portfolio-muted)" }}>
             Public repository metrics, continuous contributions, and recent
             commits fetched directly from my GitHub profile.
