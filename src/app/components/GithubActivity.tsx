@@ -33,7 +33,7 @@ function formatRelativeTime(dateString: string): string {
 }
 
 export function GithubActivity() {
-  const { isDark } = useTheme();
+  useTheme();
   const [data, setData] = useState<GitHubDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -59,11 +59,8 @@ export function GithubActivity() {
   }, []);
 
   const cardStyle = {
-    background: isDark ? "rgba(255,255,255,0.025)" : "#ffffff",
-    borderColor: isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)",
-    boxShadow: isDark
-      ? "0 4px 30px rgba(0,0,0,0.4)"
-      : "0 4px 30px rgba(0,0,0,0.05)",
+    background: "var(--portfolio-surface)",
+    borderColor: "var(--portfolio-border)",
   };
 
   return (
@@ -71,68 +68,39 @@ export function GithubActivity() {
       id="activity"
       className="relative overflow-hidden py-24 sm:py-28"
       style={{
-        background: isDark
-          ? "linear-gradient(180deg, #0D0D12 0%, #0F0F18 100%)"
-          : "linear-gradient(180deg, #F0F4FF 0%, #F8F9FF 100%)",
+        background: "var(--background)",
       }}>
-      {/* Background glow accent */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/4 h-96 w-96 -translate-x-1/2 rounded-full blur-3xl opacity-40"
-        style={{
-          background: isDark
-            ? "radial-gradient(circle, rgba(79,172,254,0.15) 0%, transparent 70%)"
-            : "radial-gradient(circle, rgba(79,172,254,0.2) 0%, transparent 70%)",
-        }}
-      />
-
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-10">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.55 }}
-          className="mx-auto mb-14 max-w-2xl text-center">
+          transition={{ duration: 0.45 }}
+          className="mb-14 max-w-2xl">
           <div
-            className="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-semibold mb-3.5"
+            className="inline-flex items-center gap-2 rounded px-2.5 py-1 text-xs font-mono font-semibold mb-3 border"
             style={{
-              background: isDark
-                ? "rgba(52,211,153,0.08)"
-                : "rgba(16,185,129,0.08)",
-              borderColor: isDark
-                ? "rgba(52,211,153,0.25)"
-                : "rgba(16,185,129,0.25)",
-              color: isDark ? "#34D399" : "#059669",
+              background: "var(--portfolio-surface-raised)",
+              borderColor: "var(--portfolio-border)",
+              color: "var(--portfolio-accent)",
             }}>
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-            </span>
-            Live Telemetry
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Live GitHub Telemetry
           </div>
           <h2
-            className="mb-4 text-3xl font-extrabold sm:text-4xl"
+            className="mb-4 text-3xl font-bold sm:text-4xl"
             style={{
-              color: isDark ? "#E8EAF0" : "#1F2937",
-              letterSpacing: "-0.02em",
+              color: "var(--portfolio-text)",
+              letterSpacing: "-0.03em",
             }}>
-            Open Source &amp;{" "}
-            <span
-              style={{
-                background: "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}>
-              GitHub Activity
-            </span>
+            Open Source &amp; Activity
           </h2>
           <p
-            className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
-            style={{ color: isDark ? "#8B91A5" : "#6B7280" }}>
-            Real-time activity and repository metrics fetched directly from my
-            GitHub profile.
+            className="max-w-xl text-sm leading-relaxed sm:text-base"
+            style={{ color: "var(--portfolio-muted)" }}>
+            Public repository metrics, continuous contributions, and recent
+            commits fetched directly from my GitHub profile.
           </p>
         </motion.div>
 
@@ -143,55 +111,54 @@ export function GithubActivity() {
               icon: GitBranch,
               label: "Public Repositories",
               value: data ? `${data.publicRepos}` : "27",
-              color: "#4FACFE",
             },
             {
               icon: Star,
               label: "Stargazers Earned",
               value: data ? `${data.totalStars}` : "5",
-              color: "#FBBF24",
             },
             {
               icon: Users,
               label: "Network Followers",
               value: data ? `${data.followers}` : "36",
-              color: "#A855F7",
             },
             {
               icon: Code2,
               label: "Primary Language",
               value: data?.topLanguages[0]?.name || "TypeScript",
-              color: "#34D399",
             },
           ].map((item, index) => {
             const Icon = item.icon;
             return (
               <motion.div
                 key={item.label}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.45, delay: index * 0.08 }}
-                className="flex items-center gap-4 rounded-2xl border p-5 transition-transform duration-200 hover:-translate-y-1"
+                transition={{ duration: 0.35, delay: index * 0.05 }}
+                className="flex items-center gap-3.5 rounded-lg border p-4 sm:p-5 transition-colors"
                 style={cardStyle}>
                 <div
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border"
                   style={{
-                    background: `${item.color}15`,
-                    borderColor: `${item.color}30`,
-                    color: item.color,
+                    background: "var(--portfolio-surface-raised)",
+                    borderColor: "var(--portfolio-border)",
+                    color: "var(--portfolio-accent)",
                   }}>
-                  <Icon size={20} aria-hidden="true" />
+                  <Icon size={18} aria-hidden="true" />
                 </div>
                 <div>
                   <div
-                    className="text-2xl font-extrabold tracking-tight"
-                    style={{ color: isDark ? "#E8EAF0" : "#1F2937" }}>
+                    className="text-xl sm:text-2xl font-bold tracking-tight"
+                    style={{
+                      color: "var(--portfolio-text)",
+                      fontVariantNumeric: "tabular-nums",
+                    }}>
                     {loading ? "..." : item.value}
                   </div>
                   <div
                     className="text-xs font-medium leading-snug mt-0.5"
-                    style={{ color: isDark ? "#8B91A5" : "#6B7280" }}>
+                    style={{ color: "var(--portfolio-muted)" }}>
                     {item.label}
                   </div>
                 </div>
@@ -204,38 +171,35 @@ export function GithubActivity() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Contribution Heatmap Card (3 cols) */}
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.55 }}
-            className="lg:col-span-3 flex flex-col justify-between rounded-2xl border p-6 sm:p-7"
+            transition={{ duration: 0.45 }}
+            className="lg:col-span-3 flex flex-col justify-between rounded-lg border p-6 sm:p-7"
             style={cardStyle}>
             <div>
               <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
                 <div className="flex items-center gap-3">
                   <div
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border"
+                    className="flex h-9 w-9 items-center justify-center rounded-md border"
                     style={{
-                      background: isDark
-                        ? "rgba(255,255,255,0.05)"
-                        : "rgba(0,0,0,0.03)",
-                      borderColor: isDark
-                        ? "rgba(255,255,255,0.1)"
-                        : "rgba(0,0,0,0.08)",
-                      color: "#4FACFE",
+                      background: "var(--portfolio-surface-raised)",
+                      borderColor: "var(--portfolio-border)",
+                      color: "var(--portfolio-accent)",
                     }}>
-                    <Activity size={18} aria-hidden="true" />
+                    <Activity size={17} aria-hidden="true" />
                   </div>
                   <div>
                     <h3
                       className="text-base font-bold"
-                      style={{ color: isDark ? "#E8EAF0" : "#1F2937" }}>
+                      style={{ color: "var(--portfolio-text)" }}>
                       Contribution Graph
                     </h3>
                     <p
                       className="text-xs"
-                      style={{ color: isDark ? "#8B91A5" : "#6B7280" }}>
-                      Contributions across open repositories over the last year
+                      style={{ color: "var(--portfolio-muted)" }}>
+                      Public activity across open repositories over the last
+                      year
                     </p>
                   </div>
                 </div>
@@ -244,51 +208,44 @@ export function GithubActivity() {
                   href={`https://github.com/${data?.username || "NaufalDsp"}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-sky-500 hover:text-sky-400 transition-colors">
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold hover:underline"
+                  style={{ color: "var(--portfolio-accent)" }}>
                   <Github size={14} aria-hidden="true" />@
                   {data?.username || "NaufalDsp"}
                   <ArrowUpRight size={13} aria-hidden="true" />
                 </a>
               </div>
 
-              {/* Heatmap Image Wrapper with Horizontal Scroll on small devices */}
+              {/* Heatmap Image Wrapper */}
               <div
-                className="overflow-x-auto rounded-xl border p-3.5 sm:p-4"
+                className="overflow-x-auto rounded-md border p-3.5 sm:p-4"
                 style={{
-                  background: isDark
-                    ? "rgba(0,0,0,0.3)"
-                    : "rgba(240,244,255,0.5)",
-                  borderColor: isDark
-                    ? "rgba(255,255,255,0.06)"
-                    : "rgba(0,0,0,0.06)",
+                  background: "var(--portfolio-surface-raised)",
+                  borderColor: "var(--portfolio-border)",
                 }}>
                 <img
-                  src={`https://ghchart.rshah.org/4FACFE/${data?.username || "NaufalDsp"}`}
+                  src={`https://ghchart.rshah.org/146B66/${data?.username || "NaufalDsp"}`}
                   alt={`${data?.username || "NaufalDsp"}'s GitHub Contributions`}
                   loading="lazy"
                   className="min-w-[620px] w-full select-none"
-                  style={{
-                    filter: isDark ? "contrast(1.15) brightness(1.1)" : "none",
-                  }}
                 />
               </div>
             </div>
 
             {/* Bottom meta row */}
             <div
-              className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-4 text-xs"
+              className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-4 text-xs font-mono"
               style={{
-                borderColor: isDark
-                  ? "rgba(255,255,255,0.07)"
-                  : "rgba(0,0,0,0.07)",
-                color: isDark ? "#707890" : "#8B91A5",
+                borderColor: "var(--portfolio-border)",
+                color: "var(--portfolio-muted)",
               }}>
-              <span>Source: GitHub REST API · Refreshes periodically</span>
+              <span>Source: GitHub REST API</span>
               <button
                 type="button"
                 onClick={() => void loadData(true)}
                 disabled={refreshing}
-                className="inline-flex items-center gap-1.5 font-semibold text-sky-500 hover:text-sky-400 transition-colors disabled:opacity-50">
+                className="inline-flex items-center gap-1.5 font-semibold transition-opacity disabled:opacity-50 hover:underline"
+                style={{ color: "var(--portfolio-accent)" }}>
                 <RefreshCw
                   size={12}
                   className={refreshing ? "animate-spin" : ""}
@@ -301,131 +258,109 @@ export function GithubActivity() {
 
           {/* Right Panel: Tabs for Recent Events or Languages (2 cols) */}
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.55, delay: 0.1 }}
-            className="lg:col-span-2 flex flex-col justify-between rounded-2xl border p-6 sm:p-7"
+            transition={{ duration: 0.45, delay: 0.08 }}
+            className="lg:col-span-2 flex flex-col justify-between rounded-lg border p-6 sm:p-7"
             style={cardStyle}>
             <div>
               {/* Tab Selector */}
               <div
-                className="grid grid-cols-2 gap-1 rounded-xl p-1 mb-6 border"
+                className="grid grid-cols-2 gap-1 rounded-md p-1 mb-6 border"
                 style={{
-                  background: isDark
-                    ? "rgba(255,255,255,0.03)"
-                    : "rgba(0,0,0,0.03)",
-                  borderColor: isDark
-                    ? "rgba(255,255,255,0.08)"
-                    : "rgba(0,0,0,0.08)",
+                  background: "var(--portfolio-surface-raised)",
+                  borderColor: "var(--portfolio-border)",
                 }}>
                 <button
                   type="button"
                   onClick={() => setActiveTab("activity")}
-                  className={`rounded-lg py-2 text-xs font-bold transition-all ${
-                    activeTab === "activity"
-                      ? "shadow-sm"
-                      : "hover:text-sky-500"
-                  }`}
+                  className="rounded py-1.5 text-xs font-semibold transition-all"
                   style={{
                     background:
                       activeTab === "activity"
-                        ? isDark
-                          ? "#1B1B26"
-                          : "#FFFFFF"
+                        ? "var(--portfolio-surface)"
                         : "transparent",
                     color:
                       activeTab === "activity"
-                        ? isDark
-                          ? "#FFFFFF"
-                          : "#1F2937"
-                        : isDark
-                          ? "#8B91A5"
-                          : "#6B7280",
+                        ? "var(--portfolio-text)"
+                        : "var(--portfolio-muted)",
+                    boxShadow:
+                      activeTab === "activity"
+                        ? "0 1px 3px rgba(0,0,0,0.08)"
+                        : "none",
                   }}>
-                  Recent Activity
+                  Recent Commits
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveTab("languages")}
-                  className={`rounded-lg py-2 text-xs font-bold transition-all ${
-                    activeTab === "languages"
-                      ? "shadow-sm"
-                      : "hover:text-sky-500"
-                  }`}
+                  className="rounded py-1.5 text-xs font-semibold transition-all"
                   style={{
                     background:
                       activeTab === "languages"
-                        ? isDark
-                          ? "#1B1B26"
-                          : "#FFFFFF"
+                        ? "var(--portfolio-surface)"
                         : "transparent",
                     color:
                       activeTab === "languages"
-                        ? isDark
-                          ? "#FFFFFF"
-                          : "#1F2937"
-                        : isDark
-                          ? "#8B91A5"
-                          : "#6B7280",
+                        ? "var(--portfolio-text)"
+                        : "var(--portfolio-muted)",
+                    boxShadow:
+                      activeTab === "languages"
+                        ? "0 1px 3px rgba(0,0,0,0.08)"
+                        : "none",
                   }}>
                   Top Languages
                 </button>
               </div>
 
-              {/* Tab 1: Activity */}
+              {/* Tab Content */}
               <AnimatePresence mode="wait">
                 {activeTab === "activity" ? (
                   <motion.div
                     key="tab-activity"
-                    initial={{ opacity: 0, y: 8 }}
+                    initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.25 }}
-                    className="space-y-4">
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-3">
                     {data?.recentEvents && data.recentEvents.length > 0 ? (
                       data.recentEvents.map((evt) => (
                         <div
                           key={evt.id}
-                          className="flex items-start gap-3 rounded-xl border p-3.5 transition-colors"
+                          className="flex items-start gap-3 rounded-md border p-3 transition-colors"
                           style={{
-                            background: isDark
-                              ? "rgba(255,255,255,0.02)"
-                              : "rgba(0,0,0,0.015)",
-                            borderColor: isDark
-                              ? "rgba(255,255,255,0.06)"
-                              : "rgba(0,0,0,0.06)",
+                            background: "var(--portfolio-surface-raised)",
+                            borderColor: "var(--portfolio-border)",
                           }}>
                           <div
-                            className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border text-sky-400"
+                            className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded border"
                             style={{
-                              background: isDark
-                                ? "rgba(79,172,254,0.1)"
-                                : "rgba(79,172,254,0.08)",
-                              borderColor: "rgba(79,172,254,0.25)",
+                              borderColor: "var(--portfolio-border)",
+                              color: "var(--portfolio-accent)",
                             }}>
-                            <GitCommit size={14} aria-hidden="true" />
+                            <GitCommit size={13} aria-hidden="true" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-baseline justify-between gap-2">
                               <p
-                                className="text-xs font-bold truncate"
+                                className="text-xs font-bold truncate font-mono"
                                 style={{
-                                  color: isDark ? "#E8EAF0" : "#1F2937",
+                                  color: "var(--portfolio-text)",
                                 }}>
                                 {evt.repoName.replace(`${data.username}/`, "")}
                               </p>
                               <span
-                                className="text-[11px] shrink-0 font-medium"
+                                className="text-[10px] shrink-0 font-mono"
                                 style={{
-                                  color: isDark ? "#6B7080" : "#9CA3AF",
+                                  color: "var(--portfolio-muted)",
                                 }}>
                                 {formatRelativeTime(evt.createdAt)}
                               </span>
                             </div>
                             <p
                               className="text-xs mt-0.5"
-                              style={{ color: isDark ? "#8B91A5" : "#6B7280" }}>
+                              style={{ color: "var(--portfolio-muted)" }}>
                               {evt.description}
                             </p>
                           </div>
@@ -433,27 +368,26 @@ export function GithubActivity() {
                       ))
                     ) : (
                       <p
-                        className="text-center py-8 text-xs"
-                        style={{ color: isDark ? "#6B7080" : "#9CA3AF" }}>
+                        className="text-center py-8 text-xs font-mono"
+                        style={{ color: "var(--portfolio-muted)" }}>
                         No recent activity recorded.
                       </p>
                     )}
                   </motion.div>
                 ) : (
-                  /* Tab 2: Top Languages */
                   <motion.div
                     key="tab-languages"
-                    initial={{ opacity: 0, y: 8 }}
+                    initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.25 }}
-                    className="space-y-4">
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-3.5">
                     {data?.topLanguages.map((lang) => (
-                      <div key={lang.name} className="space-y-1.5">
+                      <div key={lang.name} className="space-y-1">
                         <div className="flex items-center justify-between text-xs">
                           <span
-                            className="font-bold inline-flex items-center gap-2"
-                            style={{ color: isDark ? "#E8EAF0" : "#1F2937" }}>
+                            className="font-semibold inline-flex items-center gap-1.5"
+                            style={{ color: "var(--portfolio-text)" }}>
                             <span
                               className="h-2 w-2 rounded-full"
                               style={{ background: lang.color }}
@@ -461,18 +395,16 @@ export function GithubActivity() {
                             {lang.name}
                           </span>
                           <span
-                            className="font-semibold"
-                            style={{ color: isDark ? "#8B91A5" : "#6B7280" }}>
+                            className="font-mono text-[11px]"
+                            style={{ color: "var(--portfolio-muted)" }}>
                             {lang.count} {lang.count === 1 ? "repo" : "repos"} (
                             {lang.percentage}%)
                           </span>
                         </div>
                         <div
-                          className="h-2 w-full overflow-hidden rounded-full"
+                          className="h-1.5 w-full overflow-hidden rounded-full"
                           style={{
-                            background: isDark
-                              ? "rgba(255,255,255,0.06)"
-                              : "rgba(0,0,0,0.06)",
+                            background: "var(--portfolio-border)",
                           }}>
                           <div
                             className="h-full rounded-full transition-all duration-500"
@@ -493,23 +425,20 @@ export function GithubActivity() {
             <div
               className="mt-6 border-t pt-4"
               style={{
-                borderColor: isDark
-                  ? "rgba(255,255,255,0.07)"
-                  : "rgba(0,0,0,0.07)",
+                borderColor: "var(--portfolio-border)",
               }}>
               <a
                 href={data?.profileUrl || "https://github.com/NaufalDsp"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold text-white transition-all hover:opacity-90"
+                className="flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-xs font-semibold transition-opacity hover:opacity-90"
                 style={{
-                  background:
-                    "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                  boxShadow: "0 4px 18px rgba(79,172,254,0.3)",
+                  background: "var(--portfolio-accent)",
+                  color: "var(--portfolio-accent-contrast)",
                 }}>
                 <Github size={15} aria-hidden="true" />
                 View Full GitHub Profile
-                <ArrowUpRight size={14} aria-hidden="true" />
+                <ArrowUpRight size={13} aria-hidden="true" />
               </a>
             </div>
           </motion.div>

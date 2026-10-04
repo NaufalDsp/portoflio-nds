@@ -16,11 +16,9 @@ export function CursorSpotlight() {
   const opacity = useMotionValue(0);
   const smoothX = useSpring(pointerX, { stiffness: 150, damping: 25 });
   const smoothY = useSpring(pointerY, { stiffness: 150, damping: 25 });
-  const spotlightBackground = useMotionTemplate`radial-gradient(380px circle at ${smoothX}px ${smoothY}px, ${
-    isDark ? "rgba(79,172,254,0.11)" : "rgba(79,172,254,0.13)"
-  } 0%, ${
-    isDark ? "rgba(168,85,247,0.055)" : "rgba(168,85,247,0.07)"
-  } 42%, transparent 72%)`;
+  const spotlightBackground = useMotionTemplate`radial-gradient(420px circle at ${smoothX}px ${smoothY}px, ${
+    isDark ? "rgba(121, 198, 188, 0.05)" : "rgba(20, 107, 102, 0.035)"
+  } 0%, transparent 70%)`;
 
   useEffect(() => {
     if (prefersReducedMotion) return;

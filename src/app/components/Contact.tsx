@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import {
-  AlertCircle,
-  Send,
-  CheckCircle,
-} from "lucide-react";
+import { AlertCircle, Send, CheckCircle } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { CONTACT_DETAILS, SOCIAL_LINKS } from "../data/profile";
 import {
@@ -20,7 +16,7 @@ const EMPTY_FORM_DATA: ContactMessage = {
 };
 
 export function Contact() {
-  const { isDark } = useTheme();
+  useTheme();
   const [formData, setFormData] = useState<ContactMessage>(EMPTY_FORM_DATA);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -52,141 +48,102 @@ export function Contact() {
   };
 
   const inputStyle: React.CSSProperties = {
-    background: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)",
-    border: `1px solid ${isDark ? "rgba(255,255,255,0.09)" : "rgba(0,0,0,0.09)"}`,
-    color: isDark ? "#E8EAF0" : "#1F2937",
-    borderRadius: 12,
-    padding: "12px 16px",
+    background: "var(--portfolio-surface)",
+    border: "1px solid var(--portfolio-border)",
+    color: "var(--portfolio-text)",
+    borderRadius: 6,
+    padding: "10px 14px",
     width: "100%",
-    fontSize: "0.9rem",
+    fontSize: "0.875rem",
     outline: "none",
-    transition: "border-color 0.2s, box-shadow 0.2s",
+    transition: "border-color 0.15s, box-shadow 0.15s",
     fontFamily: "inherit",
   };
 
   const labelStyle: React.CSSProperties = {
-    color: isDark ? "#8890A8" : "#6B7280",
-    fontSize: "0.82rem",
+    color: "var(--portfolio-text)",
+    fontSize: "0.75rem",
     fontWeight: 600,
     letterSpacing: "0.04em",
     display: "block",
-    marginBottom: 7,
+    marginBottom: 6,
     textTransform: "uppercase",
+    fontFamily: "ui-monospace, monospace",
   };
 
   return (
     <section
       id="contact"
-      className="relative py-28 overflow-hidden"
+      className="relative overflow-hidden py-24 sm:py-28"
       style={{
-        background: isDark
-          ? "linear-gradient(180deg, #0F0F18 0%, #0D0D12 100%)"
-          : "linear-gradient(180deg, #F8F9FF 0%, #F0F4FF 100%)",
+        background: "var(--background)",
       }}>
-      {/* Accent glow */}
-      <div
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none"
-        style={{
-          width: 600,
-          height: 300,
-          background: isDark
-            ? "radial-gradient(ellipse, rgba(168,85,247,0.07) 0%, transparent 70%)"
-            : "radial-gradient(ellipse, rgba(168,85,247,0.08) 0%, transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
-
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16">
+          transition={{ duration: 0.45 }}
+          className="mb-14 max-w-2xl">
           <p
-            className="text-xs tracking-widest uppercase mb-3"
-            style={{
-              color: "#34D399",
-              fontWeight: 700,
-              letterSpacing: "0.12em",
-            }}>
-            Get In Touch
+            className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider"
+            style={{ color: "var(--portfolio-accent)" }}>
+            Direct Inquiries
           </p>
           <h2
-            className="mb-4"
+            className="mb-4 text-3xl font-bold sm:text-4xl"
             style={{
-              fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
-              fontWeight: 800,
-              color: isDark ? "#E8EAF0" : "#1F2937",
-              letterSpacing: "-0.02em",
+              color: "var(--portfolio-text)",
+              letterSpacing: "-0.03em",
             }}>
-            Let's{" "}
-            <span
-              style={{
-                background: "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}>
-              Work Together
-            </span>
+            Get In Touch
           </h2>
           <p
-            style={{
-              color: isDark ? "#6B7080" : "#6B7280",
-              maxWidth: 460,
-              margin: "0 auto",
-              fontSize: "0.95rem",
-            }}>
-            Have a project in mind or just want to say hi? My inbox is always
-            open.
+            className="max-w-xl text-sm leading-relaxed sm:text-base"
+            style={{ color: "var(--portfolio-muted)" }}>
+            Have a project in mind, an opportunity to discuss, or just want to
+            say hello? My inbox is always open.
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Left info panel */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="lg:col-span-2 flex flex-col gap-6">
-            {CONTACT_DETAILS.map(({ icon: Icon, label, value, color }) => (
+            transition={{ duration: 0.45 }}
+            className="lg:col-span-2 flex flex-col gap-4">
+            {CONTACT_DETAILS.map(({ icon: Icon, label, value }) => (
               <div
                 key={label}
-                className="flex items-center gap-5 p-5 rounded-2xl border"
+                className="flex items-center gap-4 p-4 sm:p-5 rounded-lg border transition-colors"
                 style={{
-                  background: isDark ? "rgba(255,255,255,0.025)" : "#ffffff",
-                  borderColor: isDark
-                    ? "rgba(255,255,255,0.07)"
-                    : "rgba(0,0,0,0.07)",
-                  boxShadow: isDark
-                    ? "0 4px 20px rgba(0,0,0,0.3)"
-                    : "0 4px 20px rgba(0,0,0,0.05)",
+                  background: "var(--portfolio-surface)",
+                  borderColor: "var(--portfolio-border)",
                 }}>
                 <div
-                  className="flex items-center justify-center w-11 h-11 rounded-xl flex-shrink-0"
+                  className="flex items-center justify-center w-10 h-10 rounded-md border shrink-0"
                   style={{
-                    background: `${color}18`,
-                    border: `1px solid ${color}30`,
+                    background: "var(--portfolio-surface-raised)",
+                    borderColor: "var(--portfolio-border)",
+                    color: "var(--portfolio-accent)",
                   }}>
-                  <Icon size={20} style={{ color }} />
+                  <Icon size={18} aria-hidden="true" />
                 </div>
                 <div>
                   <p
-                    className="text-xs uppercase tracking-wider mb-0.5"
+                    className="font-mono text-[10px] uppercase font-bold tracking-wider mb-0.5"
                     style={{
-                      color: isDark ? "#4A5268" : "#9CA3AF",
-                      fontWeight: 700,
+                      color: "var(--portfolio-muted)",
                     }}>
                     {label}
                   </p>
                   <p
-                    className="text-sm"
+                    className="text-sm font-semibold"
                     style={{
-                      color: isDark ? "#C0C8E0" : "#374151",
-                      fontWeight: 500,
+                      color: "var(--portfolio-text)",
                     }}>
                     {value}
                   </p>
@@ -196,46 +153,34 @@ export function Contact() {
 
             {/* Social Links */}
             <div
-              className="p-6 rounded-2xl border"
+              className="p-5 rounded-lg border mt-1"
               style={{
-                background: isDark ? "rgba(255,255,255,0.025)" : "#ffffff",
-                borderColor: isDark
-                  ? "rgba(255,255,255,0.07)"
-                  : "rgba(0,0,0,0.07)",
-                boxShadow: isDark
-                  ? "0 4px 20px rgba(0,0,0,0.3)"
-                  : "0 4px 20px rgba(0,0,0,0.05)",
+                background: "var(--portfolio-surface)",
+                borderColor: "var(--portfolio-border)",
               }}>
               <p
-                className="text-xs uppercase tracking-wider mb-5"
+                className="font-mono text-[10px] uppercase font-bold tracking-wider mb-3.5"
                 style={{
-                  color: isDark ? "#4A5268" : "#9CA3AF",
-                  fontWeight: 700,
+                  color: "var(--portfolio-muted)",
                 }}>
-                Connect
+                Social Profiles
               </p>
-              <div className="flex gap-3">
-                {SOCIAL_LINKS.map(({ icon: Icon, label, color, href }) => (
-                  <motion.a
+              <div className="flex gap-2.5">
+                {SOCIAL_LINKS.map(({ icon: Icon, label, href }) => (
+                  <a
                     key={label}
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    whileHover={{ scale: 1.12, y: -2 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="flex items-center justify-center w-10 h-10 rounded-xl border transition-all duration-200"
+                    className="flex items-center justify-center w-9 h-9 rounded-md border transition-all duration-200 hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400"
                     style={{
-                      borderColor: isDark
-                        ? "rgba(255,255,255,0.1)"
-                        : "rgba(0,0,0,0.08)",
-                      background: isDark
-                        ? "rgba(255,255,255,0.04)"
-                        : "rgba(0,0,0,0.02)",
-                      color: isDark ? color : "#6B7280",
+                      borderColor: "var(--portfolio-border)",
+                      background: "var(--portfolio-surface-raised)",
+                      color: "var(--portfolio-muted)",
                     }}>
                     <Icon size={16} />
-                  </motion.a>
+                  </a>
                 ))}
               </div>
             </div>
@@ -243,70 +188,62 @@ export function Contact() {
 
           {/* Right form */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.45, delay: 0.08 }}
             className="lg:col-span-3">
             <div
-              className="p-8 rounded-2xl border"
+              className="p-6 sm:p-8 rounded-lg border"
               style={{
-                background: isDark ? "rgba(255,255,255,0.025)" : "#ffffff",
-                borderColor: isDark
-                  ? "rgba(255,255,255,0.07)"
-                  : "rgba(0,0,0,0.07)",
-                boxShadow: isDark
-                  ? "0 4px 40px rgba(0,0,0,0.4)"
-                  : "0 4px 40px rgba(0,0,0,0.06)",
+                background: "var(--portfolio-surface)",
+                borderColor: "var(--portfolio-border)",
               }}>
               {submitted ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.85 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="flex flex-col items-center justify-center py-14 text-center">
                   <div
-                    className="w-16 h-16 rounded-full flex items-center justify-center mb-5"
+                    className="w-12 h-12 rounded-full flex items-center justify-center mb-4 border"
                     style={{
-                      background: "rgba(52,211,153,0.15)",
-                      border: "1px solid rgba(52,211,153,0.3)",
+                      background: "var(--portfolio-accent-soft)",
+                      borderColor: "var(--portfolio-accent)",
                     }}>
-                    <CheckCircle size={32} className="text-[#34D399]" />
+                    <CheckCircle
+                      size={24}
+                      style={{ color: "var(--portfolio-accent)" }}
+                    />
                   </div>
                   <h3
+                    className="text-lg font-bold mb-2"
                     style={{
-                      fontWeight: 700,
-                      color: isDark ? "#E8EAF0" : "#1F2937",
-                      fontSize: "1.2rem",
-                      marginBottom: 8,
+                      color: "var(--portfolio-text)",
                     }}>
-                    Message Sent!
+                    Message Sent
                   </h3>
                   <p
+                    className="text-sm max-w-sm"
                     style={{
-                      color: isDark ? "#6B7080" : "#6B7280",
-                      fontSize: "0.9rem",
+                      color: "var(--portfolio-muted)",
                     }}>
-                    Thank you for reaching out. I'll get back to you within 24
-                    hours.
+                    Thank you for reaching out. I will review your message and
+                    respond within 24 hours.
                   </p>
-                  <motion.button
-                    whileHover={{ scale: 1.04 }}
+                  <button
+                    type="button"
                     onClick={() => {
                       setSubmitted(false);
                       setFormData(EMPTY_FORM_DATA);
                     }}
-                    className="mt-8 px-6 py-2.5 rounded-xl text-white text-sm"
+                    className="mt-6 px-5 py-2.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90"
                     style={{
-                      background:
-                        "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                      fontWeight: 600,
+                      background: "var(--portfolio-accent)",
+                      color: "var(--portfolio-accent-contrast)",
                     }}>
-                    Send Another
-                  </motion.button>
-                </motion.div>
+                    Send Another Message
+                  </button>
+                </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label style={labelStyle}>Your Name</label>
                       <input
@@ -319,14 +256,13 @@ export function Contact() {
                         required
                         style={inputStyle}
                         onFocus={(e) => {
-                          e.target.style.borderColor = "#4FACFE";
+                          e.target.style.borderColor = "var(--portfolio-focus)";
                           e.target.style.boxShadow =
-                            "0 0 0 3px rgba(79,172,254,0.12)";
+                            "0 0 0 2px var(--portfolio-accent-soft)";
                         }}
                         onBlur={(e) => {
-                          e.target.style.borderColor = isDark
-                            ? "rgba(255,255,255,0.09)"
-                            : "rgba(0,0,0,0.09)";
+                          e.target.style.borderColor =
+                            "var(--portfolio-border)";
                           e.target.style.boxShadow = "none";
                         }}
                       />
@@ -343,14 +279,13 @@ export function Contact() {
                         required
                         style={inputStyle}
                         onFocus={(e) => {
-                          e.target.style.borderColor = "#4FACFE";
+                          e.target.style.borderColor = "var(--portfolio-focus)";
                           e.target.style.boxShadow =
-                            "0 0 0 3px rgba(79,172,254,0.12)";
+                            "0 0 0 2px var(--portfolio-accent-soft)";
                         }}
                         onBlur={(e) => {
-                          e.target.style.borderColor = isDark
-                            ? "rgba(255,255,255,0.09)"
-                            : "rgba(0,0,0,0.09)";
+                          e.target.style.borderColor =
+                            "var(--portfolio-border)";
                           e.target.style.boxShadow = "none";
                         }}
                       />
@@ -361,20 +296,18 @@ export function Contact() {
                     <input
                       type="text"
                       name="subject"
-                      placeholder="Project Inquiry / Collaboration"
+                      placeholder="Project Inquiry / Role Discussion"
                       value={formData.subject}
                       onChange={(e) => updateField("subject", e.target.value)}
                       required
                       style={inputStyle}
                       onFocus={(e) => {
-                        e.target.style.borderColor = "#A855F7";
+                        e.target.style.borderColor = "var(--portfolio-focus)";
                         e.target.style.boxShadow =
-                          "0 0 0 3px rgba(168,85,247,0.12)";
+                          "0 0 0 2px var(--portfolio-accent-soft)";
                       }}
                       onBlur={(e) => {
-                        e.target.style.borderColor = isDark
-                          ? "rgba(255,255,255,0.09)"
-                          : "rgba(0,0,0,0.09)";
+                        e.target.style.borderColor = "var(--portfolio-border)";
                         e.target.style.boxShadow = "none";
                       }}
                     />
@@ -384,20 +317,18 @@ export function Contact() {
                     <textarea
                       name="message"
                       rows={5}
-                      placeholder="Tell me about your project or idea..."
+                      placeholder="Tell me about your project, timeline, or requirements..."
                       value={formData.message}
                       onChange={(e) => updateField("message", e.target.value)}
                       required
                       style={{ ...inputStyle, resize: "none" }}
                       onFocus={(e) => {
-                        e.target.style.borderColor = "#A855F7";
+                        e.target.style.borderColor = "var(--portfolio-focus)";
                         e.target.style.boxShadow =
-                          "0 0 0 3px rgba(168,85,247,0.12)";
+                          "0 0 0 2px var(--portfolio-accent-soft)";
                       }}
                       onBlur={(e) => {
-                        e.target.style.borderColor = isDark
-                          ? "rgba(255,255,255,0.09)"
-                          : "rgba(0,0,0,0.09)";
+                        e.target.style.borderColor = "var(--portfolio-border)";
                         e.target.style.boxShadow = "none";
                       }}
                     />
@@ -405,48 +336,36 @@ export function Contact() {
                   {errorMessage && (
                     <div
                       role="alert"
-                      className="flex items-start gap-2.5 rounded-xl border px-4 py-3 text-sm"
+                      className="flex items-start gap-2.5 rounded-md border px-4 py-3 text-sm"
                       style={{
-                        color: isDark ? "#FCA5A5" : "#B91C1C",
-                        background: isDark
-                          ? "rgba(239,68,68,0.08)"
-                          : "rgba(239,68,68,0.06)",
-                        borderColor: isDark
-                          ? "rgba(239,68,68,0.25)"
-                          : "rgba(185,28,28,0.2)",
+                        color: "var(--destructive, #b91c1c)",
+                        background: "rgba(239, 68, 68, 0.08)",
+                        borderColor: "rgba(239, 68, 68, 0.25)",
                       }}>
-                      <AlertCircle size={18} className="mt-0.5 shrink-0" />
+                      <AlertCircle size={17} className="mt-0.5 shrink-0" />
                       <span>{errorMessage}</span>
                     </div>
                   )}
-                  <motion.button
-                    whileHover={{
-                      scale: 1.02,
-                      boxShadow: "0 8px 35px rgba(79,172,254,0.4)",
-                    }}
-                    whileTap={{ scale: 0.97 }}
+                  <button
                     type="submit"
                     disabled={loading}
-                    className="flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-white text-sm transition-all duration-300 mt-2"
+                    className="inline-flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold transition-opacity duration-200 mt-2 hover:opacity-90 disabled:opacity-70"
                     style={{
-                      background:
-                        "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                      boxShadow: "0 4px 22px rgba(79,172,254,0.3)",
-                      fontWeight: 600,
-                      opacity: loading ? 0.8 : 1,
+                      background: "var(--portfolio-accent)",
+                      color: "var(--portfolio-accent-contrast)",
                     }}>
                     {loading ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Sending...
+                        Sending Message...
                       </>
                     ) : (
                       <>
-                        <Send size={16} />
+                        <Send size={15} />
                         Send Message
                       </>
                     )}
-                  </motion.button>
+                  </button>
                 </form>
               )}
             </div>
