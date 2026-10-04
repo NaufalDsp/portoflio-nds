@@ -1,7 +1,7 @@
-import { ArrowRight, Download, Mail, MapPin } from "lucide-react";
+import { ArrowRight, Mail, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 import { useTheme } from "../context/ThemeContext";
-import { CV_URL, PROFESSIONAL_TITLES, SOCIAL_LINKS } from "../data/profile";
+import { PROFESSIONAL_TITLES, SOCIAL_LINKS } from "../data/profile";
 import { scrollToSection } from "../utils/scrollToSection";
 import { HeroCodeCard } from "./HeroCodeCard";
 import { TypewriterText } from "./TypewriterText";
@@ -160,20 +160,6 @@ export function Hero() {
                 <Mail size={16} aria-hidden="true" />
                 Contact Me
               </button>
-
-              <a
-                href={CV_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-4 py-3 rounded-lg border text-sm font-medium transition-all duration-200 hover:text-teal-600 dark:hover:text-teal-400"
-                style={{
-                  background: "var(--portfolio-surface)",
-                  borderColor: "var(--portfolio-border)",
-                  color: "var(--portfolio-muted)",
-                }}>
-                <Download size={15} aria-hidden="true" />
-                Resume (CV)
-              </a>
             </motion.div>
 
             {/* Quick Stats Counter */}
