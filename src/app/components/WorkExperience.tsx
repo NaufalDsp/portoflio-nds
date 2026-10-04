@@ -3,11 +3,6 @@ import { motion } from "motion/react";
 import { useTheme } from "../context/ThemeContext";
 import { WORK_EXPERIENCES } from "../data/experience";
 
-import { BriefcaseBusiness, CalendarDays, CheckCircle2 } from "lucide-react";
-import { motion } from "motion/react";
-import { useTheme } from "../context/ThemeContext";
-import { WORK_EXPERIENCES } from "../data/experience";
-
 export function WorkExperience() {
   useTheme();
 

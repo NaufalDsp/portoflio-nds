@@ -3,11 +3,6 @@ import { motion } from "motion/react";
 import { useTheme } from "../context/ThemeContext";
 import { EDUCATION } from "../data/education";
 
-import { CalendarDays, CheckCircle2, GraduationCap } from "lucide-react";
-import { motion } from "motion/react";
-import { useTheme } from "../context/ThemeContext";
-import { EDUCATION } from "../data/education";
-
 export function Education() {
   useTheme();
 
