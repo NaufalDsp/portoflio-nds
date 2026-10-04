@@ -26,18 +26,18 @@ export function Navbar() {
 
   const glassStyle = isDark
     ? scrolled
-      ? "bg-[#0D0D12]/80 border-white/[0.06] shadow-[0_4px_30px_rgba(0,0,0,0.5)]"
-      : "bg-[#0D0D12]/40 border-white/[0.04]"
+      ? "bg-[#111719]/85 border-[#2b383b] shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+      : "bg-[#111719]/60 border-[#2b383b]/60"
     : scrolled
-      ? "bg-white/80 border-black/[0.06] shadow-[0_4px_30px_rgba(0,0,0,0.1)]"
-      : "bg-white/40 border-black/[0.04]";
+      ? "bg-[#f5f7f8]/90 border-[#e1e7e8] shadow-[0_4px_24px_rgba(24,42,44,0.06)]"
+      : "bg-[#f5f7f8]/70 border-[#e1e7e8]/60";
 
   return (
     <motion.nav
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-xl transition-all duration-500 ${glassStyle}`}>
+      className={`fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-xl transition-all duration-300 ${glassStyle}`}>
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
@@ -47,58 +47,45 @@ export function Navbar() {
             className="relative flex items-center group cursor-pointer"
             whileHover={{ scale: 1.04 }}>
             <span
-              className="text-2xl tracking-tight select-none"
+              className="text-2xl tracking-tight select-none font-extrabold"
               style={{
-                fontWeight: 800,
-                background: "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
+                color: "var(--portfolio-text)",
+                letterSpacing: "-0.03em",
               }}>
               NDS
+              <span
+                style={{ color: "var(--portfolio-accent)" }}
+                aria-hidden="true">
+                .
+              </span>
             </span>
-            <span
-              className="absolute -bottom-1 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-300 rounded-full"
-              style={{ background: "linear-gradient(90deg, #4FACFE, #A855F7)" }}
-            />
           </motion.a>
 
           {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center gap-5 lg:gap-8">
+          <div className="hidden md:flex items-center gap-5 lg:gap-7">
             {NAVIGATION_LINKS.map((link) => (
               <button
                 key={link.label}
                 onClick={() => navigateTo(link.href, link.label)}
-                className={`relative text-sm transition-colors duration-200 group ${
-                  activeLink === link.label
-                    ? ""
-                    : isDark
-                      ? "text-[#A0A8C0] hover:text-white"
-                      : "text-slate-500 hover:text-slate-900"
+                className={`relative text-xs lg:text-sm font-medium transition-colors duration-200 group ${
+                  activeLink === link.label ? "font-semibold" : ""
                 }`}
-                style={
-                  activeLink === link.label
-                    ? {
-                        background:
-                          "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        backgroundClip: "text",
-                        fontWeight: 600,
-                      }
-                    : {}
-                }>
-                {link.label}
-                <span
-                  className={`absolute -bottom-1 left-0 h-[1.5px] transition-all duration-300 rounded-full ${
+                style={{
+                  color:
                     activeLink === link.label
-                      ? "w-full"
-                      : "w-0 group-hover:w-full"
-                  }`}
-                  style={{
-                    background: "linear-gradient(90deg, #4FACFE, #A855F7)",
-                  }}
-                />
+                      ? "var(--portfolio-accent)"
+                      : "var(--portfolio-muted)",
+                }}>
+                {link.label}
+                {activeLink === link.label && (
+                  <motion.span
+                    layoutId="activeNavIndicator"
+                    className="absolute -bottom-1.5 left-0 right-0 h-[2px] rounded-full"
+                    style={{
+                      background: "var(--portfolio-accent)",
+                    }}
+                  />
+                )}
               </button>
             ))}
           </div>
@@ -144,37 +131,28 @@ export function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Buka CV Naufal Dwi Saputro"
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm text-white transition-all duration-300"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 shadow-sm"
               style={{
-                background: "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                boxShadow: "0 4px 20px rgba(79,172,254,0.3)",
-                fontWeight: 600,
+                background: "var(--portfolio-accent)",
+                color: "var(--portfolio-accent-contrast)",
               }}>
-              <Download size={15} />
-              CV
+              <Download size={14} />
+              Resume
             </motion.a>
 
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileOpen((prev) => !prev)}
-              className={`md:hidden flex items-center justify-center w-10 h-10 rounded-xl border transition-all duration-300 ${
-                isDark
-                  ? "bg-white/[0.05] border-white/10"
-                  : "bg-black/[0.04] border-black/10"
-              }`}>
-              {mobileOpen ? (
-                <X
-                  size={18}
-                  className={isDark ? "text-white" : "text-slate-800"}
-                />
-              ) : (
-                <Menu
-                  size={18}
-                  className={isDark ? "text-white" : "text-slate-800"}
-                />
-              )}
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg border transition-colors duration-200"
+              style={{
+                background: "var(--portfolio-surface)",
+                borderColor: "var(--portfolio-border)",
+                color: "var(--portfolio-text)",
+              }}>
+              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         </div>
@@ -187,20 +165,26 @@ export function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className={`md:hidden overflow-hidden border-t ${
-              isDark ? "border-white/[0.06]" : "border-black/[0.06]"
-            }`}>
-            <div className="px-6 py-4 flex flex-col gap-3">
+            transition={{ duration: 0.25 }}
+            className="md:hidden overflow-hidden border-t"
+            style={{
+              background: "var(--portfolio-surface)",
+              borderColor: "var(--portfolio-border)",
+            }}>
+            <div className="px-6 py-4 flex flex-col gap-2">
               {NAVIGATION_LINKS.map((link) => (
                 <button
                   key={link.label}
                   onClick={() => navigateTo(link.href, link.label)}
                   className={`text-left text-sm py-2 transition-colors duration-200 ${
-                    isDark
-                      ? "text-[#A0A8C0] hover:text-white"
-                      : "text-slate-500 hover:text-slate-900"
-                  }`}>
+                    activeLink === link.label ? "font-semibold" : ""
+                  }`}
+                  style={{
+                    color:
+                      activeLink === link.label
+                        ? "var(--portfolio-accent)"
+                        : "var(--portfolio-muted)",
+                  }}>
                   {link.label}
                 </button>
               ))}
@@ -209,14 +193,13 @@ export function Navbar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Buka CV Naufal Dwi Saputro"
-                className="flex items-center gap-2 mt-2 px-5 py-2.5 rounded-xl text-sm text-white w-fit"
+                className="inline-flex items-center gap-2 mt-3 px-4 py-2.5 rounded-lg text-xs font-semibold w-fit shadow-sm"
                 style={{
-                  background:
-                    "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                  fontWeight: 600,
+                  background: "var(--portfolio-accent)",
+                  color: "var(--portfolio-accent-contrast)",
                 }}>
-                <Download size={15} />
-                CV
+                <Download size={14} />
+                Download CV
               </a>
             </div>
           </motion.div>

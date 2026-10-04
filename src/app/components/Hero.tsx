@@ -38,264 +38,227 @@ const HERO_STATS = [
   },
 ];
 
+import { ArrowRight, Download, Mail, MapPin } from "lucide-react";
+import { motion } from "motion/react";
+import { useTheme } from "../context/ThemeContext";
+import { CV_URL, PROFESSIONAL_TITLES, SOCIAL_LINKS } from "../data/profile";
+import { scrollToSection } from "../utils/scrollToSection";
+import { HeroCodeCard } from "./HeroCodeCard";
+import { TypewriterText } from "./TypewriterText";
+
+const fadeUp = (delay: number) => ({
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] as const },
+});
+
+const HERO_STATS = [
+  {
+    value: "3+",
+    label: "Industry Internships",
+  },
+  {
+    value: "8+",
+    label: "Web Applications",
+  },
+  {
+    value: "10",
+    label: "Verified Credentials",
+  },
+  {
+    value: "3.91",
+    suffix: "/ 4.00",
+    label: "Informatics Eng. GPA (UNS)",
+  },
+];
+
 export function Hero() {
   const { isDark } = useTheme();
-  const prefersReducedMotion = useReducedMotion();
-  const orbOffsetX = useMotionValue(0);
-  const orbOffsetY = useMotionValue(0);
-  const smoothOrbX = useSpring(orbOffsetX, { stiffness: 90, damping: 18 });
-  const smoothOrbY = useSpring(orbOffsetY, { stiffness: 90, damping: 18 });
-
-  const handlePointerMove = (event: ReactPointerEvent<HTMLElement>) => {
-    if (prefersReducedMotion || event.pointerType !== "mouse") return;
-
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const x = event.clientX - bounds.left;
-    const y = event.clientY - bounds.top;
-
-    orbOffsetX.set((x / bounds.width - 0.5) * 18);
-    orbOffsetY.set((y / bounds.height - 0.5) * 14);
-  };
-
-  const handlePointerLeave = () => {
-    orbOffsetX.set(0);
-    orbOffsetY.set(0);
-  };
 
   return (
     <section
       id="home"
-      onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
-      className="relative min-h-screen flex items-center overflow-hidden"
+      className="relative min-h-[92vh] flex items-center overflow-hidden pt-28 pb-16 lg:py-32"
       style={{
-        background: isDark
-          ? "#0D0D12"
-          : "linear-gradient(160deg, #f0f4ff 0%, #faf5ff 50%, #f0f9ff 100%)",
+        background: "var(--background)",
       }}>
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Large ambient glow top-left */}
-        <div
-          className="absolute"
-          style={{
-            width: 600,
-            height: 600,
-            top: -200,
-            left: -200,
-            borderRadius: "50%",
-            background: isDark
-              ? "radial-gradient(circle, rgba(79,172,254,0.07) 0%, transparent 70%)"
-              : "radial-gradient(circle, rgba(79,172,254,0.12) 0%, transparent 70%)",
-            filter: "blur(40px)",
-          }}
-        />
-        {/* Large ambient glow bottom-right */}
-        <div
-          className="absolute"
-          style={{
-            width: 700,
-            height: 700,
-            bottom: -250,
-            right: -200,
-            borderRadius: "50%",
-            background: isDark
-              ? "radial-gradient(circle, rgba(168,85,247,0.07) 0%, transparent 70%)"
-              : "radial-gradient(circle, rgba(168,85,247,0.10) 0%, transparent 70%)",
-            filter: "blur(50px)",
-          }}
-        />
+      {/* Subtle architectural grid pattern */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none select-none opacity-[0.4] dark:opacity-[0.2]"
+        style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, var(--portfolio-border) 1px, transparent 0)`,
+          backgroundSize: "32px 32px",
+          maskImage:
+            "radial-gradient(ellipse 80% 60% at 50% 40%, black 40%, transparent 90%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 80% 60% at 50% 40%, black 40%, transparent 90%)",
+        }}
+      />
 
-        {/* Subtle full-page grid */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle, ${isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)"} 1px, transparent 1px)`,
-            backgroundSize: "40px 40px",
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 w-full pt-24 pb-16">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-6">
-          {/* ── Left: Text Content ── */}
-          <div className="flex-1 max-w-xl lg:max-w-none">
-            {/* Availability badge */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          {/* Left Column: Narrative Content (7 cols) */}
+          <div className="lg:col-span-7 flex flex-col items-start">
+            {/* Availability & Location Pill */}
             <motion.div
-              {...fadeUp(0.1)}
-              className="flex items-center gap-3 mb-8">
+              {...fadeUp(0.08)}
+              className="flex flex-wrap items-center gap-2.5 mb-6">
               <div
-                className="flex items-center gap-2 px-4 py-2 rounded-full border text-xs"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold"
                 style={{
                   background: isDark
-                    ? "rgba(79,172,254,0.08)"
-                    : "rgba(79,172,254,0.08)",
+                    ? "rgba(20, 107, 102, 0.12)"
+                    : "var(--portfolio-accent-soft)",
                   borderColor: isDark
-                    ? "rgba(79,172,254,0.2)"
-                    : "rgba(79,172,254,0.25)",
-                  color: "#4FACFE",
-                  fontWeight: 600,
-                  letterSpacing: "0.04em",
+                    ? "rgba(121, 198, 188, 0.3)"
+                    : "rgba(20, 107, 102, 0.25)",
+                  color: isDark
+                    ? "var(--portfolio-accent)"
+                    : "var(--portfolio-accent-strong)",
                 }}>
-                <span
-                  className="w-2 h-2 rounded-full"
-                  style={{
-                    background: "#4FACFE",
-                    boxShadow: "0 0 8px #4FACFE",
-                    animation: "pulse 2s infinite",
-                  }}
-                />
-                Available for work
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-teal-500" />
+                </span>
+                Available for software engineering roles
+              </div>
+
+              <div
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium"
+                style={{
+                  background: "var(--portfolio-surface)",
+                  borderColor: "var(--portfolio-border)",
+                  color: "var(--portfolio-muted)",
+                }}>
+                <MapPin size={12} aria-hidden="true" />
+                Surakarta, Indonesia
               </div>
             </motion.div>
 
-            {/* Main Name */}
-            <motion.div {...fadeUp(0.2)}>
+            {/* Authoritative Clean Headline */}
+            <motion.div {...fadeUp(0.16)}>
               <h1
-                className="leading-[1.05] tracking-tight"
+                className="tracking-tight font-extrabold"
                 style={{
-                  fontSize: "clamp(2.6rem, 6vw, 5rem)",
-                  fontWeight: 800,
-                  background:
-                    "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
+                  fontSize: "clamp(2.4rem, 5vw, 4.2rem)",
+                  lineHeight: 1.08,
+                  color: "var(--portfolio-text)",
+                  letterSpacing: "-0.03em",
                 }}>
-                <span className="block mb-2">Naufal Dwi</span>
-                <span className="block">Saputro.</span>
+                Naufal Dwi Saputro
+                <span
+                  style={{ color: "var(--portfolio-accent)" }}
+                  aria-hidden="true">
+                  .
+                </span>
               </h1>
             </motion.div>
 
-            {/* Sub-headline */}
-            <motion.div {...fadeUp(0.32)} className="mt-5">
+            {/* Sub-headline with clean typewriter */}
+            <motion.div {...fadeUp(0.24)} className="mt-4">
               <div className="flex items-center gap-3">
-                <div
-                  className="h-px flex-1 max-w-[40px]"
-                  style={{
-                    background: "linear-gradient(90deg, transparent, #A0A8C0)",
-                  }}
-                />
+                <span
+                  className="font-mono text-xs uppercase tracking-wider font-semibold"
+                  style={{ color: "var(--portfolio-accent)" }}>
+                  Role:
+                </span>
                 <TypewriterText
                   words={PROFESSIONAL_TITLES}
-                  className="min-w-[22ch]"
+                  className="min-w-[20ch] font-mono text-sm sm:text-base font-semibold"
                   style={{
-                    color: isDark ? "#A0A8C0" : "#6B7280",
-                    fontSize: "clamp(1rem, 2.5vw, 1.4rem)",
-                    fontWeight: 500,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
+                    color: "var(--portfolio-text)",
                   }}
                 />
               </div>
             </motion.div>
 
-            {/* Description */}
+            {/* Grounded & Concrete Bio */}
             <motion.p
-              {...fadeUp(0.44)}
-              className="mt-7 max-w-md leading-relaxed"
+              {...fadeUp(0.32)}
+              className="mt-6 max-w-xl text-base sm:text-lg leading-relaxed font-normal"
               style={{
-                color: isDark ? "#8890A8" : "#6B7280",
-                fontSize: "clamp(0.9rem, 1.5vw, 1.05rem)",
+                color: "var(--portfolio-muted)",
               }}>
-              Building{" "}
-              <span
-                style={{
-                  color: isDark ? "#C0C8E0" : "#374151",
-                  fontWeight: 500,
-                }}>
-                dynamic, responsive,
-              </span>{" "}
-              and{" "}
-              <span
-                style={{
-                  color: isDark ? "#C0C8E0" : "#374151",
-                  fontWeight: 500,
-                }}>
-                user-centric
-              </span>{" "}
-              digital experiences that leave a lasting impression — from concept
-              to deployment.
+              Full Stack Developer specializing in TypeScript, React, Vue.js,
+              and Laravel. Focused on clean architecture, scalable APIs, and
+              building thoughtful, production-ready web software.
             </motion.p>
 
-            {/* CTA Buttons */}
+            {/* Action CTAs */}
             <motion.div
-              {...fadeUp(0.56)}
-              className="flex flex-wrap items-center gap-4 mt-10">
-              {/* Primary CTA */}
-              <motion.button
-                whileHover={{
-                  scale: 1.04,
-                  boxShadow: "0 8px 35px rgba(79,172,254,0.45)",
-                }}
-                whileTap={{ scale: 0.96 }}
+              {...fadeUp(0.4)}
+              className="flex flex-wrap items-center gap-3.5 mt-8">
+              <button
+                type="button"
                 onClick={() => scrollToSection("#projects")}
-                className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-white transition-all duration-300"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200"
                 style={{
-                  background:
-                    "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                  boxShadow: "0 4px 22px rgba(79,172,254,0.35)",
-                  fontWeight: 600,
-                  fontSize: "0.95rem",
+                  background: "var(--portfolio-accent)",
+                  color: "var(--portfolio-accent-contrast)",
+                  boxShadow: "0 2px 12px rgba(20, 107, 102, 0.25)",
                 }}>
                 View Projects
-                <ArrowRight size={17} />
-              </motion.button>
+                <ArrowRight size={16} aria-hidden="true" />
+              </button>
 
-              {/* Secondary CTA */}
-              <motion.button
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
+              <button
+                type="button"
                 onClick={() => scrollToSection("#contact")}
-                className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl transition-all duration-300"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border text-sm font-semibold transition-all duration-200"
                 style={{
-                  border: `1.5px solid ${isDark ? "rgba(160,168,192,0.3)" : "rgba(107,114,128,0.3)"}`,
-                  color: isDark ? "#A0A8C0" : "#6B7280",
-                  fontWeight: 600,
-                  fontSize: "0.95rem",
-                  background: isDark
-                    ? "rgba(255,255,255,0.03)"
-                    : "rgba(0,0,0,0.02)",
+                  background: "var(--portfolio-surface)",
+                  borderColor: "var(--portfolio-border)",
+                  color: "var(--portfolio-text)",
                 }}>
-                <MessageSquare size={17} />
+                <Mail size={16} aria-hidden="true" />
                 Contact Me
-              </motion.button>
+              </button>
+
+              <a
+                href={CV_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-3 rounded-lg border text-sm font-medium transition-all duration-200 hover:text-teal-600 dark:hover:text-teal-400"
+                style={{
+                  background: "var(--portfolio-surface)",
+                  borderColor: "var(--portfolio-border)",
+                  color: "var(--portfolio-muted)",
+                }}>
+                <Download size={15} aria-hidden="true" />
+                Resume (CV)
+              </a>
             </motion.div>
 
-            {/* Quick Stats */}
+            {/* Quick Stats Counter */}
             <motion.div
-              {...fadeUp(0.66)}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mt-10 pt-7 border-t"
+              {...fadeUp(0.48)}
+              className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mt-10 pt-8 border-t w-full"
               style={{
-                borderColor: isDark
-                  ? "rgba(255,255,255,0.08)"
-                  : "rgba(0,0,0,0.08)",
+                borderColor: "var(--portfolio-border)",
               }}>
               {HERO_STATS.map((item) => (
                 <div key={item.label} className="flex flex-col">
                   <div className="flex items-baseline gap-1">
                     <span
-                      className="text-2xl sm:text-3xl font-extrabold tracking-tight"
+                      className="text-2xl sm:text-3xl font-bold tracking-tight"
                       style={{
-                        background:
-                          "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        backgroundClip: "text",
+                        color: "var(--portfolio-text)",
+                        fontVariantNumeric: "tabular-nums",
                       }}>
                       {item.value}
                     </span>
                     {item.suffix && (
                       <span
                         className="text-xs font-semibold"
-                        style={{ color: isDark ? "#8890A8" : "#9CA3AF" }}>
+                        style={{ color: "var(--portfolio-muted)" }}>
                         {item.suffix}
                       </span>
                     )}
                   </div>
                   <span
                     className="text-xs font-medium leading-snug mt-1"
-                    style={{ color: isDark ? "#8890A8" : "#6B7280" }}>
+                    style={{ color: "var(--portfolio-muted)" }}>
                     {item.label}
                   </span>
                 </div>
@@ -304,91 +267,42 @@ export function Hero() {
 
             {/* Social Links */}
             <motion.div
-              {...fadeUp(0.76)}
-              className="flex items-center gap-4 mt-8">
+              {...fadeUp(0.56)}
+              className="flex items-center gap-3 mt-8">
               <span
-                className="text-xs tracking-widest uppercase"
+                className="text-xs uppercase tracking-wider font-semibold font-mono"
                 style={{
-                  color: isDark ? "#4A5268" : "#9CA3AF",
-                  fontWeight: 600,
+                  color: "var(--portfolio-muted)",
                 }}>
-                Follow me
+                Connect:
               </span>
-              <div
-                className="h-px w-8"
-                style={{
-                  background: isDark
-                    ? "rgba(74,82,104,0.6)"
-                    : "rgba(156,163,175,0.6)",
-                }}
-              />
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
-                  <motion.a
+                  <a
                     key={label}
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    whileHover={{ scale: 1.15, y: -2 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="flex items-center justify-center w-9 h-9 rounded-lg border transition-all duration-300"
+                    className="flex items-center justify-center w-8 h-8 rounded-md border transition-all duration-200 hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400"
                     style={{
-                      borderColor: isDark
-                        ? "rgba(255,255,255,0.08)"
-                        : "rgba(0,0,0,0.08)",
-                      background: isDark
-                        ? "rgba(255,255,255,0.03)"
-                        : "rgba(0,0,0,0.02)",
-                      color: isDark ? "#7880A0" : "#9CA3AF",
+                      borderColor: "var(--portfolio-border)",
+                      background: "var(--portfolio-surface)",
+                      color: "var(--portfolio-muted)",
                     }}>
-                    <Icon size={16} />
-                  </motion.a>
+                    <Icon size={15} />
+                  </a>
                 ))}
               </div>
             </motion.div>
           </div>
 
-          {/* ── Right: TechOrb Visual ── */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85, x: 30 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="flex-shrink-0 hidden md:flex items-center justify-center">
-            <motion.div style={{ x: smoothOrbX, y: smoothOrbY }}>
-              <TechOrb />
-            </motion.div>
-          </motion.div>
+          {/* Right Column: Technical Editor Card (5 cols) */}
+          <div className="lg:col-span-5 hidden md:flex items-center justify-center lg:justify-end">
+            <HeroCodeCard />
+          </div>
         </div>
       </div>
-
-      {/* Scroll indicator - hidden on mobile to avoid overlapping content, visible on md+ */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.8 }}
-        className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 pointer-events-none z-10">
-        <span
-          className="text-xs tracking-widest uppercase"
-          style={{ color: isDark ? "#4A5268" : "#9CA3AF", fontWeight: 500 }}>
-          Scroll
-        </span>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          className="w-px h-10"
-          style={{
-            background: `linear-gradient(to bottom, ${isDark ? "rgba(79,172,254,0.5)" : "rgba(79,172,254,0.4)"}, transparent)`,
-          }}
-        />
-      </motion.div>
-
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
-        }
-      `}</style>
     </section>
   );
 }
