@@ -60,19 +60,33 @@ export function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Column: Narrative Content (7 cols) */}
           <div className="lg:col-span-7 flex flex-col items-start">
-            {/* Meta Eyebrow */}
+            {/* Identity Badge */}
             <motion.div
               {...fadeUp(0.08)}
-              className="flex flex-wrap items-center gap-2 mb-4 font-mono text-xs uppercase tracking-wider font-semibold"
-              style={{ color: "var(--portfolio-accent)" }}>
-              <span>Software Engineer</span>
-              <span style={{ color: "var(--portfolio-border)" }}>·</span>
-              <span
-                className="inline-flex items-center gap-1 font-sans font-normal text-xs normal-case tracking-normal"
-                style={{ color: "var(--portfolio-muted)" }}>
-                <MapPin size={13} aria-hidden="true" />
-                Surakarta, Indonesia
-              </span>
+              className="flex items-center gap-3 mb-5">
+              <img
+                src="https://avatars.githubusercontent.com/u/145748689?v=4"
+                alt="Naufal Dwi Saputro"
+                className="w-8 h-8 rounded-full border object-cover shadow-xs"
+                style={{ borderColor: "var(--portfolio-border)" }}
+              />
+              <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
+                <a
+                  href="https://github.com/NaufalDsp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold transition-colors hover:underline"
+                  style={{ color: "var(--portfolio-text)" }}>
+                  @NaufalDsp
+                </a>
+                <span style={{ color: "var(--portfolio-border)" }}>·</span>
+                <span
+                  className="inline-flex items-center gap-1 font-sans text-xs"
+                  style={{ color: "var(--portfolio-muted)" }}>
+                  <MapPin size={12} aria-hidden="true" />
+                  Sragen, Indonesia
+                </span>
+              </div>
             </motion.div>
 
             {/* Authoritative Clean Headline */}
@@ -95,21 +109,14 @@ export function Hero() {
             </motion.div>
 
             {/* Sub-headline with clean typewriter */}
-            <motion.div {...fadeUp(0.24)} className="mt-4">
-              <div className="flex items-center gap-3">
-                <span
-                  className="font-mono text-xs uppercase tracking-wider font-semibold"
-                  style={{ color: "var(--portfolio-accent)" }}>
-                  Role:
-                </span>
-                <TypewriterText
-                  words={PROFESSIONAL_TITLES}
-                  className="min-w-[20ch] font-mono text-sm sm:text-base font-semibold"
-                  style={{
-                    color: "var(--portfolio-text)",
-                  }}
-                />
-              </div>
+            <motion.div {...fadeUp(0.24)} className="mt-3">
+              <TypewriterText
+                words={PROFESSIONAL_TITLES}
+                className="min-w-[20ch] font-mono text-sm sm:text-base font-semibold"
+                style={{
+                  color: "var(--portfolio-accent)",
+                }}
+              />
             </motion.div>
 
             {/* Grounded & Concrete Bio */}

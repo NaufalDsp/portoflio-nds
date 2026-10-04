@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Sun, Moon, Download, Menu, X } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { NAVIGATION_LINKS } from "../data/navigation";
@@ -11,17 +11,88 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("Home");
+  const isClickingRef = useRef(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    let rafId: number;
+
+    const onScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        setScrolled(scrollY > 20);
+
+        if (isClickingRef.current) return;
+
+        // 1. When near top, activate Home
+        if (scrollY < 120) {
+          setActiveLink("Home");
+          return;
+        }
+
+        // 2. When near bottom of page, activate Contact
+        if (
+          window.innerHeight + scrollY >=
+          document.documentElement.scrollHeight - 70
+        ) {
+          setActiveLink("Contact");
+          return;
+        }
+
+        // 3. Scan sections by active reading line (32% from viewport top)
+        const triggerPoint = window.innerHeight * 0.32;
+        let matchedLabel: string | null = null;
+
+        for (const link of NAVIGATION_LINKS) {
+          const section = document.querySelector(link.href);
+          if (section) {
+            const rect = section.getBoundingClientRect();
+            if (rect.top <= triggerPoint && rect.bottom > triggerPoint) {
+              matchedLabel = link.label;
+              break;
+            }
+          }
+        }
+
+        // Fallback: If in between padding, find the closest section to trigger point
+        if (!matchedLabel) {
+          let minDistance = Infinity;
+          for (const link of NAVIGATION_LINKS) {
+            const section = document.querySelector(link.href);
+            if (section) {
+              const rect = section.getBoundingClientRect();
+              const dist = Math.abs(rect.top - triggerPoint);
+              if (dist < minDistance) {
+                minDistance = dist;
+                matchedLabel = link.label;
+              }
+            }
+          }
+        }
+
+        if (matchedLabel) {
+          setActiveLink(matchedLabel);
+        }
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const navigateTo = (href: `#${string}`, label: string) => {
     setActiveLink(label);
     setMobileOpen(false);
+    isClickingRef.current = true;
     scrollToSection(href);
+    setTimeout(() => {
+      isClickingRef.current = false;
+    }, 700);
   };
 
   const glassStyle = isDark
