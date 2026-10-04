@@ -33,7 +33,7 @@ export const CONTACT_DETAILS: ContactDetail[] = [
   {
     icon: MapPin,
     label: "Location",
-    value: "Surakarta, Indonesia",
+    value: "Sragen, Indonesia",
     color: "#A855F7",
   },
   {

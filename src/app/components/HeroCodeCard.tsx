@@ -7,7 +7,7 @@ const CODE_SNIPPET = `// developer.config.ts
 export const engineer = {
   name: "Naufal Dwi Saputro",
   role: "Full Stack Developer",
-  location: "Surakarta, Indonesia",
+  location: "Sragen, Indonesia",
   education: {
     institution: "Universitas Sebelas Maret",
     degree: "Diploma in Informatics Engineering",
@@ -130,7 +130,7 @@ export function HeroCodeCard() {
               location:{" "}
             </span>
             <span className="text-amber-700 dark:text-amber-300">
-              &quot;Surakarta, Indonesia&quot;
+              &quot;Sragen, Indonesia&quot;
             </span>
             ,
           </div>
