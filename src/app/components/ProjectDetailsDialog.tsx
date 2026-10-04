@@ -1,5 +1,4 @@
 import { ExternalLink, Github, Lock } from "lucide-react";
-import { useTheme } from "../context/ThemeContext";
 import type { Project } from "../types/portfolio";
 import {
   Dialog,
@@ -18,17 +17,15 @@ export function ProjectDetailsDialog({
   project,
   onOpenChange,
 }: ProjectDetailsDialogProps) {
-  const { isDark } = useTheme();
-
   return (
     <Dialog open={project !== null} onOpenChange={onOpenChange}>
       {project && (
         <DialogContent
           className="max-h-[90vh] overflow-y-auto p-0 sm:max-w-3xl"
           style={{
-            background: isDark ? "#111119" : "#ffffff",
-            borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
-            color: isDark ? "#E8EAF0" : "#1F2937",
+            background: "var(--portfolio-surface)",
+            borderColor: "var(--portfolio-border)",
+            color: "var(--portfolio-text)",
           }}>
           <div className="h-48 overflow-hidden bg-black/10 sm:h-72">
             <img
@@ -42,12 +39,22 @@ export function ProjectDetailsDialog({
             <DialogHeader className="gap-3 text-left">
               <div className="flex flex-wrap items-center gap-2">
                 {project.featured && (
-                  <span className="rounded-full bg-sky-500/10 px-3 py-1 text-xs font-semibold text-sky-500">
+                  <span
+                    className="rounded px-2.5 py-1 text-xs font-semibold"
+                    style={{
+                      background: "var(--portfolio-accent-soft)",
+                      color: "var(--portfolio-accent-strong)",
+                    }}>
                     Featured project
                   </span>
                 )}
                 {project.isPrivate && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-xs font-semibold text-violet-500">
+                  <span
+                    className="inline-flex items-center gap-1.5 rounded border px-2.5 py-1 text-xs font-semibold"
+                    style={{
+                      borderColor: "var(--portfolio-border)",
+                      color: "var(--portfolio-muted)",
+                    }}>
                     <Lock size={12} aria-hidden="true" />
                     Private project
                   </span>
@@ -58,7 +65,7 @@ export function ProjectDetailsDialog({
               </DialogTitle>
               <DialogDescription
                 className="text-sm leading-relaxed"
-                style={{ color: isDark ? "#A0A8C0" : "#6B7280" }}>
+                style={{ color: "var(--portfolio-muted)" }}>
                 {project.description}
               </DialogDescription>
             </DialogHeader>
@@ -68,22 +75,22 @@ export function ProjectDetailsDialog({
                 <h3
                   id="project-contribution-heading"
                   className="mb-2 text-sm font-semibold"
-                  style={{ color: isDark ? "#E8EAF0" : "#1F2937" }}>
+                  style={{ color: "var(--portfolio-text)" }}>
                   My Role
                 </h3>
                 <p
                   className="mb-5 text-sm leading-relaxed"
-                  style={{ color: isDark ? "#A0A8C0" : "#6B7280" }}>
+                  style={{ color: "var(--portfolio-muted)" }}>
                   {project.caseStudy.role}
                 </p>
                 <h4
                   className="mb-3 text-sm font-semibold"
-                  style={{ color: isDark ? "#E8EAF0" : "#1F2937" }}>
+                  style={{ color: "var(--portfolio-text)" }}>
                   Contributions
                 </h4>
                 <ul
-                  className="list-disc space-y-2 pl-5 text-sm leading-relaxed marker:text-sky-500"
-                  style={{ color: isDark ? "#A0A8C0" : "#6B7280" }}>
+                  className="list-disc space-y-2 pl-5 text-sm leading-relaxed marker:text-[var(--portfolio-accent)]"
+                  style={{ color: "var(--portfolio-muted)" }}>
                   {project.caseStudy.contributions.map((contribution) => (
                     <li key={contribution}>{contribution}</li>
                   ))}
@@ -95,18 +102,18 @@ export function ProjectDetailsDialog({
               <h3
                 id="project-technologies-heading"
                 className="mb-3 text-sm font-semibold"
-                style={{ color: isDark ? "#E8EAF0" : "#1F2937" }}>
+                style={{ color: "var(--portfolio-text)" }}>
                 Technologies
               </h3>
               <div className="flex flex-wrap gap-2">
                 {project.technologies.map(({ name, color }) => (
                   <span
                     key={name}
-                    className="rounded-full px-3 py-1 text-xs font-semibold"
+                    className="rounded border px-2.5 py-1 font-mono text-xs"
                     style={{
-                      background: `${color}15`,
-                      border: `1px solid ${color}30`,
-                      color,
+                      background: "var(--portfolio-surface-raised)",
+                      borderColor: "var(--portfolio-border)",
+                      color: "var(--portfolio-muted)",
                     }}>
                     {name}
                   </span>
@@ -117,14 +124,12 @@ export function ProjectDetailsDialog({
             <div
               className="flex flex-wrap gap-3 border-t pt-5"
               style={{
-                borderColor: isDark
-                  ? "rgba(255,255,255,0.1)"
-                  : "rgba(0,0,0,0.08)",
+                borderColor: "var(--portfolio-border)",
               }}>
               {project.isPrivate ? (
                 <p
                   className="text-sm"
-                  style={{ color: isDark ? "#A0A8C0" : "#6B7280" }}>
+                  style={{ color: "var(--portfolio-muted)" }}>
                   Source code and live preview are not public.
                 </p>
               ) : (
@@ -134,12 +139,10 @@ export function ProjectDetailsDialog({
                       href={project.links.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+                      className="inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-[var(--portfolio-surface-raised)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--portfolio-focus)]"
                       style={{
-                        borderColor: isDark
-                          ? "rgba(255,255,255,0.14)"
-                          : "rgba(0,0,0,0.12)",
-                        color: isDark ? "#E8EAF0" : "#1F2937",
+                        borderColor: "var(--portfolio-border)",
+                        color: "var(--portfolio-text)",
                       }}>
                       <Github size={16} aria-hidden="true" />
                       Source code
@@ -150,7 +153,11 @@ export function ProjectDetailsDialog({
                       href={project.links.live}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-lg bg-sky-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2">
+                      className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--portfolio-focus)]"
+                      style={{
+                        background: "var(--portfolio-accent)",
+                        color: "var(--portfolio-accent-contrast)",
+                      }}>
                       <ExternalLink size={16} aria-hidden="true" />
                       Live demo
                     </a>
@@ -159,7 +166,7 @@ export function ProjectDetailsDialog({
                     (!project.links.live || project.links.live === "#") && (
                       <p
                         className="text-sm"
-                        style={{ color: isDark ? "#A0A8C0" : "#6B7280" }}>
+                        style={{ color: "var(--portfolio-muted)" }}>
                         No public repository or live demo is available.
                       </p>
                     )}

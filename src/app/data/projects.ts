@@ -38,7 +38,7 @@ export const PROJECTS: Project[] = [
       { name: "TailwindCSS", color: TECHNOLOGY_COLORS.TailwindCSS },
       { name: "MySQL", color: TECHNOLOGY_COLORS.MySQL },
     ],
-    links: { github: "#", live: "#" },
+    links: {},
     featured: false,
   },
   {
@@ -75,7 +75,7 @@ export const PROJECTS: Project[] = [
       { name: "Prisma", color: TECHNOLOGY_COLORS.Prisma },
       { name: "TailwindCSS", color: TECHNOLOGY_COLORS.TailwindCSS },
     ],
-    links: { github: "#", live: "#" },
+    links: {},
     featured: false,
   },
   {
@@ -90,7 +90,7 @@ export const PROJECTS: Project[] = [
       { name: "MySQL", color: TECHNOLOGY_COLORS.MySQL },
       { name: "TailwindCSS", color: TECHNOLOGY_COLORS.TailwindCSS },
     ],
-    links: { github: "#", live: "#" },
+    links: {},
     featured: false,
   },
   {
