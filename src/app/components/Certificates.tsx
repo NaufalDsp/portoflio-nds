@@ -38,120 +38,119 @@ function formatIssueDate({
 }
 
 export function Certificates() {
-  const { isDark } = useTheme();
+  useTheme();
 
   return (
     <section
       id="certificates"
       className="relative overflow-hidden py-24 sm:py-28"
       style={{
-        background: isDark
-          ? "linear-gradient(180deg, #0F0F18 0%, #0D0D12 100%)"
-          : "linear-gradient(180deg, #F4F2FF 0%, #F0F4FF 100%)",
+        background: "var(--background)",
       }}>
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-10">
         <motion.header
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.55 }}
-          className="mx-auto mb-12 max-w-2xl text-center">
-          <p className="mb-3 text-center text-xs font-bold uppercase tracking-widest text-sky-500">
-            Learning &amp; Credentials
+          transition={{ duration: 0.45 }}
+          className="mb-14 max-w-2xl">
+          <p
+            className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider"
+            style={{ color: "var(--portfolio-accent)" }}>
+            Credentials &amp; Learning
           </p>
           <h2
-            className="mb-4 text-3xl font-extrabold sm:text-4xl"
-            style={{ color: isDark ? "#E8EAF0" : "#1F2937" }}>
+            className="mb-4 text-3xl font-bold sm:text-4xl"
+            style={{
+              color: "var(--portfolio-text)",
+              letterSpacing: "-0.03em",
+            }}>
             Certificates
           </h2>
           <p
-            className="mx-auto max-w-xl text-center text-sm leading-relaxed sm:text-base"
-            style={{ color: isDark ? "#8B91A5" : "#6B7280" }}>
-            Selected certificates from my technical and professional learning.
+            className="max-w-xl text-sm leading-relaxed sm:text-base"
+            style={{ color: "var(--portfolio-muted)" }}>
+            Verified technical certifications and course completions across
+            software development, networking, databases, and AI.
           </p>
         </motion.header>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {CERTIFICATES.map((certificate, index) => (
             <motion.article
               key={certificate.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.45, delay: (index % 3) * 0.07 }}
-              className="flex min-h-56 flex-col border p-5 transition-colors sm:p-6"
+              transition={{ duration: 0.4, delay: (index % 3) * 0.06 }}
+              className="flex min-h-56 flex-col rounded-lg border p-5 transition-colors sm:p-6"
               style={{
-                borderRadius: 8,
-                background: isDark ? "rgba(255,255,255,0.025)" : "#FFFFFF",
-                borderColor: isDark
-                  ? "rgba(255,255,255,0.09)"
-                  : "rgba(31,41,55,0.1)",
+                background: "var(--portfolio-surface)",
+                borderColor: "var(--portfolio-border)",
               }}>
               <CertificatePreview
                 previewUrl={certificate.previewUrl}
                 title={certificate.title}
               />
 
-              <div className="mb-6 flex items-start justify-between gap-4">
+              <div className="mb-4 flex items-start justify-between gap-3">
                 <div
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border"
                   style={{
-                    background: isDark
-                      ? "rgba(79,172,254,0.1)"
-                      : "rgba(79,172,254,0.08)",
-                    borderColor: "rgba(79,172,254,0.22)",
-                    color: "#4FACFE",
+                    background: "var(--portfolio-surface-raised)",
+                    borderColor: "var(--portfolio-border)",
+                    color: "var(--portfolio-accent)",
                   }}>
-                  <FileText size={20} aria-hidden="true" />
+                  <FileText size={17} aria-hidden="true" />
                 </div>
                 <BadgeCheck
-                  size={18}
-                  className="mt-1 shrink-0 text-emerald-500"
-                  aria-label="Certificate document"
+                  size={17}
+                  className="mt-1 shrink-0"
+                  style={{ color: "var(--portfolio-accent)" }}
+                  aria-label="Verified document"
                 />
               </div>
 
               <div className="flex-1">
                 <h3
-                  className="mb-2 text-base font-bold leading-snug"
-                  style={{ color: isDark ? "#E8EAF0" : "#1F2937" }}>
+                  className="text-base font-bold leading-snug"
+                  style={{ color: "var(--portfolio-text)" }}>
                   {certificate.title}
                 </h3>
                 <p
-                  className="text-sm"
-                  style={{ color: isDark ? "#8B91A5" : "#6B7280" }}>
-                  {certificate.issuer ?? "Certificate document"}
+                  className="text-xs sm:text-sm mt-1"
+                  style={{ color: "var(--portfolio-muted)" }}>
+                  {certificate.issuer ?? "Official credential"}
                 </p>
                 <p
-                  className="mt-2 text-xs font-medium"
-                  style={{ color: isDark ? "#6B7080" : "#9CA3AF" }}>
+                  className="mt-2.5 font-mono text-[11px]"
+                  style={{ color: "var(--portfolio-muted)" }}>
                   Issued {formatIssueDate(certificate.issuedAt)}
                 </p>
               </div>
 
               <div
-                className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3 border-t pt-4"
+                className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t pt-3.5"
                 style={{
-                  borderColor: isDark
-                    ? "rgba(255,255,255,0.08)"
-                    : "rgba(31,41,55,0.08)",
+                  borderColor: "var(--portfolio-border)",
                 }}>
                 <a
                   href={certificate.fileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-sky-500 hover:text-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold transition-colors hover:underline"
+                  style={{ color: "var(--portfolio-accent)" }}
                   aria-label={`Open ${certificate.title} PDF in a new tab`}>
                   View PDF
-                  <ArrowUpRight size={15} aria-hidden="true" />
+                  <ArrowUpRight size={14} aria-hidden="true" />
                 </a>
                 <a
                   href={certificate.fileUrl}
                   download
-                  className="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
-                  style={{ color: isDark ? "#A0A8C0" : "#6B7280" }}
+                  className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors hover:text-teal-600 dark:hover:text-teal-400"
+                  style={{ color: "var(--portfolio-muted)" }}
                   aria-label={`Download ${certificate.title} PDF`}>
-                  <Download size={15} aria-hidden="true" />
+                  <Download size={13} aria-hidden="true" />
                   Download
                 </a>
               </div>
