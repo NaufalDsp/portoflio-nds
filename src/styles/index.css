@@ -4,26 +4,51 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
 }
 
 * {
   box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: var(--font-sans);
+  background: var(--background);
+  color: var(--foreground);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--portfolio-focus);
+  outline-offset: 3px;
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0D0D12;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #4FACFE, #A855F7);
-  border-radius: 10px;
+  background: var(--portfolio-border);
+  border: 2px solid var(--background);
+  border-radius: 8px;
 }
 
 ::selection {
-  background: rgba(79, 172, 254, 0.25);
-  color: #fff;
+  background: var(--portfolio-accent-soft);
+  color: var(--portfolio-text);
 }

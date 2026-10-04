@@ -42,9 +42,9 @@ function PortfolioApp() {
 
   return (
     <div
+      className={isDark ? "dark" : ""}
       style={{
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
-        background: isDark ? "#0D0D12" : "#F0F4FF",
+        background: "var(--background)",
         minHeight: "100vh",
         scrollBehavior: "smooth",
       }}>
