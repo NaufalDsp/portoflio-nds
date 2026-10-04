@@ -45,7 +45,8 @@ function ProjectCard({
         />
       </div>
 
-      <div className={`flex flex-col ${featured ? "justify-center p-6 sm:p-9 lg:p-10" : "flex-1 p-5 sm:p-6"}`}>
+      <div
+        className={`flex flex-col ${featured ? "justify-center p-6 sm:p-9 lg:p-10" : "flex-1 p-5 sm:p-6"}`}>
         <div className="mb-4 flex flex-wrap items-center gap-2">
           {featured && (
             <span
@@ -73,20 +74,22 @@ function ProjectCard({
             style={{ color: "var(--portfolio-text)" }}>
             {project.title}
           </h3>
-          {!project.isPrivate && project.links.live && project.links.live !== "#" && (
-            <a
-              href={project.links.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Open ${project.title} live demo`}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border transition-colors hover:text-[var(--portfolio-accent)]"
-              style={{
-                borderColor: "var(--portfolio-border)",
-                color: "var(--portfolio-muted)",
-              }}>
-              <ArrowUpRight size={15} aria-hidden="true" />
-            </a>
-          )}
+          {!project.isPrivate &&
+            project.links.live &&
+            project.links.live !== "#" && (
+              <a
+                href={project.links.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open ${project.title} live demo`}
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border transition-colors hover:text-[var(--portfolio-accent)]"
+                style={{
+                  borderColor: "var(--portfolio-border)",
+                  color: "var(--portfolio-muted)",
+                }}>
+                <ArrowUpRight size={15} aria-hidden="true" />
+              </a>
+            )}
         </div>
 
         <p
@@ -114,7 +117,11 @@ function ProjectCard({
           aria-label={`View details for ${project.title}`}
           className="mt-auto inline-flex w-fit items-center gap-2 pt-6 text-sm font-semibold transition-colors hover:gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--portfolio-focus)] focus-visible:ring-offset-4">
           <span style={{ color: "var(--portfolio-accent)" }}>Read project</span>
-          <ArrowRight size={15} aria-hidden="true" style={{ color: "var(--portfolio-accent)" }} />
+          <ArrowRight
+            size={15}
+            aria-hidden="true"
+            style={{ color: "var(--portfolio-accent)" }}
+          />
         </button>
       </div>
     </motion.div>

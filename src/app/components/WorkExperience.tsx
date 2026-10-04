@@ -3,205 +3,152 @@ import { motion } from "motion/react";
 import { useTheme } from "../context/ThemeContext";
 import { WORK_EXPERIENCES } from "../data/experience";
 
+import { BriefcaseBusiness, CalendarDays, CheckCircle2 } from "lucide-react";
+import { motion } from "motion/react";
+import { useTheme } from "../context/ThemeContext";
+import { WORK_EXPERIENCES } from "../data/experience";
+
 export function WorkExperience() {
-  const { isDark } = useTheme();
+  useTheme();
 
   return (
     <section
       id="experience"
-      className="relative overflow-hidden py-28"
-      style={{ background: isDark ? "#0D0D12" : "#F8FAFF" }}>
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-40 top-1/3 h-[28rem] w-[28rem] rounded-full blur-3xl"
-        style={{
-          background: isDark
-            ? "rgba(168,85,247,0.06)"
-            : "rgba(168,85,247,0.1)",
-        }}
-      />
-
+      className="relative overflow-hidden py-24 sm:py-28"
+      style={{ background: "var(--background)" }}>
       <div className="relative z-10 mx-auto max-w-6xl px-6 lg:px-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-16 text-center">
+          transition={{ duration: 0.45 }}
+          className="mb-14 max-w-2xl">
           <p
-            className="mb-3 text-xs uppercase tracking-widest"
-            style={{
-              color: "#A855F7",
-              fontWeight: 700,
-              letterSpacing: "0.12em",
-            }}>
-            Professional Journey
+            className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider"
+            style={{ color: "var(--portfolio-accent)" }}>
+            Career History
           </p>
           <h2
-            className="mb-4"
+            className="mb-4 text-3xl font-bold sm:text-4xl"
             style={{
-              color: isDark ? "#E8EAF0" : "#1F2937",
-              fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
-              fontWeight: 800,
-              letterSpacing: "-0.02em",
+              color: "var(--portfolio-text)",
+              letterSpacing: "-0.03em",
             }}>
-            Work{" "}
-            <span
-              style={{
-                background:
-                  "linear-gradient(135deg, #4FACFE 0%, #A855F7 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}>
-              Experience
-            </span>
+            Work Experience
           </h2>
           <p
-            className="mx-auto max-w-xl"
-            style={{
-              color: isDark ? "#6B7080" : "#6B7280",
-              fontSize: "0.95rem",
-            }}>
-            A timeline of the teams, products, and real-world challenges that
-            shaped my development experience.
+            className="max-w-xl text-sm leading-relaxed sm:text-base"
+            style={{ color: "var(--portfolio-muted)" }}>
+            Hands-on software development experience across government agencies,
+            digital platforms, and technology consultancy teams.
           </p>
         </motion.div>
 
         <div className="relative mx-auto max-w-4xl">
           <div
             aria-hidden="true"
-            className="absolute bottom-8 left-[19px] top-8 w-px"
+            className="absolute bottom-6 left-[19px] top-6 w-px"
             style={{
-              background:
-                "linear-gradient(to bottom, #4FACFE, #A855F7, transparent)",
+              background: "var(--portfolio-border)",
             }}
           />
 
-          <div className="space-y-8">
+          <div className="space-y-6">
             {WORK_EXPERIENCES.map((experience, index) => (
               <motion.article
                 key={experience.id}
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.6, delay: index * 0.12 }}
-                className="relative pl-16">
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.45, delay: index * 0.08 }}
+                className="relative pl-14 sm:pl-16">
                 <div
-                  className="absolute left-0 top-7 flex h-10 w-10 items-center justify-center rounded-full border"
+                  className="absolute left-0 top-6 flex h-10 w-10 items-center justify-center rounded-full border shadow-xs"
                   style={{
-                    color: index === 0 ? "#4FACFE" : "#A855F7",
-                    background: isDark ? "#11111A" : "#FFFFFF",
-                    borderColor:
-                      index === 0
-                        ? "rgba(79,172,254,0.45)"
-                        : "rgba(168,85,247,0.45)",
-                    boxShadow:
-                      index === 0
-                        ? "0 0 24px rgba(79,172,254,0.2)"
-                        : "0 0 24px rgba(168,85,247,0.2)",
+                    color: "var(--portfolio-accent)",
+                    background: "var(--portfolio-surface)",
+                    borderColor: "var(--portfolio-border)",
                   }}>
-                  <BriefcaseBusiness size={18} />
+                  <BriefcaseBusiness size={17} aria-hidden="true" />
                 </div>
 
                 <div
-                  className="rounded-2xl border p-6 sm:p-8"
+                  className="rounded-lg border p-6 sm:p-7 transition-colors"
                   style={{
-                    background: isDark
-                      ? "rgba(255,255,255,0.03)"
-                      : "rgba(255,255,255,0.88)",
-                    borderColor: isDark
-                      ? "rgba(255,255,255,0.08)"
-                      : "rgba(0,0,0,0.07)",
-                    boxShadow: isDark
-                      ? "0 8px 40px rgba(0,0,0,0.3)"
-                      : "0 8px 40px rgba(79,70,120,0.08)",
-                    backdropFilter: "blur(14px)",
+                    background: "var(--portfolio-surface)",
+                    borderColor: "var(--portfolio-border)",
                   }}>
-                  <div className="mb-5 flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
+                  <div className="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
                     <div>
-                      <div className="mb-2 flex flex-wrap items-center gap-3">
+                      <div className="mb-1.5 flex flex-wrap items-center gap-2">
                         <h3
+                          className="text-lg font-bold"
                           style={{
-                            color: isDark ? "#E8EAF0" : "#1F2937",
-                            fontSize: "1.15rem",
-                            fontWeight: 750,
+                            color: "var(--portfolio-text)",
                           }}>
                           {experience.role}
                         </h3>
                         <span
-                          className="rounded-full border px-2.5 py-1 text-[0.68rem] uppercase"
+                          className="rounded px-2 py-0.5 font-mono text-[11px] font-medium"
                           style={{
-                            color: "#34D399",
-                            background: "rgba(52,211,153,0.07)",
-                            borderColor: "rgba(52,211,153,0.2)",
-                            fontWeight: 700,
-                            letterSpacing: "0.06em",
+                            color: "var(--portfolio-accent-strong)",
+                            background: "var(--portfolio-accent-soft)",
                           }}>
                           {experience.employmentType}
                         </span>
                         {experience.workMode && (
                           <span
-                            className="rounded-full border px-2.5 py-1 text-[0.68rem] uppercase"
+                            className="rounded border px-2 py-0.5 font-mono text-[11px] font-medium"
                             style={{
-                              color: "#4FACFE",
-                              background: "rgba(79,172,254,0.07)",
-                              borderColor: "rgba(79,172,254,0.2)",
-                              fontWeight: 700,
-                              letterSpacing: "0.06em",
+                              borderColor: "var(--portfolio-border)",
+                              color: "var(--portfolio-muted)",
                             }}>
                             {experience.workMode}
                           </span>
                         )}
                       </div>
                       <p
+                        className="font-medium text-sm"
                         style={{
-                          color: index === 0 ? "#4FACFE" : "#A855F7",
-                          fontSize: "0.92rem",
-                          fontWeight: 650,
+                          color: "var(--portfolio-accent)",
                         }}>
                         {experience.company}
                       </p>
                     </div>
 
                     <div
-                      className="flex w-fit shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-xs"
+                      className="flex w-fit shrink-0 items-center gap-1.5 rounded border px-2.5 py-1 text-xs font-mono"
                       style={{
-                        color: isDark ? "#A0A8C0" : "#6B7280",
-                        background: isDark
-                          ? "rgba(255,255,255,0.035)"
-                          : "rgba(0,0,0,0.025)",
-                        borderColor: isDark
-                          ? "rgba(255,255,255,0.09)"
-                          : "rgba(0,0,0,0.08)",
-                        fontWeight: 600,
+                        color: "var(--portfolio-muted)",
+                        background: "var(--portfolio-surface-raised)",
+                        borderColor: "var(--portfolio-border)",
                       }}>
-                      <CalendarDays size={14} />
+                      <CalendarDays size={13} aria-hidden="true" />
                       {experience.period}
                     </div>
                   </div>
 
                   <p
-                    className="mb-6 leading-relaxed"
+                    className="mb-5 text-sm leading-relaxed"
                     style={{
-                      color: isDark ? "#8890A8" : "#6B7280",
-                      fontSize: "0.9rem",
+                      color: "var(--portfolio-muted)",
                     }}>
                     {experience.description}
                   </p>
 
-                  <ul className="grid gap-3">
+                  <ul className="grid gap-2.5">
                     {experience.achievements.map((achievement) => (
                       <li
                         key={achievement}
-                        className="flex items-start gap-2.5"
+                        className="flex items-start gap-2.5 text-xs sm:text-sm leading-relaxed"
                         style={{
-                          color: isDark ? "#A0A8C0" : "#5B6472",
-                          fontSize: "0.86rem",
+                          color: "var(--portfolio-muted)",
                         }}>
                         <CheckCircle2
-                          size={16}
-                          className="mt-0.5 shrink-0 text-[#34D399]"
+                          size={15}
+                          className="mt-0.5 shrink-0"
+                          style={{ color: "var(--portfolio-accent)" }}
+                          aria-hidden="true"
                         />
                         <span>{achievement}</span>
                       </li>
