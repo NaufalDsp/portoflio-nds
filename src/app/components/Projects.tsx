@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, Lock } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Github, Lock } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react";
 import { PROJECTS } from "../data/projects";
@@ -74,22 +74,40 @@ function ProjectCard({
             style={{ color: "var(--portfolio-text)" }}>
             {project.title}
           </h3>
-          {!project.isPrivate &&
-            project.links.live &&
-            project.links.live !== "#" && (
-              <a
-                href={project.links.live}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Open ${project.title} live demo`}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border transition-colors hover:text-[var(--portfolio-accent)]"
-                style={{
-                  borderColor: "var(--portfolio-border)",
-                  color: "var(--portfolio-muted)",
-                }}>
-                <ArrowUpRight size={15} aria-hidden="true" />
-              </a>
-            )}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {!project.isPrivate &&
+              project.links.github &&
+              project.links.github !== "#" && (
+                <a
+                  href={project.links.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Open ${project.title} GitHub repository`}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border transition-colors hover:text-[var(--portfolio-accent)]"
+                  style={{
+                    borderColor: "var(--portfolio-border)",
+                    color: "var(--portfolio-muted)",
+                  }}>
+                  <Github size={15} aria-hidden="true" />
+                </a>
+              )}
+            {!project.isPrivate &&
+              project.links.live &&
+              project.links.live !== "#" && (
+                <a
+                  href={project.links.live}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Open ${project.title} live demo`}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border transition-colors hover:text-[var(--portfolio-accent)]"
+                  style={{
+                    borderColor: "var(--portfolio-border)",
+                    color: "var(--portfolio-muted)",
+                  }}>
+                  <ArrowUpRight size={15} aria-hidden="true" />
+                </a>
+              )}
+          </div>
         </div>
 
         <p

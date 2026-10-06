@@ -67,7 +67,7 @@ export function AppLoader({ onComplete }: AppLoaderProps) {
         </div>
 
         <p className="mb-6 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-[#a0adad]">
-          Full Stack Software Engineer
+          Full Stack Developer
         </p>
 
         <div className="h-[2px] w-full overflow-hidden rounded-full bg-white/[0.08]">

@@ -13,6 +13,32 @@ function getProjectImage(name: string) {
 export const PROJECTS: Project[] = [
   {
     id: 1,
+    title: "Jejak Rona",
+    description:
+      "A modern visual and editorial magazine platform curating Indonesian culture, archipelago landscapes, and narrative essays. Engineered with zero-JS static performance and a dynamic block-based CMS.",
+    image: getProjectImage("jejakRona"),
+    technologies: [
+      { name: "Astro", color: TECHNOLOGY_COLORS.Astro },
+      { name: "TypeScript", color: TECHNOLOGY_COLORS.TypeScript },
+      { name: "Supabase", color: TECHNOLOGY_COLORS.Supabase },
+      { name: "PostgreSQL", color: TECHNOLOGY_COLORS.PostgreSQL },
+    ],
+    links: {
+      github: "https://github.com/NaufalDsp/jejak-rona",
+      live: "https://jejak-rona.naufaldsp.workers.dev/",
+    },
+    featured: true,
+    caseStudy: {
+      role: "Full-stack Developer & Designer",
+      contributions: [
+        "Architected an editorial reading platform with Clean Architecture monorepo, zero-JS static delivery, and refined typography.",
+        "Built an administrative CMS with block-based visual layouting, revision snapshot history, and reader correspondence management.",
+        "Implemented media asset management with focal-point calibration and PostgreSQL database modeling on Supabase.",
+      ],
+    },
+  },
+  {
+    id: 2,
     title: "Labara",
     description:
       "A Hajj and Umrah booking platform with an admin panel for dynamically managing packages and keeping travel information up to date.",
@@ -24,10 +50,10 @@ export const PROJECTS: Project[] = [
       { name: "MySQL", color: TECHNOLOGY_COLORS.MySQL },
     ],
     isPrivate: true,
-    featured: true,
+    featured: false,
   },
   {
-    id: 2,
+    id: 3,
     title: "Mas. POS",
     description:
       "Full-stack e-commerce solution with a sleek product catalog, cart system, secure payment integration, and a comprehensive admin panel.",
@@ -42,7 +68,7 @@ export const PROJECTS: Project[] = [
     featured: false,
   },
   {
-    id: 3,
+    id: 4,
     title: "AKPK ASN",
     description:
       "A web-based competency development system for AKPK Surakarta that streamlines training data management, ASN self-assessments, training proposals, and proposal verification.",
@@ -64,7 +90,7 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    id: 4,
+    id: 5,
     title: "Hotel Booking",
     description:
       "A web-based hotel reservation platform where users can browse rooms, check availability, and manage bookings through a responsive interface.",
@@ -79,7 +105,7 @@ export const PROJECTS: Project[] = [
     featured: false,
   },
   {
-    id: 5,
+    id: 6,
     title: "Slice Bread Bakery Web",
     description:
       "A responsive bakery website that showcases products, store information, and a simple ordering experience for customers.",
@@ -94,7 +120,7 @@ export const PROJECTS: Project[] = [
     featured: false,
   },
   {
-    id: 6,
+    id: 7,
     title: "Agreema",
     description:
       "A digital contract management system for creating, tracking, renewing, and organizing contracts in one centralized platform.",
@@ -117,7 +143,7 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    id: 7,
+    id: 8,
     title: "Nexora Space",
     description:
       "A responsive company profile website for a renovation and interior design company, showcasing its services, projects, and brand identity.",
@@ -133,7 +159,7 @@ export const PROJECTS: Project[] = [
     featured: false,
   },
   {
-    id: 8,
+    id: 9,
     title: "VidDrop",
     description:
       "A TikTok video downloader that lets users quickly save content in MP4 video or MP3 audio formats through a clean, responsive interface.",

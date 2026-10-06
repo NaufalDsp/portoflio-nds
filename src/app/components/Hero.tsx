@@ -18,7 +18,7 @@ const HERO_STATS = [
     label: "Industry Internships",
   },
   {
-    value: "8+",
+    value: "9+",
     label: "Web Applications",
   },
   {

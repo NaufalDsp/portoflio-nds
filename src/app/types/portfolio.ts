@@ -74,6 +74,12 @@ export interface Technology {
   color: `#${string}`;
 }
 
+export interface TechnologyGroup {
+  category: string;
+  description: string;
+  technologies: Technology[];
+}
+
 export interface EducationEntry {
   id: number;
   degree: string;
