@@ -3,6 +3,7 @@ import type { IconType } from "react-icons";
 import {
   SiAstro,
   SiCanva,
+  SiCloudflare,
   SiCoreldraw,
   SiDocker,
   SiFigma,
@@ -58,6 +59,8 @@ export const TECHNOLOGY_COLORS = {
   Astro: "#FF5D01",
   Supabase: "#3ECF8E",
   Canva: "#00C4CC",
+  Cloudflare: "#F38020",
+  Hono: "#E36002",
   CorelDRAW: "#00A389",
   CapCut: "#00F2FE",
 } as const;
@@ -118,6 +121,11 @@ export const TECHNOLOGY_GROUPS: TechnologyGroup[] = [
       { name: "Docker", icon: SiDocker, color: TECHNOLOGY_COLORS.Docker },
       { name: "Git", icon: SiGit, color: TECHNOLOGY_COLORS.Git },
       { name: "Prisma", icon: SiPrisma, color: TECHNOLOGY_COLORS.Prisma },
+      {
+        name: "Cloudflare",
+        icon: SiCloudflare,
+        color: TECHNOLOGY_COLORS.Cloudflare,
+      },
     ],
   },
   {
