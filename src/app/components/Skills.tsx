@@ -1,6 +1,7 @@
+import { useMemo } from "react";
 import { motion } from "motion/react";
-import { useTheme } from "../context/ThemeContext";
-import { TECHNOLOGY_GROUPS } from "../data/technologies";
+import { useLanguage } from "../context/LanguageContext";
+import { getTechnologyGroups } from "../data/technologies";
 import type { Technology } from "../types/portfolio";
 
 function TechCard({ tech, index }: { tech: Technology; index: number }) {
@@ -41,7 +42,11 @@ function TechCard({ tech, index }: { tech: Technology; index: number }) {
 }
 
 export function Skills() {
-  useTheme();
+  const { language, t } = useLanguage();
+  const technologyGroups = useMemo(
+    () => getTechnologyGroups(language),
+    [language],
+  );
 
   return (
     <section
@@ -59,7 +64,7 @@ export function Skills() {
           <p
             className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider"
             style={{ color: "var(--portfolio-accent)" }}>
-            Stack &amp; Toolkit
+            {t.skills.overline}
           </p>
           <h2
             className="mb-4 text-3xl font-bold sm:text-4xl"
@@ -67,19 +72,18 @@ export function Skills() {
               color: "var(--portfolio-text)",
               letterSpacing: "-0.03em",
             }}>
-            Skills &amp; Technologies
+            {t.skills.title}
           </h2>
           <p
             className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
             style={{ color: "var(--portfolio-muted)" }}>
-            Categorized tools, frameworks, and creative software I use across
-            engineering and digital production.
+            {t.skills.description}
           </p>
         </motion.div>
 
         {/* Categorized Tech Sections */}
         <div className="space-y-10 sm:space-y-12">
-          {TECHNOLOGY_GROUPS.map((group, groupIndex) => (
+          {technologyGroups.map((group, groupIndex) => (
             <motion.div
               key={group.category}
               initial={{ opacity: 0, y: 18 }}
@@ -105,7 +109,8 @@ export function Skills() {
                 <span
                   className="font-mono text-xs font-semibold shrink-0"
                   style={{ color: "var(--portfolio-accent)" }}>
-                  {group.technologies.length} tools
+                  {group.technologies.length}{" "}
+                  {language === "id" ? "alat" : "tools"}
                 </span>
               </div>
 

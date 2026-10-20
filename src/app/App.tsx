@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { AnimatePresence } from "motion/react";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import { Navbar } from "./components/Navbar";
 import { Hero } from "./components/Hero";
 import { Projects } from "./components/Projects";
@@ -73,7 +74,9 @@ function PortfolioApp() {
 export default function App() {
   return (
     <ThemeProvider>
-      <PortfolioApp />
+      <LanguageProvider>
+        <PortfolioApp />
+      </LanguageProvider>
     </ThemeProvider>
   );
 }

@@ -1,10 +1,12 @@
+import { useMemo } from "react";
 import { BriefcaseBusiness, CalendarDays, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
-import { useTheme } from "../context/ThemeContext";
-import { WORK_EXPERIENCES } from "../data/experience";
+import { useLanguage } from "../context/LanguageContext";
+import { getWorkExperiences } from "../data/experience";
 
 export function WorkExperience() {
-  useTheme();
+  const { language, t } = useLanguage();
+  const experiences = useMemo(() => getWorkExperiences(language), [language]);
 
   return (
     <section
@@ -21,7 +23,7 @@ export function WorkExperience() {
           <p
             className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider"
             style={{ color: "var(--portfolio-accent)" }}>
-            Career History
+            {t.experience.overline}
           </p>
           <h2
             className="mb-4 text-3xl font-bold sm:text-4xl"
@@ -29,13 +31,12 @@ export function WorkExperience() {
               color: "var(--portfolio-text)",
               letterSpacing: "-0.03em",
             }}>
-            Work Experience
+            {t.experience.title}
           </h2>
           <p
             className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
             style={{ color: "var(--portfolio-muted)" }}>
-            Hands-on software development experience across government agencies,
-            digital platforms, and technology consultancy teams.
+            {t.experience.description}
           </p>
         </motion.div>
 
@@ -49,7 +50,7 @@ export function WorkExperience() {
           />
 
           <div className="space-y-6">
-            {WORK_EXPERIENCES.map((experience, index) => (
+            {experiences.map((experience, index) => (
               <motion.article
                 key={experience.id}
                 initial={{ opacity: 0, y: 16 }}

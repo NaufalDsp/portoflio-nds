@@ -1,17 +1,69 @@
-import { useState, useEffect, useRef } from "react";
-import { Sun, Moon, Download, Menu, X } from "lucide-react";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { Sun, Moon, Download, Menu, X, Globe, ChevronDown, Check } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
-import { NAVIGATION_LINKS } from "../data/navigation";
+import { useLanguage } from "../context/LanguageContext";
+import { getNavigationLinks } from "../data/navigation";
 import { CV_URL } from "../data/profile";
 import { scrollToSection } from "../utils/scrollToSection";
 import { motion, AnimatePresence } from "motion/react";
 
+const LANGUAGE_OPTIONS = [
+  {
+    code: "en" as const,
+    label: "English",
+    nativeLabel: "English",
+    badge: "EN",
+    flag: "🇺🇸",
+  },
+  {
+    code: "id" as const,
+    label: "Indonesia",
+    nativeLabel: "Bahasa Indonesia",
+    badge: "ID",
+    flag: "🇮🇩",
+  },
+] as const;
+
 export function Navbar() {
   const { isDark, toggleTheme } = useTheme();
+  const { language, setLanguage, t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState("Home");
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const [mobileLangOpen, setMobileLangOpen] = useState(false);
+  const [activeHref, setActiveHref] = useState<string>("#home");
   const isClickingRef = useRef(false);
+  const langDropdownRef = useRef<HTMLDivElement>(null);
+
+  const navLinks = useMemo(() => getNavigationLinks(language), [language]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        langDropdownRef.current &&
+        !langDropdownRef.current.contains(event.target as Node)
+      ) {
+        setLangDropdownOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setLangDropdownOpen(false);
+        setMobileLangOpen(false);
+      }
+    };
+
+    if (langDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [langDropdownOpen]);
 
   useEffect(() => {
     let rafId: number;
@@ -26,7 +78,7 @@ export function Navbar() {
 
         // 1. When near top, activate Home
         if (scrollY < 120) {
-          setActiveLink("Home");
+          setActiveHref("#home");
           return;
         }
 
@@ -35,43 +87,43 @@ export function Navbar() {
           window.innerHeight + scrollY >=
           document.documentElement.scrollHeight - 70
         ) {
-          setActiveLink("Contact");
+          setActiveHref("#contact");
           return;
         }
 
         // 3. Scan sections by active reading line (32% from viewport top)
         const triggerPoint = window.innerHeight * 0.32;
-        let matchedLabel: string | null = null;
+        let matchedHref: string | null = null;
 
-        for (const link of NAVIGATION_LINKS) {
+        for (const link of navLinks) {
           const section = document.querySelector(link.href);
           if (section) {
             const rect = section.getBoundingClientRect();
             if (rect.top <= triggerPoint && rect.bottom > triggerPoint) {
-              matchedLabel = link.label;
+              matchedHref = link.href;
               break;
             }
           }
         }
 
-        // Fallback: If in between padding, find the closest section to trigger point
-        if (!matchedLabel) {
+        // Fallback: If in between padding, find closest section to trigger point
+        if (!matchedHref) {
           let minDistance = Infinity;
-          for (const link of NAVIGATION_LINKS) {
+          for (const link of navLinks) {
             const section = document.querySelector(link.href);
             if (section) {
               const rect = section.getBoundingClientRect();
               const dist = Math.abs(rect.top - triggerPoint);
               if (dist < minDistance) {
                 minDistance = dist;
-                matchedLabel = link.label;
+                matchedHref = link.href;
               }
             }
           }
         }
 
-        if (matchedLabel) {
-          setActiveLink(matchedLabel);
+        if (matchedHref) {
+          setActiveHref(matchedHref);
         }
       });
     };
@@ -83,11 +135,13 @@ export function Navbar() {
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(rafId);
     };
-  }, []);
+  }, [navLinks]);
 
-  const navigateTo = (href: `#${string}`, label: string) => {
-    setActiveLink(label);
+  const navigateTo = (href: `#${string}`) => {
+    setActiveHref(href);
     setMobileOpen(false);
+    setLangDropdownOpen(false);
+    setMobileLangOpen(false);
     isClickingRef.current = true;
     scrollToSection(href);
     setTimeout(() => {
@@ -114,7 +168,7 @@ export function Navbar() {
           {/* Logo */}
           <motion.a
             href="#home"
-            onClick={() => navigateTo("#home", "Home")}
+            onClick={() => navigateTo("#home")}
             className="relative flex items-center group cursor-pointer"
             whileHover={{ scale: 1.04 }}>
             <span
@@ -134,21 +188,21 @@ export function Navbar() {
 
           {/* Desktop Nav Links */}
           <div className="hidden md:flex items-center gap-5 lg:gap-7">
-            {NAVIGATION_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <button
-                key={link.label}
-                onClick={() => navigateTo(link.href, link.label)}
+                key={link.href}
+                onClick={() => navigateTo(link.href)}
                 className={`relative text-xs lg:text-sm font-medium transition-colors duration-200 group ${
-                  activeLink === link.label ? "font-semibold" : ""
+                  activeHref === link.href ? "font-semibold" : ""
                 }`}
                 style={{
                   color:
-                    activeLink === link.label
+                    activeHref === link.href
                       ? "var(--portfolio-accent)"
                       : "var(--portfolio-muted)",
                 }}>
                 {link.label}
-                {activeLink === link.label && (
+                {activeHref === link.href && (
                   <motion.span
                     layoutId="activeNavIndicator"
                     className="absolute -bottom-1.5 left-0 right-0 h-[2px] rounded-full"
@@ -162,12 +216,108 @@ export function Navbar() {
           </div>
 
           {/* Right Controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            {/* Language Switcher Dropdown */}
+            <div className="relative" ref={langDropdownRef}>
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setLangDropdownOpen((prev) => !prev)}
+                aria-expanded={langDropdownOpen}
+                aria-haspopup="listbox"
+                aria-label={t.nav.currentLanguage}
+                title={t.nav.switchLanguage}
+                className={`relative flex items-center gap-1.5 px-2.5 sm:px-3 h-10 rounded-xl border text-xs font-mono font-semibold transition-all duration-200 ${
+                  isDark
+                    ? "bg-white/[0.05] border-white/10 hover:bg-white/10 hover:border-white/20 text-[#d5dedf]"
+                    : "bg-black/[0.04] border-black/10 hover:bg-black/10 hover:border-black/20 text-slate-700"
+                } ${
+                  langDropdownOpen
+                    ? "border-[var(--portfolio-accent)]/60 ring-2 ring-[var(--portfolio-accent)]/20 shadow-sm"
+                    : ""
+                }`}>
+                <Globe size={15} className="text-[var(--portfolio-accent)] shrink-0" />
+                <span className="uppercase tracking-wider font-bold">
+                  {language === "en" ? "EN" : "ID"}
+                </span>
+                <ChevronDown
+                  size={13}
+                  className={`transition-transform duration-200 opacity-70 ${
+                    langDropdownOpen
+                      ? "rotate-180 text-[var(--portfolio-accent)] opacity-100"
+                      : ""
+                  }`}
+                />
+              </motion.button>
+
+              <AnimatePresence>
+                {langDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6, scale: 0.96 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                    className="absolute right-0 mt-2 w-48 rounded-xl border p-1.5 shadow-2xl backdrop-blur-2xl z-[70] overflow-hidden"
+                    style={{
+                      background: "var(--portfolio-surface)",
+                      borderColor: "var(--portfolio-border)",
+                    }}
+                    role="listbox"
+                    aria-label="Select Language">
+                    <div className="px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-wider text-[var(--portfolio-muted)]">
+                      {language === "id" ? "Pilih Bahasa" : "Select Language"}
+                    </div>
+                    {LANGUAGE_OPTIONS.map((opt) => {
+                      const isSelected = language === opt.code;
+                      return (
+                        <button
+                          key={opt.code}
+                          type="button"
+                          role="option"
+                          aria-selected={isSelected}
+                          onClick={() => {
+                            setLanguage(opt.code);
+                            setLangDropdownOpen(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs transition-colors duration-150 ${
+                            isSelected
+                              ? "bg-[var(--portfolio-accent)]/15 text-[var(--portfolio-accent)] font-semibold"
+                              : "text-[var(--portfolio-text)] hover:bg-black/5 dark:hover:bg-white/5 font-medium"
+                          }`}>
+                          <div className="flex items-center gap-2.5">
+                            <span className="text-sm leading-none" aria-hidden="true">
+                              {opt.flag}
+                            </span>
+                            <div className="flex flex-col items-start text-left">
+                              <span className="text-xs font-sans leading-tight">
+                                {opt.nativeLabel}
+                              </span>
+                              <span className="text-[10px] font-mono opacity-60 leading-tight">
+                                {opt.badge}
+                              </span>
+                            </div>
+                          </div>
+                          {isSelected && (
+                            <Check
+                              size={14}
+                              className="text-[var(--portfolio-accent)] shrink-0 ml-2"
+                            />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             {/* Theme Toggle */}
             <motion.button
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.93 }}
               onClick={toggleTheme}
+              aria-label="Toggle theme"
               className={`relative flex items-center justify-center w-10 h-10 rounded-xl border transition-all duration-300 ${
                 isDark
                   ? "bg-white/[0.05] border-white/10 hover:bg-white/10 hover:border-white/20"
@@ -201,7 +351,7 @@ export function Navbar() {
               href={CV_URL}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Buka CV Naufal Dwi Saputro"
+              aria-label="CV Naufal Dwi Saputro"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 shadow-sm"
@@ -210,13 +360,13 @@ export function Navbar() {
                 color: "var(--portfolio-accent-contrast)",
               }}>
               <Download size={14} />
-              Resume
+              {t.nav.resume}
             </motion.a>
 
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileOpen((prev) => !prev)}
-              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              aria-label={mobileOpen ? t.nav.closeMenu : t.nav.openMenu}
               className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg border transition-colors duration-200"
               style={{
                 background: "var(--portfolio-surface)",
@@ -243,34 +393,116 @@ export function Navbar() {
               borderColor: "var(--portfolio-border)",
             }}>
             <div className="px-6 py-4 flex flex-col gap-2">
-              {NAVIGATION_LINKS.map((link) => (
+              {navLinks.map((link) => (
                 <button
-                  key={link.label}
-                  onClick={() => navigateTo(link.href, link.label)}
+                  key={link.href}
+                  onClick={() => navigateTo(link.href)}
                   className={`text-left text-sm py-2 transition-colors duration-200 ${
-                    activeLink === link.label ? "font-semibold" : ""
+                    activeHref === link.href ? "font-semibold" : ""
                   }`}
                   style={{
                     color:
-                      activeLink === link.label
+                      activeHref === link.href
                         ? "var(--portfolio-accent)"
                         : "var(--portfolio-muted)",
                   }}>
                   {link.label}
                 </button>
               ))}
+
+              {/* Mobile Language Dropdown Row */}
+              <div
+                className="pt-3 border-t mt-2"
+                style={{ borderColor: "var(--portfolio-border)" }}>
+                <button
+                  type="button"
+                  onClick={() => setMobileLangOpen((prev) => !prev)}
+                  className="w-full flex items-center justify-between py-2 text-xs font-mono font-medium rounded-lg px-2 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                  style={{ color: "var(--portfolio-muted)" }}>
+                  <span className="flex items-center gap-2">
+                    <Globe size={14} className="text-[var(--portfolio-accent)]" />
+                    <span>Language / Bahasa:</span>
+                    <span
+                      className="font-bold uppercase tracking-wider px-1.5 py-0.5 rounded text-[11px]"
+                      style={{
+                        background: "var(--portfolio-surface-raised)",
+                        color: "var(--portfolio-accent)",
+                      }}>
+                      {language === "en" ? "EN • English" : "ID • Indonesia"}
+                    </span>
+                  </span>
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform duration-200 ${
+                      mobileLangOpen
+                        ? "rotate-180 text-[var(--portfolio-accent)]"
+                        : "opacity-70"
+                    }`}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {mobileLangOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden mt-1.5 flex flex-col gap-1 p-1 rounded-xl border"
+                      style={{
+                        background: "var(--portfolio-surface-raised)",
+                        borderColor: "var(--portfolio-border)",
+                      }}>
+                      {LANGUAGE_OPTIONS.map((opt) => {
+                        const isSelected = language === opt.code;
+                        return (
+                          <button
+                            key={opt.code}
+                            type="button"
+                            onClick={() => {
+                              setLanguage(opt.code);
+                              setMobileLangOpen(false);
+                            }}
+                            className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors ${
+                              isSelected
+                                ? "bg-[var(--portfolio-accent)]/15 text-[var(--portfolio-accent)] font-semibold"
+                                : "text-[var(--portfolio-text)] hover:bg-black/5 dark:hover:bg-white/5"
+                            }`}>
+                            <span className="flex items-center gap-2">
+                              <span>{opt.flag}</span>
+                              <span className="font-sans font-medium">
+                                {opt.nativeLabel}
+                              </span>
+                              <span className="text-[10px] font-mono opacity-60">
+                                ({opt.badge})
+                              </span>
+                            </span>
+                            {isSelected && (
+                              <Check
+                                size={14}
+                                className="text-[var(--portfolio-accent)] shrink-0"
+                              />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
               <a
                 href={CV_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Buka CV Naufal Dwi Saputro"
+                aria-label="CV Naufal Dwi Saputro"
                 className="inline-flex items-center gap-2 mt-3 px-4 py-2.5 rounded-lg text-xs font-semibold w-fit shadow-sm"
                 style={{
                   background: "var(--portfolio-accent)",
                   color: "var(--portfolio-accent-contrast)",
                 }}>
                 <Download size={14} />
-                Download CV
+                {t.nav.downloadCv}
               </a>
             </div>
           </motion.div>

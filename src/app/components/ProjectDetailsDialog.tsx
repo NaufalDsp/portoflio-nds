@@ -1,5 +1,6 @@
 import { ExternalLink, Github, Lock } from "lucide-react";
 import type { Project } from "../types/portfolio";
+import { useLanguage } from "../context/LanguageContext";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +18,8 @@ export function ProjectDetailsDialog({
   project,
   onOpenChange,
 }: ProjectDetailsDialogProps) {
+  const { t } = useLanguage();
+
   return (
     <Dialog open={project !== null} onOpenChange={onOpenChange}>
       {project && (
@@ -45,7 +48,7 @@ export function ProjectDetailsDialog({
                       background: "var(--portfolio-accent-soft)",
                       color: "var(--portfolio-accent-strong)",
                     }}>
-                    Featured project
+                    {t.projects.featuredBadge}
                   </span>
                 )}
                 {project.isPrivate && (
@@ -56,7 +59,7 @@ export function ProjectDetailsDialog({
                       color: "var(--portfolio-muted)",
                     }}>
                     <Lock size={12} aria-hidden="true" />
-                    Private project
+                    {t.projects.privateBadge}
                   </span>
                 )}
               </div>
@@ -76,7 +79,7 @@ export function ProjectDetailsDialog({
                   id="project-contribution-heading"
                   className="mb-2 text-sm font-semibold"
                   style={{ color: "var(--portfolio-text)" }}>
-                  My Role
+                  {t.projects.dialogRole}
                 </h3>
                 <p
                   className="mb-5 text-sm leading-relaxed"
@@ -86,7 +89,7 @@ export function ProjectDetailsDialog({
                 <h4
                   className="mb-3 text-sm font-semibold"
                   style={{ color: "var(--portfolio-text)" }}>
-                  Contributions
+                  {t.projects.dialogContributions}
                 </h4>
                 <ul
                   className="list-disc space-y-2 pl-5 text-sm leading-relaxed marker:text-[var(--portfolio-accent)]"
@@ -103,10 +106,10 @@ export function ProjectDetailsDialog({
                 id="project-technologies-heading"
                 className="mb-3 text-sm font-semibold"
                 style={{ color: "var(--portfolio-text)" }}>
-                Technologies
+                {t.projects.dialogTechnologies}
               </h3>
               <div className="flex flex-wrap gap-2">
-                {project.technologies.map(({ name, color }) => (
+                {project.technologies.map(({ name }) => (
                   <span
                     key={name}
                     className="rounded border px-2.5 py-1 font-mono text-xs"
@@ -130,7 +133,7 @@ export function ProjectDetailsDialog({
                 <p
                   className="text-sm"
                   style={{ color: "var(--portfolio-muted)" }}>
-                  Source code and live preview are not public.
+                  {t.projects.dialogPrivateNotice}
                 </p>
               ) : (
                 <>
@@ -145,7 +148,7 @@ export function ProjectDetailsDialog({
                         color: "var(--portfolio-text)",
                       }}>
                       <Github size={16} aria-hidden="true" />
-                      Source code
+                      {t.projects.dialogSourceCode}
                     </a>
                   )}
                   {project.links.live && project.links.live !== "#" && (
@@ -159,7 +162,7 @@ export function ProjectDetailsDialog({
                         color: "var(--portfolio-accent-contrast)",
                       }}>
                       <ExternalLink size={16} aria-hidden="true" />
-                      Live demo
+                      {t.projects.dialogLiveDemo}
                     </a>
                   )}
                   {(!project.links.github || project.links.github === "#") &&
@@ -167,7 +170,7 @@ export function ProjectDetailsDialog({
                       <p
                         className="text-sm"
                         style={{ color: "var(--portfolio-muted)" }}>
-                        No public repository or live demo is available.
+                        {t.projects.dialogNoLinksNotice}
                       </p>
                     )}
                 </>

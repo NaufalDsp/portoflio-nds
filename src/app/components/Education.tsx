@@ -1,10 +1,12 @@
+import { useMemo } from "react";
 import { CalendarDays, CheckCircle2, GraduationCap } from "lucide-react";
 import { motion } from "motion/react";
-import { useTheme } from "../context/ThemeContext";
-import { EDUCATION } from "../data/education";
+import { useLanguage } from "../context/LanguageContext";
+import { getEducation } from "../data/education";
 
 export function Education() {
-  useTheme();
+  const { language, t } = useLanguage();
+  const educationEntries = useMemo(() => getEducation(language), [language]);
 
   return (
     <section
@@ -23,7 +25,7 @@ export function Education() {
           <p
             className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider"
             style={{ color: "var(--portfolio-accent)" }}>
-            Academic Foundation
+            {t.education.overline}
           </p>
           <h2
             className="mb-4 text-3xl font-bold sm:text-4xl"
@@ -31,13 +33,12 @@ export function Education() {
               color: "var(--portfolio-text)",
               letterSpacing: "-0.03em",
             }}>
-            Education &amp; Milestones
+            {t.education.title}
           </h2>
           <p
             className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
             style={{ color: "var(--portfolio-muted)" }}>
-            The formal engineering background and coursework supporting my work
-            as a software developer.
+            {t.education.description}
           </p>
         </motion.div>
 
@@ -50,7 +51,7 @@ export function Education() {
             }}
           />
 
-          {EDUCATION.map((education, index) => (
+          {educationEntries.map((education, index) => (
             <motion.article
               key={education.id}
               initial={{ opacity: 0, y: 16 }}
@@ -116,7 +117,7 @@ export function Education() {
                       style={{
                         color: "var(--portfolio-muted)",
                       }}>
-                      Cumulative GPA
+                      {language === "id" ? "IPK Kumulatif" : "Cumulative GPA"}
                     </p>
                     <p
                       className="font-mono font-bold text-base mt-0.5"

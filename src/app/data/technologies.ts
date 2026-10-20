@@ -23,6 +23,7 @@ import {
   SiVuedotjs,
 } from "react-icons/si";
 import type { Technology, TechnologyGroup } from "../types/portfolio";
+import type { Language } from "../i18n/translations";
 
 export const SiCapcut: IconType = (props) =>
   createElement(
@@ -65,11 +66,16 @@ export const TECHNOLOGY_COLORS = {
   CapCut: "#00F2FE",
 } as const;
 
-export const TECHNOLOGY_GROUPS: TechnologyGroup[] = [
+export const getTechnologyGroups = (
+  lang: Language = "en",
+): TechnologyGroup[] => [
   {
-    category: "Frontend Development",
+    category:
+      lang === "id" ? "Pengembangan Frontend" : "Frontend Development",
     description:
-      "Modern client-side frameworks, typed systems, and styling architecture.",
+      lang === "id"
+        ? "Framework sisi klien modern, sistem berpengetikan (typed), dan arsitektur styling."
+        : "Modern client-side frameworks, typed systems, and styling architecture.",
     technologies: [
       { name: "React", icon: SiReact, color: TECHNOLOGY_COLORS.React },
       {
@@ -92,9 +98,12 @@ export const TECHNOLOGY_GROUPS: TechnologyGroup[] = [
     ],
   },
   {
-    category: "Backend & Database",
+    category:
+      lang === "id" ? "Backend & Basis Data" : "Backend & Database",
     description:
-      "Server runtimes, RESTful APIs, and structured data storage engines.",
+      lang === "id"
+        ? "Runtime server, RESTful API, dan mesin penyimpanan data terstruktur."
+        : "Server runtimes, RESTful APIs, and structured data storage engines.",
     technologies: [
       {
         name: "Node.js",
@@ -114,9 +123,12 @@ export const TECHNOLOGY_GROUPS: TechnologyGroup[] = [
     ],
   },
   {
-    category: "DevOps & Architecture",
+    category:
+      lang === "id" ? "DevOps & Arsitektur" : "DevOps & Architecture",
     description:
-      "Containerization, source versioning, and database abstraction layers.",
+      lang === "id"
+        ? "Kontainerisasi, kontrol versi kode sumber, dan lapisan abstraksi basis data."
+        : "Containerization, source versioning, and database abstraction layers.",
     technologies: [
       { name: "Docker", icon: SiDocker, color: TECHNOLOGY_COLORS.Docker },
       { name: "Git", icon: SiGit, color: TECHNOLOGY_COLORS.Git },
@@ -129,9 +141,12 @@ export const TECHNOLOGY_GROUPS: TechnologyGroup[] = [
     ],
   },
   {
-    category: "Creative & Multimedia",
+    category:
+      lang === "id" ? "Kreatif & Multimedia" : "Creative & Multimedia",
     description:
-      "UI/UX prototyping, visual branding, vector graphics, and video editing.",
+      lang === "id"
+        ? "Pembuatan prototipe UI/UX, branding visual, grafis vektor, dan pengeditan video."
+        : "UI/UX prototyping, visual branding, vector graphics, and video editing.",
     technologies: [
       { name: "Figma", icon: SiFigma, color: TECHNOLOGY_COLORS.Figma },
       { name: "Canva", icon: SiCanva, color: TECHNOLOGY_COLORS.Canva },
@@ -144,6 +159,8 @@ export const TECHNOLOGY_GROUPS: TechnologyGroup[] = [
     ],
   },
 ];
+
+export const TECHNOLOGY_GROUPS: TechnologyGroup[] = getTechnologyGroups("en");
 
 export const TECHNOLOGIES: Technology[] = TECHNOLOGY_GROUPS.flatMap(
   (group) => group.technologies,

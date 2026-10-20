@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { useLanguage } from "../context/LanguageContext";
 
 interface AppLoaderProps {
   onComplete: () => void;
 }
 
 export function AppLoader({ onComplete }: AppLoaderProps) {
+  const { language, t } = useLanguage();
   const prefersReducedMotion = useReducedMotion();
   const loaderDuration = prefersReducedMotion ? 350 : 1_400;
 
@@ -25,7 +27,7 @@ export function AppLoader({ onComplete }: AppLoaderProps) {
     <motion.div
       role="status"
       aria-live="polite"
-      aria-label="Loading Naufal Dwi Saputro portfolio"
+      aria-label={t.loader.ariaLabel}
       initial={{ opacity: 1 }}
       exit={
         prefersReducedMotion
@@ -67,7 +69,7 @@ export function AppLoader({ onComplete }: AppLoaderProps) {
         </div>
 
         <p className="mb-6 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-[#a0adad]">
-          Full Stack Developer
+          {language === "id" ? "Pengembang Full Stack" : "Full Stack Developer"}
         </p>
 
         <div className="h-[2px] w-full overflow-hidden rounded-full bg-white/[0.08]">
@@ -84,7 +86,7 @@ export function AppLoader({ onComplete }: AppLoaderProps) {
         </div>
 
         <span className="mt-3 font-mono text-[9px] uppercase tracking-[0.16em] text-[#657178]">
-          Initializing
+          {language === "id" ? "Memuat..." : "Initializing"}
         </span>
       </motion.div>
     </motion.div>

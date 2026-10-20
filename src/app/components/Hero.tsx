@@ -1,7 +1,8 @@
+import { useMemo } from "react";
 import { ArrowRight, Mail, MapPin } from "lucide-react";
 import { motion } from "motion/react";
-import { useTheme } from "../context/ThemeContext";
-import { PROFESSIONAL_TITLES, SOCIAL_LINKS } from "../data/profile";
+import { useLanguage } from "../context/LanguageContext";
+import { getProfessionalTitles, SOCIAL_LINKS } from "../data/profile";
 import { scrollToSection } from "../utils/scrollToSection";
 import { HeroCodeCard } from "./HeroCodeCard";
 import { TypewriterText } from "./TypewriterText";
@@ -12,28 +13,35 @@ const fadeUp = (delay: number) => ({
   transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] as const },
 });
 
-const HERO_STATS = [
-  {
-    value: "3+",
-    label: "Industry Internships",
-  },
-  {
-    value: "9+",
-    label: "Web Applications",
-  },
-  {
-    value: "10",
-    label: "Verified Credentials",
-  },
-  {
-    value: "3.91",
-    suffix: "/ 4.00",
-    label: "Informatics Eng. GPA (UNS)",
-  },
-];
-
 export function Hero() {
-  const { isDark } = useTheme();
+  const { language, t } = useLanguage();
+  const professionalTitles = useMemo(
+    () => getProfessionalTitles(language),
+    [language],
+  );
+
+  const heroStats = useMemo(
+    () => [
+      {
+        value: "3+",
+        label: t.hero.stats.internships,
+      },
+      {
+        value: "9+",
+        label: t.hero.stats.webApps,
+      },
+      {
+        value: "10",
+        label: t.hero.stats.credentials,
+      },
+      {
+        value: "3.91",
+        suffix: "/ 4.00",
+        label: t.hero.stats.gpa,
+      },
+    ],
+    [t],
+  );
 
   return (
     <section
@@ -84,7 +92,7 @@ export function Hero() {
                   className="inline-flex items-center gap-1 font-sans text-xs"
                   style={{ color: "var(--portfolio-muted)" }}>
                   <MapPin size={12} aria-hidden="true" />
-                  Sragen, Indonesia
+                  {t.hero.location}
                 </span>
               </div>
             </motion.div>
@@ -103,7 +111,7 @@ export function Hero() {
                 <span
                   style={{ color: "var(--portfolio-accent)" }}
                   aria-hidden="true">
-                  .
+                  {t.hero.headlineSuffix}
                 </span>
               </h1>
             </motion.div>
@@ -111,7 +119,7 @@ export function Hero() {
             {/* Sub-headline with clean typewriter */}
             <motion.div {...fadeUp(0.24)} className="mt-3">
               <TypewriterText
-                words={PROFESSIONAL_TITLES}
+                words={professionalTitles}
                 className="min-w-[20ch] font-mono text-sm sm:text-base font-semibold"
                 style={{
                   color: "var(--portfolio-accent)",
@@ -126,9 +134,7 @@ export function Hero() {
               style={{
                 color: "var(--portfolio-muted)",
               }}>
-              Full Stack Developer specializing in TypeScript, React, Vue.js,
-              and Laravel. Focused on clean architecture, scalable APIs, and
-              building thoughtful, production-ready web software.
+              {t.hero.bio}
             </motion.p>
 
             {/* Action CTAs */}
@@ -144,7 +150,7 @@ export function Hero() {
                   color: "var(--portfolio-accent-contrast)",
                   boxShadow: "0 2px 12px rgba(20, 107, 102, 0.25)",
                 }}>
-                View Projects
+                {t.hero.viewProjects}
                 <ArrowRight size={16} aria-hidden="true" />
               </button>
 
@@ -158,7 +164,7 @@ export function Hero() {
                   color: "var(--portfolio-text)",
                 }}>
                 <Mail size={16} aria-hidden="true" />
-                Contact Me
+                {t.hero.contactMe}
               </button>
             </motion.div>
 
@@ -169,7 +175,7 @@ export function Hero() {
               style={{
                 borderColor: "var(--portfolio-border)",
               }}>
-              {HERO_STATS.map((item) => (
+              {heroStats.map((item) => (
                 <div key={item.label} className="flex flex-col">
                   <div className="flex items-baseline gap-1">
                     <span
@@ -206,7 +212,7 @@ export function Hero() {
                 style={{
                   color: "var(--portfolio-muted)",
                 }}>
-                Connect:
+                {t.hero.connect}
               </span>
               <div className="flex items-center gap-2">
                 {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (

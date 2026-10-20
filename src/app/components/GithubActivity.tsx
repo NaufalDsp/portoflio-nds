@@ -11,29 +11,32 @@ import {
   Users,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { useTheme } from "../context/ThemeContext";
+import { useLanguage } from "../context/LanguageContext";
 import {
   fetchGitHubDashboardData,
   type GitHubDashboardData,
 } from "../services/githubService";
 
-function formatRelativeTime(dateString: string): string {
+function formatRelativeTime(dateString: string, lang: "en" | "id"): string {
   const date = new Date(dateString);
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-  if (diffInSeconds < 60) return "Just now";
+  if (diffInSeconds < 60) return lang === "id" ? "Baru saja" : "Just now";
   const minutes = Math.floor(diffInSeconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
+  if (minutes < 60) return `${minutes}${lang === "id" ? "m lalu" : "m ago"}`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return `${hours}${lang === "id" ? "j lalu" : "h ago"}`;
   const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}d ago`;
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  if (days < 30) return `${days}${lang === "id" ? "h lalu" : "d ago"}`;
+  return date.toLocaleDateString(lang === "id" ? "id-ID" : "en-US", {
+    month: "short",
+    day: "numeric",
+  });
 }
 
 export function GithubActivity() {
-  useTheme();
+  const { language, t } = useLanguage();
   const [data, setData] = useState<GitHubDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -86,7 +89,9 @@ export function GithubActivity() {
               color: "var(--portfolio-accent)",
             }}>
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            Live GitHub Telemetry
+            {language === "id"
+              ? "Telemetri Langsung GitHub"
+              : "Live GitHub Telemetry"}
           </div>
           <h2
             className="mb-4 text-3xl font-bold sm:text-4xl"
@@ -94,13 +99,16 @@ export function GithubActivity() {
               color: "var(--portfolio-text)",
               letterSpacing: "-0.03em",
             }}>
-            Open Source &amp; Activity
+            {language === "id"
+              ? "Open Source & Aktivitas"
+              : "Open Source & Activity"}
           </h2>
           <p
             className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
             style={{ color: "var(--portfolio-muted)" }}>
-            Public repository metrics, continuous contributions, and recent
-            commits fetched directly from my GitHub profile.
+            {language === "id"
+              ? "Metrik repositori publik, kontribusi berkelanjutan, dan komit terbaru yang diambil langsung dari profil GitHub saya."
+              : "Public repository metrics, continuous contributions, and recent commits fetched directly from my GitHub profile."}
           </p>
         </motion.div>
 
@@ -109,22 +117,23 @@ export function GithubActivity() {
           {[
             {
               icon: GitBranch,
-              label: "Public Repositories",
+              label:
+                language === "id" ? "Repositori Publik" : "Public Repositories",
               value: data ? `${data.publicRepos}` : "27",
             },
             {
               icon: Star,
-              label: "Stargazers Earned",
+              label: language === "id" ? "Total Bintang" : "Stargazers Earned",
               value: data ? `${data.totalStars}` : "5",
             },
             {
               icon: Users,
-              label: "Network Followers",
+              label: language === "id" ? "Pengikut" : "Network Followers",
               value: data ? `${data.followers}` : "36",
             },
             {
               icon: Code2,
-              label: "Primary Language",
+              label: language === "id" ? "Bahasa Utama" : "Primary Language",
               value: data?.topLanguages[0]?.name || "TypeScript",
             },
           ].map((item, index) => {
@@ -193,13 +202,16 @@ export function GithubActivity() {
                     <h3
                       className="text-base font-bold"
                       style={{ color: "var(--portfolio-text)" }}>
-                      Contribution Graph
+                      {language === "id"
+                        ? "Grafik Kontribusi"
+                        : "Contribution Graph"}
                     </h3>
                     <p
                       className="text-xs"
                       style={{ color: "var(--portfolio-muted)" }}>
-                      Public activity across open repositories over the last
-                      year
+                      {language === "id"
+                        ? "Aktivitas publik di seluruh repositori terbuka selama setahun terakhir"
+                        : "Public activity across open repositories over the last year"}
                     </p>
                   </div>
                 </div>
@@ -239,7 +251,11 @@ export function GithubActivity() {
                 borderColor: "var(--portfolio-border)",
                 color: "var(--portfolio-muted)",
               }}>
-              <span>Source: GitHub REST API</span>
+              <span>
+                {language === "id"
+                  ? "Sumber: GitHub REST API"
+                  : "Source: GitHub REST API"}
+              </span>
               <button
                 type="button"
                 onClick={() => void loadData(true)}
@@ -251,7 +267,13 @@ export function GithubActivity() {
                   className={refreshing ? "animate-spin" : ""}
                   aria-hidden="true"
                 />
-                {refreshing ? "Refreshing..." : "Sync now"}
+                {refreshing
+                  ? language === "id"
+                    ? "Menyinkronkan..."
+                    : "Refreshing..."
+                  : language === "id"
+                    ? "Sinkronisasi sekarang"
+                    : "Sync now"}
               </button>
             </div>
           </motion.div>
@@ -290,7 +312,7 @@ export function GithubActivity() {
                         ? "0 1px 3px rgba(0,0,0,0.08)"
                         : "none",
                   }}>
-                  Recent Commits
+                  {language === "id" ? "Komit Terbaru" : "Recent Commits"}
                 </button>
                 <button
                   type="button"
@@ -310,7 +332,7 @@ export function GithubActivity() {
                         ? "0 1px 3px rgba(0,0,0,0.08)"
                         : "none",
                   }}>
-                  Top Languages
+                  {language === "id" ? "Bahasa Utama" : "Top Languages"}
                 </button>
               </div>
 
@@ -355,7 +377,7 @@ export function GithubActivity() {
                                 style={{
                                   color: "var(--portfolio-muted)",
                                 }}>
-                                {formatRelativeTime(evt.createdAt)}
+                                {formatRelativeTime(evt.createdAt, language)}
                               </span>
                             </div>
                             <p
@@ -370,7 +392,9 @@ export function GithubActivity() {
                       <p
                         className="text-center py-8 text-xs font-mono"
                         style={{ color: "var(--portfolio-muted)" }}>
-                        No recent activity recorded.
+                        {language === "id"
+                          ? "Tidak ada aktivitas terbaru yang tercatat."
+                          : "No recent activity recorded."}
                       </p>
                     )}
                   </motion.div>
@@ -397,8 +421,13 @@ export function GithubActivity() {
                           <span
                             className="font-mono text-[11px]"
                             style={{ color: "var(--portfolio-muted)" }}>
-                            {lang.count} {lang.count === 1 ? "repo" : "repos"} (
-                            {lang.percentage}%)
+                            {lang.count}{" "}
+                            {language === "id"
+                              ? "repo"
+                              : lang.count === 1
+                                ? "repo"
+                                : "repos"}{" "}
+                            ({lang.percentage}%)
                           </span>
                         </div>
                         <div
@@ -437,7 +466,9 @@ export function GithubActivity() {
                   color: "var(--portfolio-accent-contrast)",
                 }}>
                 <Github size={15} aria-hidden="true" />
-                View Full GitHub Profile
+                {language === "id"
+                  ? "Lihat Profil GitHub Lengkap"
+                  : "View Full GitHub Profile"}
                 <ArrowUpRight size={13} aria-hidden="true" />
               </a>
             </div>

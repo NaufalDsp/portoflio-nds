@@ -1,7 +1,8 @@
 import { ArrowRight, ArrowUpRight, Github, Lock } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "motion/react";
-import { PROJECTS } from "../data/projects";
+import { useLanguage } from "../context/LanguageContext";
+import { getProjects } from "../data/projects";
 import type { Project } from "../types/portfolio";
 import { ProjectDetailsDialog } from "./ProjectDetailsDialog";
 
@@ -16,6 +17,8 @@ function ProjectCard({
   onOpenDetails: (project: Project) => void;
   featured?: boolean;
 }) {
+  const { t } = useLanguage();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 18 }}
@@ -52,7 +55,7 @@ function ProjectCard({
             <span
               className="text-xs font-semibold uppercase tracking-wider"
               style={{ color: "var(--portfolio-accent)" }}>
-              Selected project
+              {t.projects.selectedBadge}
             </span>
           )}
           {project.isPrivate && (
@@ -63,7 +66,7 @@ function ProjectCard({
                 color: "var(--portfolio-muted)",
               }}>
               <Lock size={11} aria-hidden="true" />
-              Private
+              {t.projects.privateBadge}
             </span>
           )}
         </div>
@@ -134,7 +137,9 @@ function ProjectCard({
           onClick={() => onOpenDetails(project)}
           aria-label={`View details for ${project.title}`}
           className="mt-auto inline-flex w-fit items-center gap-2 pt-6 text-sm font-semibold transition-colors hover:gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--portfolio-focus)] focus-visible:ring-offset-4">
-          <span style={{ color: "var(--portfolio-accent)" }}>Read project</span>
+          <span style={{ color: "var(--portfolio-accent)" }}>
+            {t.projects.readProject}
+          </span>
           <ArrowRight
             size={15}
             aria-hidden="true"
@@ -147,9 +152,22 @@ function ProjectCard({
 }
 
 export function Projects() {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const featuredProject = PROJECTS.find((project) => project.featured);
-  const supportingProjects = PROJECTS.filter((project) => !project.featured);
+  const { language, t } = useLanguage();
+  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(
+    null,
+  );
+
+  const projects = useMemo(() => getProjects(language), [language]);
+  const featuredProject = projects.find((project) => project.featured);
+  const supportingProjects = projects.filter((project) => !project.featured);
+
+  const selectedProject = useMemo(
+    () =>
+      selectedProjectId !== null
+        ? projects.find((p) => p.id === selectedProjectId) ?? null
+        : null,
+    [projects, selectedProjectId],
+  );
 
   return (
     <section
@@ -168,7 +186,7 @@ export function Projects() {
           <p
             className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider"
             style={{ color: "var(--portfolio-accent)" }}>
-            Selected work
+            {t.projects.overline}
           </p>
           <h2
             className="mb-4 text-3xl font-bold sm:text-4xl"
@@ -176,12 +194,12 @@ export function Projects() {
               color: "var(--portfolio-text)",
               letterSpacing: "-0.03em",
             }}>
-            Projects
+            {t.projects.title}
           </h2>
           <p
             className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
             style={{ color: "var(--portfolio-muted)" }}>
-            A selection of products and systems I helped design and build.
+            {t.projects.description}
           </p>
         </motion.div>
 
@@ -191,7 +209,7 @@ export function Projects() {
               project={featuredProject}
               index={0}
               featured
-              onOpenDetails={setSelectedProject}
+              onOpenDetails={(p) => setSelectedProjectId(p.id)}
             />
           </div>
         )}
@@ -202,7 +220,7 @@ export function Projects() {
               key={project.id}
               project={project}
               index={index + 1}
-              onOpenDetails={setSelectedProject}
+              onOpenDetails={(p) => setSelectedProjectId(p.id)}
             />
           ))}
         </div>
@@ -210,7 +228,7 @@ export function Projects() {
       <ProjectDetailsDialog
         project={selectedProject}
         onOpenChange={(open) => {
-          if (!open) setSelectedProject(null);
+          if (!open) setSelectedProjectId(null);
         }}
       />
     </section>

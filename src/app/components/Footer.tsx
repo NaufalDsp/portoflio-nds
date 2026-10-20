@@ -1,9 +1,12 @@
+import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
-import { NAVIGATION_LINKS } from "../data/navigation";
+import { getNavigationLinks } from "../data/navigation";
 import { scrollToSection } from "../utils/scrollToSection";
 
 export function Footer() {
   useTheme();
+  const { language, t } = useLanguage();
+  const navigationLinks = getNavigationLinks(language);
 
   return (
     <footer
@@ -29,26 +32,20 @@ export function Footer() {
                 .
               </span>
             </span>
-            <span
-              className="hidden sm:inline-block text-xs"
-              style={{ color: "var(--portfolio-muted)" }}>
-              Full Stack Software Engineer
-            </span>
           </div>
 
           {/* Copyright */}
           <p
-            className="text-xs font-mono"
+            className="text-xs font-mono text-center sm:text-left"
             style={{ color: "var(--portfolio-muted)" }}>
-            © {new Date().getFullYear()} Naufal Dwi Saputro. All rights
-            reserved.
+            © {new Date().getFullYear()} Naufal Dwi Saputro. {t.footer.rights}
           </p>
 
           {/* Nav Links */}
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-            {NAVIGATION_LINKS.map((link) => (
+            {navigationLinks.map((link) => (
               <button
-                key={link.label}
+                key={link.href}
                 onClick={() => scrollToSection(link.href)}
                 className="text-xs font-medium transition-colors hover:text-teal-600 dark:hover:text-teal-400"
                 style={{

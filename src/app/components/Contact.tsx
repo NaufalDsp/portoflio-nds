@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "motion/react";
 import { AlertCircle, Send, CheckCircle } from "lucide-react";
-import { useTheme } from "../context/ThemeContext";
-import { CONTACT_DETAILS, SOCIAL_LINKS } from "../data/profile";
+import { useLanguage } from "../context/LanguageContext";
+import { getContactDetails, SOCIAL_LINKS } from "../data/profile";
 import {
   sendContactMessage,
   type ContactMessage,
@@ -16,16 +16,20 @@ const EMPTY_FORM_DATA: ContactMessage = {
 };
 
 export function Contact() {
-  useTheme();
+  const { language, t } = useLanguage();
   const [formData, setFormData] = useState<ContactMessage>(EMPTY_FORM_DATA);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const contactDetails = useMemo(
+    () => getContactDetails(language),
+    [language],
+  );
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage(null);
-
     setLoading(true);
 
     try {
@@ -33,9 +37,7 @@ export function Contact() {
       setSubmitted(true);
     } catch (error) {
       setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to send your message. Please try again.",
+        error instanceof Error ? error.message : t.contact.errorDefault,
       );
     } finally {
       setLoading(false);
@@ -89,7 +91,7 @@ export function Contact() {
           <p
             className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider"
             style={{ color: "var(--portfolio-accent)" }}>
-            Direct Inquiries
+            {t.contact.overline}
           </p>
           <h2
             className="mb-4 text-3xl font-bold sm:text-4xl"
@@ -97,13 +99,12 @@ export function Contact() {
               color: "var(--portfolio-text)",
               letterSpacing: "-0.03em",
             }}>
-            Get In Touch
+            {t.contact.title}
           </h2>
           <p
             className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
             style={{ color: "var(--portfolio-muted)" }}>
-            Have a project in mind, an opportunity to discuss, or just want to
-            say hello? My inbox is always open.
+            {t.contact.description}
           </p>
         </motion.div>
 
@@ -115,7 +116,7 @@ export function Contact() {
             viewport={{ once: true }}
             transition={{ duration: 0.45 }}
             className="lg:col-span-2 flex flex-col gap-4">
-            {CONTACT_DETAILS.map(({ icon: Icon, label, value }) => (
+            {contactDetails.map(({ icon: Icon, label, value }) => (
               <div
                 key={label}
                 className="flex items-center gap-4 p-4 sm:p-5 rounded-lg border transition-colors"
@@ -163,7 +164,7 @@ export function Contact() {
                 style={{
                   color: "var(--portfolio-muted)",
                 }}>
-                Social Profiles
+                {t.contact.labels.social}
               </p>
               <div className="flex gap-2.5">
                 {SOCIAL_LINKS.map(({ icon: Icon, label, href }) => (
@@ -217,15 +218,14 @@ export function Contact() {
                     style={{
                       color: "var(--portfolio-text)",
                     }}>
-                    Message Sent
+                    {t.contact.success.title}
                   </h3>
                   <p
                     className="text-sm max-w-sm"
                     style={{
                       color: "var(--portfolio-muted)",
                     }}>
-                    Thank you for reaching out. I will review your message and
-                    respond within 24 hours.
+                    {t.contact.success.description}
                   </p>
                   <button
                     type="button"
@@ -238,19 +238,19 @@ export function Contact() {
                       background: "var(--portfolio-accent)",
                       color: "var(--portfolio-accent-contrast)",
                     }}>
-                    Send Another Message
+                    {t.contact.success.sendAnother}
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label style={labelStyle}>Your Name</label>
+                      <label style={labelStyle}>{t.contact.form.fullName}</label>
                       <input
                         type="text"
                         name="name"
                         autoComplete="name"
-                        placeholder="Naufal Dwi"
+                        placeholder={t.contact.form.fullNamePlaceholder}
                         value={formData.name}
                         onChange={(e) => updateField("name", e.target.value)}
                         required
@@ -268,12 +268,12 @@ export function Contact() {
                       />
                     </div>
                     <div>
-                      <label style={labelStyle}>Email Address</label>
+                      <label style={labelStyle}>{t.contact.form.email}</label>
                       <input
                         type="email"
                         name="email"
                         autoComplete="email"
-                        placeholder="hello@email.com"
+                        placeholder={t.contact.form.emailPlaceholder}
                         value={formData.email}
                         onChange={(e) => updateField("email", e.target.value)}
                         required
@@ -292,11 +292,11 @@ export function Contact() {
                     </div>
                   </div>
                   <div>
-                    <label style={labelStyle}>Subject</label>
+                    <label style={labelStyle}>{t.contact.form.subject}</label>
                     <input
                       type="text"
                       name="subject"
-                      placeholder="Project Inquiry / Role Discussion"
+                      placeholder={t.contact.form.subjectPlaceholder}
                       value={formData.subject}
                       onChange={(e) => updateField("subject", e.target.value)}
                       required
@@ -313,11 +313,11 @@ export function Contact() {
                     />
                   </div>
                   <div>
-                    <label style={labelStyle}>Message</label>
+                    <label style={labelStyle}>{t.contact.form.message}</label>
                     <textarea
                       name="message"
                       rows={5}
-                      placeholder="Tell me about your project, timeline, or requirements..."
+                      placeholder={t.contact.form.messagePlaceholder}
                       value={formData.message}
                       onChange={(e) => updateField("message", e.target.value)}
                       required
@@ -357,12 +357,12 @@ export function Contact() {
                     {loading ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Sending Message...
+                        {t.contact.form.sending}
                       </>
                     ) : (
                       <>
                         <Send size={15} />
-                        Send Message
+                        {t.contact.form.send}
                       </>
                     )}
                   </button>

@@ -1,14 +1,16 @@
 import { ArrowUpRight, BadgeCheck, Download, FileText } from "lucide-react";
 import { motion } from "motion/react";
-import { useTheme } from "../context/ThemeContext";
+import { useLanguage } from "../context/LanguageContext";
 import { CERTIFICATES } from "../data/certificates";
 
 function CertificatePreview({
   previewUrl,
   title,
+  altText,
 }: {
   previewUrl: string;
   title: string;
+  altText: string;
 }) {
   return (
     <div
@@ -16,7 +18,7 @@ function CertificatePreview({
       style={{ borderColor: "rgba(31,41,55,0.12)" }}>
       <img
         src={previewUrl}
-        alt={`${title} certificate preview`}
+        alt={`${title} ${altText}`}
         loading="lazy"
         className="absolute inset-0 h-full w-full object-contain"
       />
@@ -24,21 +26,21 @@ function CertificatePreview({
   );
 }
 
-function formatIssueDate({
-  year,
-  month,
-  day,
-}: (typeof CERTIFICATES)[number]["issuedAt"]) {
+function formatIssueDate(
+  { year, month, day }: (typeof CERTIFICATES)[number]["issuedAt"],
+  locale: string,
+) {
   const date = new Date(Date.UTC(year, month - 1, day ?? 1));
   const options: Intl.DateTimeFormatOptions = day
     ? { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }
     : { month: "long", year: "numeric", timeZone: "UTC" };
 
-  return new Intl.DateTimeFormat("en-US", options).format(date);
+  return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
 export function Certificates() {
-  useTheme();
+  const { language, t } = useLanguage();
+  const dateLocale = language === "id" ? "id-ID" : "en-US";
 
   return (
     <section
@@ -57,7 +59,7 @@ export function Certificates() {
           <p
             className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider"
             style={{ color: "var(--portfolio-accent)" }}>
-            Credentials &amp; Learning
+            {t.certificates.overline}
           </p>
           <h2
             className="mb-4 text-3xl font-bold sm:text-4xl"
@@ -65,13 +67,12 @@ export function Certificates() {
               color: "var(--portfolio-text)",
               letterSpacing: "-0.03em",
             }}>
-            Certificates
+            {t.certificates.title}
           </h2>
           <p
             className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
             style={{ color: "var(--portfolio-muted)" }}>
-            Verified technical certifications and course completions across
-            software development, networking, databases, and AI.
+            {t.certificates.description}
           </p>
         </motion.header>
 
@@ -91,6 +92,7 @@ export function Certificates() {
               <CertificatePreview
                 previewUrl={certificate.previewUrl}
                 title={certificate.title}
+                altText={t.certificates.altPreview}
               />
 
               <div className="mb-4 flex items-start justify-between gap-3">
@@ -120,12 +122,16 @@ export function Certificates() {
                 <p
                   className="text-xs sm:text-sm mt-1"
                   style={{ color: "var(--portfolio-muted)" }}>
-                  {certificate.issuer ?? "Official credential"}
+                  {certificate.issuer ??
+                    (language === "id"
+                      ? "Kredensial resmi"
+                      : "Official credential")}
                 </p>
                 <p
                   className="mt-2.5 font-mono text-[11px]"
                   style={{ color: "var(--portfolio-muted)" }}>
-                  Issued {formatIssueDate(certificate.issuedAt)}
+                  {t.certificates.issuedOn}{" "}
+                  {formatIssueDate(certificate.issuedAt, dateLocale)}
                 </p>
               </div>
 
@@ -141,7 +147,7 @@ export function Certificates() {
                   className="inline-flex items-center gap-1.5 text-xs font-semibold transition-colors hover:underline"
                   style={{ color: "var(--portfolio-accent)" }}
                   aria-label={`Open ${certificate.title} PDF in a new tab`}>
-                  View PDF
+                  {t.certificates.openPdf}
                   <ArrowUpRight size={14} aria-hidden="true" />
                 </a>
                 <a
@@ -151,7 +157,7 @@ export function Certificates() {
                   style={{ color: "var(--portfolio-muted)" }}
                   aria-label={`Download ${certificate.title} PDF`}>
                   <Download size={13} aria-hidden="true" />
-                  Download
+                  {language === "id" ? "Unduh" : "Download"}
                 </a>
               </div>
             </motion.article>

@@ -2,32 +2,34 @@ import { useState } from "react";
 import { Check, Copy, Terminal } from "lucide-react";
 import { motion } from "motion/react";
 import { useTheme } from "../context/ThemeContext";
+import { useLanguage } from "../context/LanguageContext";
 
-const CODE_SNIPPET = `// developer.config.ts
+export function HeroCodeCard() {
+  const { isDark } = useTheme();
+  const { language, t } = useLanguage();
+  const [copied, setCopied] = useState(false);
+
+  const codeSnippet = `// developer.config.ts
 export const engineer = {
   name: "Naufal Dwi Saputro",
-  role: "Full Stack Developer",
+  role: "${t.hero.codeCard.role}",
   location: "Sragen, Indonesia",
   education: {
     institution: "Universitas Sebelas Maret",
-    degree: "Diploma in Informatics Engineering",
+    degree: "${t.hero.codeCard.degree}",
     gpa: "3.91 / 4.00",
   },
   stack: {
     frontend: ["React", "Vue.js", "TypeScript", "Tailwind CSS"],
     backend: ["Laravel", "REST APIs", "MySQL", "Inertia.js"],
   },
-  principles: ["Clean Architecture", "Type Safety", "Accessible UI"],
-  status: "available_for_hire",
+  principles: [${t.hero.codeCard.principles.map((p) => `"${p}"`).join(", ")}],
+  status: "${t.hero.codeCard.status}",
 };`;
-
-export function HeroCodeCard() {
-  const { isDark } = useTheme();
-  const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(CODE_SNIPPET);
+      await navigator.clipboard.writeText(codeSnippet);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -73,12 +75,13 @@ export function HeroCodeCard() {
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1 font-mono text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            verified
+            {t.hero.codeCard.verified}
           </span>
           <button
             type="button"
             onClick={handleCopy}
-            aria-label="Copy config snippet"
+            aria-label={t.hero.codeCard.copySnippet}
+            title={copied ? t.hero.codeCard.copied : t.hero.codeCard.copySnippet}
             className="flex h-6 w-6 items-center justify-center rounded transition-colors hover:bg-black/5 dark:hover:bg-white/5"
             style={{ color: "var(--portfolio-muted)" }}>
             {copied ? (
@@ -120,7 +123,7 @@ export function HeroCodeCard() {
           <div className="pl-4">
             <span className="text-slate-500 dark:text-slate-400">role: </span>
             <span className="text-amber-700 dark:text-amber-300">
-              &quot;Full Stack Developer&quot;
+              &quot;{t.hero.codeCard.role}&quot;
             </span>
             ,
           </div>
@@ -154,7 +157,7 @@ export function HeroCodeCard() {
                 degree:{" "}
               </span>
               <span className="text-amber-700 dark:text-amber-300">
-                &quot;D3 Informatics Engineering&quot;
+                &quot;{t.hero.codeCard.degree}&quot;
               </span>
               ,
             </div>
@@ -213,7 +216,7 @@ export function HeroCodeCard() {
           <div className="pl-4">
             <span className="text-slate-500 dark:text-slate-400">status: </span>
             <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-              &quot;available_for_hire&quot;
+              &quot;{t.hero.codeCard.status}&quot;
             </span>
             ,
           </div>
@@ -238,7 +241,9 @@ export function HeroCodeCard() {
           <span>·</span>
           <span>TypeScript</span>
         </div>
-        <span className="font-mono text-[10px]">Strict Mode: Enabled</span>
+        <span className="font-mono text-[10px]">
+          {language === "id" ? "Mode Ketat: Aktif" : "Strict Mode: Enabled"}
+        </span>
       </div>
     </motion.div>
   );
