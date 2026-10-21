@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Activity,
   ArrowUpRight,
   Code2,
   GitBranch,
@@ -10,12 +9,14 @@ import {
   Star,
   Users,
 } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { useLanguage } from "../context/LanguageContext";
 import {
   fetchGitHubDashboardData,
+  FALLBACK_CONTRIBUTION_STATS,
   type GitHubDashboardData,
 } from "../services/githubService";
+import { Github3DActivity } from "./Github3DActivity";
 
 function formatRelativeTime(dateString: string, lang: "en" | "id"): string {
   const date = new Date(dateString);
@@ -40,9 +41,6 @@ export function GithubActivity() {
   const [data, setData] = useState<GitHubDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState<"activity" | "languages">(
-    "activity",
-  );
 
   const loadData = async (force = false) => {
     if (force) setRefreshing(true);
@@ -66,6 +64,9 @@ export function GithubActivity() {
     borderColor: "var(--portfolio-border)",
   };
 
+  const contributionStats =
+    data?.contributionStats || FALLBACK_CONTRIBUTION_STATS;
+
   return (
     <section
       id="activity"
@@ -74,7 +75,7 @@ export function GithubActivity() {
         background: "var(--background)",
       }}>
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-10">
-        {/* Header */}
+        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -107,12 +108,12 @@ export function GithubActivity() {
             className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
             style={{ color: "var(--portfolio-muted)" }}>
             {language === "id"
-              ? "Metrik repositori publik, kontribusi berkelanjutan, dan komit terbaru yang diambil langsung dari profil GitHub saya."
-              : "Public repository metrics, continuous contributions, and recent commits fetched directly from my GitHub profile."}
+              ? "Metrik repositori publik, visualisasi aktivitas 3D, dan pemetaan seluruh bahasa pemrograman yang digunakan."
+              : "Public repository metrics, 3D activity visualization, and telemetry of all programming languages used."}
           </p>
         </motion.div>
 
-        {/* Metrics Grid */}
+        {/* Top 4 Metrics Summary */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
           {[
             {
@@ -133,7 +134,7 @@ export function GithubActivity() {
             },
             {
               icon: Code2,
-              label: language === "id" ? "Bahasa Utama" : "Primary Language",
+              label: language === "id" ? "Bahasa Teratas" : "Primary Language",
               value: data?.topLanguages[0]?.name || "TypeScript",
             },
           ].map((item, index) => {
@@ -176,278 +177,226 @@ export function GithubActivity() {
           })}
         </div>
 
-        {/* Dual Panel Layout: Heatmap & Recent Events/Languages */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          {/* Contribution Heatmap Card (3 cols) */}
+        {/* Featured 3D Graphic Activity Component (Full Width Majestic Card) */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-8">
+          <Github3DActivity
+            stats={contributionStats}
+            username={data?.username || "NaufalDsp"}
+          />
+        </motion.div>
+
+        {/* Bottom Dual Panels: Recent Commits (Left) & All Languages (Right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Panel 1: Recent Activity Events */}
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45 }}
-            className="lg:col-span-3 flex flex-col justify-between rounded-lg border p-6 sm:p-7"
+            className="flex flex-col justify-between rounded-xl border p-6 sm:p-7"
             style={cardStyle}>
             <div>
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-                <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between gap-3 mb-5">
+                <div className="flex items-center gap-2.5">
                   <div
-                    className="flex h-9 w-9 items-center justify-center rounded-md border"
+                    className="flex h-8 w-8 items-center justify-center rounded-md border"
                     style={{
                       background: "var(--portfolio-surface-raised)",
                       borderColor: "var(--portfolio-border)",
                       color: "var(--portfolio-accent)",
                     }}>
-                    <Activity size={17} aria-hidden="true" />
+                    <GitCommit size={16} aria-hidden="true" />
+                  </div>
+                  <h3
+                    className="text-base font-bold"
+                    style={{ color: "var(--portfolio-text)" }}>
+                    {language === "id" ? "Komit Terbaru" : "Recent Commits"}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => void loadData(true)}
+                  disabled={refreshing}
+                  className="inline-flex items-center gap-1.5 text-xs font-mono font-medium transition-opacity disabled:opacity-50 hover:underline"
+                  style={{ color: "var(--portfolio-accent)" }}>
+                  <RefreshCw
+                    size={12}
+                    className={refreshing ? "animate-spin" : ""}
+                    aria-hidden="true"
+                  />
+                  {refreshing
+                    ? language === "id"
+                      ? "Menyinkronkan..."
+                      : "Syncing..."
+                    : language === "id"
+                      ? "Sinkronisasi"
+                      : "Sync live"}
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {data?.recentEvents && data.recentEvents.length > 0 ? (
+                  data.recentEvents.map((evt) => (
+                    <div
+                      key={evt.id}
+                      className="flex items-start gap-3 rounded-lg border p-3.5 transition-colors"
+                      style={{
+                        background: "var(--portfolio-surface-raised)",
+                        borderColor: "var(--portfolio-border)",
+                      }}>
+                      <div
+                        className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded border"
+                        style={{
+                          borderColor: "var(--portfolio-border)",
+                          color: "var(--portfolio-accent)",
+                        }}>
+                        <GitCommit size={13} aria-hidden="true" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <a
+                            href={evt.repoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs font-bold truncate font-mono hover:underline"
+                            style={{
+                              color: "var(--portfolio-text)",
+                            }}>
+                            {evt.repoName.replace(`${data.username}/`, "")}
+                          </a>
+                          <span
+                            className="text-[10px] shrink-0 font-mono"
+                            style={{
+                              color: "var(--portfolio-muted)",
+                            }}>
+                            {formatRelativeTime(evt.createdAt, language)}
+                          </span>
+                        </div>
+                        <p
+                          className="text-xs mt-0.5"
+                          style={{ color: "var(--portfolio-muted)" }}>
+                          {evt.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p
+                    className="text-center py-8 text-xs font-mono"
+                    style={{ color: "var(--portfolio-muted)" }}>
+                    {language === "id"
+                      ? "Tidak ada aktivitas terbaru yang tercatat."
+                      : "No recent activity recorded."}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div
+              className="mt-6 border-t pt-4 text-xs font-mono text-[var(--portfolio-muted)] flex items-center justify-between"
+              style={{ borderColor: "var(--portfolio-border)" }}>
+              <span>{language === "id" ? "Event Publik GitHub" : "Public GitHub Events"}</span>
+              <a
+                href={`https://github.com/${data?.username || "NaufalDsp"}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 font-semibold hover:underline"
+                style={{ color: "var(--portfolio-accent)" }}>
+                <span>@{data?.username || "NaufalDsp"}</span>
+                <ArrowUpRight size={13} />
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Panel 2: All GitHub Languages (Complete list, not just 5) */}
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45, delay: 0.08 }}
+            className="flex flex-col justify-between rounded-xl border p-6 sm:p-7"
+            style={cardStyle}>
+            <div>
+              <div className="flex items-center justify-between gap-3 mb-5">
+                <div className="flex items-center gap-2.5">
+                  <div
+                    className="flex h-8 w-8 items-center justify-center rounded-md border"
+                    style={{
+                      background: "var(--portfolio-surface-raised)",
+                      borderColor: "var(--portfolio-border)",
+                      color: "var(--portfolio-accent)",
+                    }}>
+                    <Code2 size={16} aria-hidden="true" />
                   </div>
                   <div>
                     <h3
                       className="text-base font-bold"
                       style={{ color: "var(--portfolio-text)" }}>
                       {language === "id"
-                        ? "Grafik Kontribusi"
-                        : "Contribution Graph"}
+                        ? "Semua Bahasa di GitHub"
+                        : "All Languages on GitHub"}
                     </h3>
-                    <p
-                      className="text-xs"
-                      style={{ color: "var(--portfolio-muted)" }}>
-                      {language === "id"
-                        ? "Aktivitas publik di seluruh repositori terbuka selama setahun terakhir"
-                        : "Public activity across open repositories over the last year"}
-                    </p>
                   </div>
                 </div>
-
-                <a
-                  href={`https://github.com/${data?.username || "NaufalDsp"}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold hover:underline"
-                  style={{ color: "var(--portfolio-accent)" }}>
-                  <Github size={14} aria-hidden="true" />@
-                  {data?.username || "NaufalDsp"}
-                  <ArrowUpRight size={13} aria-hidden="true" />
-                </a>
-              </div>
-
-              {/* Heatmap Image Wrapper */}
-              <div
-                className="overflow-x-auto rounded-md border p-3.5 sm:p-4"
-                style={{
-                  background: "var(--portfolio-surface-raised)",
-                  borderColor: "var(--portfolio-border)",
-                }}>
-                <img
-                  src={`https://ghchart.rshah.org/146B66/${data?.username || "NaufalDsp"}`}
-                  alt={`${data?.username || "NaufalDsp"}'s GitHub Contributions`}
-                  loading="lazy"
-                  className="min-w-[620px] w-full select-none"
-                />
-              </div>
-            </div>
-
-            {/* Bottom meta row */}
-            <div
-              className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-4 text-xs font-mono"
-              style={{
-                borderColor: "var(--portfolio-border)",
-                color: "var(--portfolio-muted)",
-              }}>
-              <span>
-                {language === "id"
-                  ? "Sumber: GitHub REST API"
-                  : "Source: GitHub REST API"}
-              </span>
-              <button
-                type="button"
-                onClick={() => void loadData(true)}
-                disabled={refreshing}
-                className="inline-flex items-center gap-1.5 font-semibold transition-opacity disabled:opacity-50 hover:underline"
-                style={{ color: "var(--portfolio-accent)" }}>
-                <RefreshCw
-                  size={12}
-                  className={refreshing ? "animate-spin" : ""}
-                  aria-hidden="true"
-                />
-                {refreshing
-                  ? language === "id"
-                    ? "Menyinkronkan..."
-                    : "Refreshing..."
-                  : language === "id"
-                    ? "Sinkronisasi sekarang"
-                    : "Sync now"}
-              </button>
-            </div>
-          </motion.div>
-
-          {/* Right Panel: Tabs for Recent Events or Languages (2 cols) */}
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.08 }}
-            className="lg:col-span-2 flex flex-col justify-between rounded-lg border p-6 sm:p-7"
-            style={cardStyle}>
-            <div>
-              {/* Tab Selector */}
-              <div
-                className="grid grid-cols-2 gap-1 rounded-md p-1 mb-6 border"
-                style={{
-                  background: "var(--portfolio-surface-raised)",
-                  borderColor: "var(--portfolio-border)",
-                }}>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("activity")}
-                  className="rounded py-1.5 text-xs font-semibold transition-all"
+                <span
+                  className="rounded px-2 py-0.5 text-xs font-mono font-bold"
                   style={{
-                    background:
-                      activeTab === "activity"
-                        ? "var(--portfolio-surface)"
-                        : "transparent",
-                    color:
-                      activeTab === "activity"
-                        ? "var(--portfolio-text)"
-                        : "var(--portfolio-muted)",
-                    boxShadow:
-                      activeTab === "activity"
-                        ? "0 1px 3px rgba(0,0,0,0.08)"
-                        : "none",
+                    background: "var(--portfolio-surface-raised)",
+                    color: "var(--portfolio-accent)",
+                    borderColor: "var(--portfolio-border)",
                   }}>
-                  {language === "id" ? "Komit Terbaru" : "Recent Commits"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("languages")}
-                  className="rounded py-1.5 text-xs font-semibold transition-all"
-                  style={{
-                    background:
-                      activeTab === "languages"
-                        ? "var(--portfolio-surface)"
-                        : "transparent",
-                    color:
-                      activeTab === "languages"
-                        ? "var(--portfolio-text)"
-                        : "var(--portfolio-muted)",
-                    boxShadow:
-                      activeTab === "languages"
-                        ? "0 1px 3px rgba(0,0,0,0.08)"
-                        : "none",
-                  }}>
-                  {language === "id" ? "Bahasa Utama" : "Top Languages"}
-                </button>
+                  {data?.topLanguages.length || 0}{" "}
+                  {language === "id" ? "Bahasa" : "Languages"}
+                </span>
               </div>
 
-              {/* Tab Content */}
-              <AnimatePresence mode="wait">
-                {activeTab === "activity" ? (
-                  <motion.div
-                    key="tab-activity"
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.2 }}
-                    className="space-y-3">
-                    {data?.recentEvents && data.recentEvents.length > 0 ? (
-                      data.recentEvents.map((evt) => (
-                        <div
-                          key={evt.id}
-                          className="flex items-start gap-3 rounded-md border p-3 transition-colors"
-                          style={{
-                            background: "var(--portfolio-surface-raised)",
-                            borderColor: "var(--portfolio-border)",
-                          }}>
-                          <div
-                            className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded border"
-                            style={{
-                              borderColor: "var(--portfolio-border)",
-                              color: "var(--portfolio-accent)",
-                            }}>
-                            <GitCommit size={13} aria-hidden="true" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-baseline justify-between gap-2">
-                              <p
-                                className="text-xs font-bold truncate font-mono"
-                                style={{
-                                  color: "var(--portfolio-text)",
-                                }}>
-                                {evt.repoName.replace(`${data.username}/`, "")}
-                              </p>
-                              <span
-                                className="text-[10px] shrink-0 font-mono"
-                                style={{
-                                  color: "var(--portfolio-muted)",
-                                }}>
-                                {formatRelativeTime(evt.createdAt, language)}
-                              </span>
-                            </div>
-                            <p
-                              className="text-xs mt-0.5"
-                              style={{ color: "var(--portfolio-muted)" }}>
-                              {evt.description}
-                            </p>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <p
-                        className="text-center py-8 text-xs font-mono"
+              {/* Languages List with Scrollable container if list is long */}
+              <div className="space-y-3.5 max-h-[350px] overflow-y-auto pr-2">
+                {data?.topLanguages.map((lang) => (
+                  <div key={lang.name} className="space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span
+                        className="font-semibold inline-flex items-center gap-2"
+                        style={{ color: "var(--portfolio-text)" }}>
+                        <span
+                          className="h-2.5 w-2.5 rounded-full shrink-0"
+                          style={{ background: lang.color }}
+                        />
+                        {lang.name}
+                      </span>
+                      <span
+                        className="font-mono text-[11px]"
                         style={{ color: "var(--portfolio-muted)" }}>
+                        {lang.count}{" "}
                         {language === "id"
-                          ? "Tidak ada aktivitas terbaru yang tercatat."
-                          : "No recent activity recorded."}
-                      </p>
-                    )}
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="tab-languages"
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.2 }}
-                    className="space-y-3.5">
-                    {data?.topLanguages.map((lang) => (
-                      <div key={lang.name} className="space-y-1">
-                        <div className="flex items-center justify-between text-xs">
-                          <span
-                            className="font-semibold inline-flex items-center gap-1.5"
-                            style={{ color: "var(--portfolio-text)" }}>
-                            <span
-                              className="h-2 w-2 rounded-full"
-                              style={{ background: lang.color }}
-                            />
-                            {lang.name}
-                          </span>
-                          <span
-                            className="font-mono text-[11px]"
-                            style={{ color: "var(--portfolio-muted)" }}>
-                            {lang.count}{" "}
-                            {language === "id"
-                              ? "repo"
-                              : lang.count === 1
-                                ? "repo"
-                                : "repos"}{" "}
-                            ({lang.percentage}%)
-                          </span>
-                        </div>
-                        <div
-                          className="h-1.5 w-full overflow-hidden rounded-full"
-                          style={{
-                            background: "var(--portfolio-border)",
-                          }}>
-                          <div
-                            className="h-full rounded-full transition-all duration-500"
-                            style={{
-                              width: `${lang.percentage}%`,
-                              background: lang.color,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                          ? "repo"
+                          : lang.count === 1
+                            ? "repo"
+                            : "repos"}{" "}
+                        ({lang.percentage}%)
+                      </span>
+                    </div>
+                    <div
+                      className="h-1.5 w-full overflow-hidden rounded-full"
+                      style={{
+                        background: "var(--portfolio-border)",
+                      }}>
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: `${Math.max(lang.percentage, 3)}%`,
+                          background: lang.color,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Direct profile CTA */}

@@ -16,7 +16,7 @@ export const getWorkExperiences = (
         ? "Februari 2025 - Juli 2025"
         : "February 2025 - July 2025",
     employmentType: lang === "id" ? "Magang" : "Internship",
-    workMode: "Remote",
+    workMode: "Hybrid",
     description:
       lang === "id"
         ? "Berkontribusi dalam pengembangan AKPK ASN, sistem penilaian kompetensi dan pengajuan pelatihan bagi aparatur sipil negara."
