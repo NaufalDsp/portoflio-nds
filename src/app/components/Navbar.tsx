@@ -1,9 +1,19 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { Sun, Moon, Download, Menu, X, Globe, ChevronDown, Check } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  Download,
+  Menu,
+  X,
+  Globe,
+  ChevronDown,
+  Check,
+  FileText,
+} from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useLanguage } from "../context/LanguageContext";
 import { getNavigationLinks } from "../data/navigation";
-import { CV_URL } from "../data/profile";
+import { getResumeOptions } from "../data/profile";
 import { scrollToSection } from "../utils/scrollToSection";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -13,14 +23,12 @@ const LANGUAGE_OPTIONS = [
     label: "English",
     nativeLabel: "English",
     badge: "EN",
-    flag: "🇺🇸",
   },
   {
     code: "id" as const,
     label: "Indonesia",
     nativeLabel: "Bahasa Indonesia",
     badge: "ID",
-    flag: "🇮🇩",
   },
 ] as const;
 
@@ -31,19 +39,30 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const [mobileLangOpen, setMobileLangOpen] = useState(false);
+  const [resumeDropdownOpen, setResumeDropdownOpen] = useState(false);
+  const [mobileResumeOpen, setMobileResumeOpen] = useState(false);
   const [activeHref, setActiveHref] = useState<string>("#home");
   const isClickingRef = useRef(false);
   const langDropdownRef = useRef<HTMLDivElement>(null);
+  const resumeDropdownRef = useRef<HTMLDivElement>(null);
 
   const navLinks = useMemo(() => getNavigationLinks(language), [language]);
+  const resumeOptions = useMemo(() => getResumeOptions(language), [language]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
       if (
         langDropdownRef.current &&
-        !langDropdownRef.current.contains(event.target as Node)
+        !langDropdownRef.current.contains(target)
       ) {
         setLangDropdownOpen(false);
+      }
+      if (
+        resumeDropdownRef.current &&
+        !resumeDropdownRef.current.contains(target)
+      ) {
+        setResumeDropdownOpen(false);
       }
     };
 
@@ -51,10 +70,12 @@ export function Navbar() {
       if (event.key === "Escape") {
         setLangDropdownOpen(false);
         setMobileLangOpen(false);
+        setResumeDropdownOpen(false);
+        setMobileResumeOpen(false);
       }
     };
 
-    if (langDropdownOpen) {
+    if (langDropdownOpen || resumeDropdownOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       document.addEventListener("keydown", handleKeyDown);
     }
@@ -63,7 +84,7 @@ export function Navbar() {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [langDropdownOpen]);
+  }, [langDropdownOpen, resumeDropdownOpen]);
 
   useEffect(() => {
     let rafId: number;
@@ -142,6 +163,8 @@ export function Navbar() {
     setMobileOpen(false);
     setLangDropdownOpen(false);
     setMobileLangOpen(false);
+    setResumeDropdownOpen(false);
+    setMobileResumeOpen(false);
     isClickingRef.current = true;
     scrollToSection(href);
     setTimeout(() => {
@@ -285,18 +308,13 @@ export function Navbar() {
                               ? "bg-[var(--portfolio-accent)]/15 text-[var(--portfolio-accent)] font-semibold"
                               : "text-[var(--portfolio-text)] hover:bg-black/5 dark:hover:bg-white/5 font-medium"
                           }`}>
-                          <div className="flex items-center gap-2.5">
-                            <span className="text-sm leading-none" aria-hidden="true">
-                              {opt.flag}
+                          <div className="flex flex-col items-start text-left">
+                            <span className="text-xs font-sans leading-tight">
+                              {opt.nativeLabel}
                             </span>
-                            <div className="flex flex-col items-start text-left">
-                              <span className="text-xs font-sans leading-tight">
-                                {opt.nativeLabel}
-                              </span>
-                              <span className="text-[10px] font-mono opacity-60 leading-tight">
-                                {opt.badge}
-                              </span>
-                            </div>
+                            <span className="text-[10px] font-mono opacity-60 leading-tight">
+                              {opt.badge}
+                            </span>
                           </div>
                           {isSelected && (
                             <Check
@@ -346,22 +364,71 @@ export function Navbar() {
               </AnimatePresence>
             </motion.button>
 
-            {/* CV Button */}
-            <motion.a
-              href={CV_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="CV Naufal Dwi Saputro"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 shadow-sm"
-              style={{
-                background: "var(--portfolio-accent)",
-                color: "var(--portfolio-accent-contrast)",
-              }}>
-              <Download size={14} />
-              {t.nav.resume}
-            </motion.a>
+            {/* Resume Dropdown */}
+            <div className="relative hidden md:block" ref={resumeDropdownRef}>
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setResumeDropdownOpen((prev) => !prev)}
+                aria-expanded={resumeDropdownOpen}
+                aria-haspopup="menu"
+                aria-label={t.nav.selectResume}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 shadow-sm"
+                style={{
+                  background: "var(--portfolio-accent)",
+                  color: "var(--portfolio-accent-contrast)",
+                }}>
+                <Download size={14} />
+                <span>{t.nav.resume}</span>
+                <ChevronDown
+                  size={13}
+                  className={`transition-transform duration-200 ${
+                    resumeDropdownOpen ? "rotate-180" : "opacity-80"
+                  }`}
+                />
+              </motion.button>
+
+              <AnimatePresence>
+                {resumeDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6, scale: 0.96 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                    className="absolute right-0 mt-2 w-44 rounded-xl border p-1.5 shadow-2xl backdrop-blur-2xl z-[70] overflow-hidden"
+                    style={{
+                      background: "var(--portfolio-surface)",
+                      borderColor: "var(--portfolio-border)",
+                    }}
+                    role="menu"
+                    aria-label={t.nav.selectResume}>
+                    <div className="px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-wider text-[var(--portfolio-muted)] flex items-center justify-between">
+                      <span>{t.nav.selectResume}</span>
+                      <span className="text-[9px] opacity-60">PDF</span>
+                    </div>
+                    {resumeOptions.map((opt) => (
+                      <a
+                        key={opt.id}
+                        href={opt.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        role="menuitem"
+                        onClick={() => setResumeDropdownOpen(false)}
+                        className="w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs transition-colors duration-150 text-[var(--portfolio-text)] hover:bg-black/5 dark:hover:bg-white/5 group font-medium">
+                        <span className="font-mono text-xs font-semibold group-hover:text-[var(--portfolio-accent)] transition-colors">
+                          {opt.label}
+                        </span>
+                        <FileText
+                          size={13}
+                          className="text-[var(--portfolio-muted)] group-hover:text-[var(--portfolio-accent)] shrink-0 transition-colors"
+                        />
+                      </a>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* Mobile Menu Toggle */}
             <button
@@ -468,15 +535,14 @@ export function Navbar() {
                                 ? "bg-[var(--portfolio-accent)]/15 text-[var(--portfolio-accent)] font-semibold"
                                 : "text-[var(--portfolio-text)] hover:bg-black/5 dark:hover:bg-white/5"
                             }`}>
-                            <span className="flex items-center gap-2">
-                              <span>{opt.flag}</span>
+                            <div className="flex items-center gap-2">
                               <span className="font-sans font-medium">
                                 {opt.nativeLabel}
                               </span>
                               <span className="text-[10px] font-mono opacity-60">
                                 ({opt.badge})
                               </span>
-                            </span>
+                            </div>
                             {isSelected && (
                               <Check
                                 size={14}
@@ -491,19 +557,67 @@ export function Navbar() {
                 </AnimatePresence>
               </div>
 
-              <a
-                href={CV_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="CV Naufal Dwi Saputro"
-                className="inline-flex items-center gap-2 mt-3 px-4 py-2.5 rounded-lg text-xs font-semibold w-fit shadow-sm"
-                style={{
-                  background: "var(--portfolio-accent)",
-                  color: "var(--portfolio-accent-contrast)",
-                }}>
-                <Download size={14} />
-                {t.nav.downloadCv}
-              </a>
+              {/* Mobile Resume Dropdown Row */}
+              <div
+                className="pt-2 border-t mt-1"
+                style={{ borderColor: "var(--portfolio-border)" }}>
+                <button
+                  type="button"
+                  onClick={() => setMobileResumeOpen((prev) => !prev)}
+                  className="w-full flex items-center justify-between py-2.5 px-3 rounded-lg text-xs font-semibold shadow-sm transition-all"
+                  style={{
+                    background: "var(--portfolio-accent)",
+                    color: "var(--portfolio-accent-contrast)",
+                  }}>
+                  <span className="flex items-center gap-2">
+                    <Download size={14} />
+                    <span>{t.nav.downloadCv}</span>
+                  </span>
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform duration-200 ${
+                      mobileResumeOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {mobileResumeOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden mt-2 flex flex-col gap-1.5 p-1.5 rounded-xl border"
+                      style={{
+                        background: "var(--portfolio-surface-raised)",
+                        borderColor: "var(--portfolio-border)",
+                      }}>
+                      {resumeOptions.map((opt) => (
+                        <a
+                          key={opt.id}
+                          href={opt.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => {
+                            setMobileResumeOpen(false);
+                            setMobileOpen(false);
+                          }}
+                          className="flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors hover:bg-black/5 dark:hover:bg-white/5 font-medium"
+                          style={{ color: "var(--portfolio-text)" }}>
+                          <span className="font-mono text-xs font-semibold">
+                            {opt.label}
+                          </span>
+                          <FileText
+                            size={14}
+                            className="text-[var(--portfolio-muted)] shrink-0 ml-2"
+                          />
+                        </a>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
           </motion.div>
         )}

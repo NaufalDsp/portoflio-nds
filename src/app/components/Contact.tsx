@@ -116,41 +116,62 @@ export function Contact() {
             viewport={{ once: true }}
             transition={{ duration: 0.45 }}
             className="lg:col-span-2 flex flex-col gap-4">
-            {contactDetails.map(({ icon: Icon, label, value }) => (
-              <div
-                key={label}
-                className="flex items-center gap-4 p-4 sm:p-5 rounded-lg border transition-colors"
-                style={{
-                  background: "var(--portfolio-surface)",
-                  borderColor: "var(--portfolio-border)",
-                }}>
-                <div
-                  className="flex items-center justify-center w-10 h-10 rounded-md border shrink-0"
+            {contactDetails.map(({ icon: Icon, label, value, href }) => {
+              const cardContent = (
+                <>
+                  <div
+                    className="flex items-center justify-center w-10 h-10 rounded-md border shrink-0 transition-colors"
+                    style={{
+                      background: "var(--portfolio-surface-raised)",
+                      borderColor: "var(--portfolio-border)",
+                      color: "var(--portfolio-accent)",
+                    }}>
+                    <Icon size={18} aria-hidden="true" />
+                  </div>
+                  <div>
+                    <p
+                      className="font-mono text-[10px] uppercase font-bold tracking-wider mb-0.5"
+                      style={{
+                        color: "var(--portfolio-muted)",
+                      }}>
+                      {label}
+                    </p>
+                    <p
+                      className="text-sm font-semibold transition-colors group-hover:text-[var(--portfolio-accent)]"
+                      style={{
+                        color: "var(--portfolio-text)",
+                      }}>
+                      {value}
+                    </p>
+                  </div>
+                </>
+              );
+
+              return href ? (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-4 sm:p-5 rounded-lg border transition-all duration-200 group hover:border-[var(--portfolio-accent)]/50 hover:bg-black/[0.02] dark:hover:bg-white/[0.02]"
                   style={{
-                    background: "var(--portfolio-surface-raised)",
+                    background: "var(--portfolio-surface)",
                     borderColor: "var(--portfolio-border)",
-                    color: "var(--portfolio-accent)",
                   }}>
-                  <Icon size={18} aria-hidden="true" />
+                  {cardContent}
+                </a>
+              ) : (
+                <div
+                  key={label}
+                  className="flex items-center gap-4 p-4 sm:p-5 rounded-lg border transition-colors"
+                  style={{
+                    background: "var(--portfolio-surface)",
+                    borderColor: "var(--portfolio-border)",
+                  }}>
+                  {cardContent}
                 </div>
-                <div>
-                  <p
-                    className="font-mono text-[10px] uppercase font-bold tracking-wider mb-0.5"
-                    style={{
-                      color: "var(--portfolio-muted)",
-                    }}>
-                    {label}
-                  </p>
-                  <p
-                    className="text-sm font-semibold"
-                    style={{
-                      color: "var(--portfolio-text)",
-                    }}>
-                    {value}
-                  </p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
 
             {/* Social Links */}
             <div

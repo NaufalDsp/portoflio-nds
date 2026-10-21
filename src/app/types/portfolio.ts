@@ -55,16 +55,17 @@ type ProjectAccess =
 export type Project = ProjectDetails & ProjectAccess;
 
 export interface SocialLink {
-  icon: LucideIcon;
+  icon: LucideIcon | IconType;
   label: string;
   href: string;
   color: `#${string}`;
 }
 
 export interface ContactDetail {
-  icon: LucideIcon;
+  icon: LucideIcon | IconType;
   label: string;
   value: string;
+  href?: string;
   color: `#${string}`;
 }
 
