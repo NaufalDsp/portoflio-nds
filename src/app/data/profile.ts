@@ -3,7 +3,7 @@ import { FaWhatsapp } from "react-icons/fa6";
 import type { ContactDetail, SocialLink } from "../types/portfolio";
 import type { Language } from "../i18n/translations";
 
-export const CV_URL_EN = "/CV%20ATS-Naufal%20Dwi%20Saputro.pdf";
+export const CV_URL_EN = "/CV%20eng-Naufal%20Dwi%20Saputro.pdf";
 export const CV_URL_ID = "/CV%20ID-Naufal%20Dwi%20Saputro.pdf";
 export const CV_URL = CV_URL_EN;
 
