@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://porfolio-nds.vercel.app/sitemap.xml
+Sitemap: https://www.naufaldsp.my.id/sitemap.xml
