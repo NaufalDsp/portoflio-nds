@@ -75,42 +75,64 @@ export function GithubActivity() {
         background: "var(--background)",
       }}>
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-10">
-        {/* Section Header */}
+        {/* Asymmetric Editorial Section Header (06 // LIVE TELEMETRY) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}
-          className="mx-auto mb-14 max-w-2xl text-center">
-          <div
-            className="inline-flex items-center gap-2 rounded px-2.5 py-1 text-xs font-mono font-semibold mb-3 border"
-            style={{
-              background: "var(--portfolio-surface-raised)",
-              borderColor: "var(--portfolio-border)",
-              color: "var(--portfolio-accent)",
-            }}>
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            {language === "id"
-              ? "Telemetri Langsung GitHub"
-              : "Live GitHub Telemetry"}
+          className="mb-14 sm:mb-16">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <span
+                  className="inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.22em] px-2.5 py-1 rounded border"
+                  style={{
+                    color: "var(--portfolio-accent)",
+                    borderColor: "var(--portfolio-border)",
+                    background: "var(--portfolio-surface)",
+                  }}>
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  06 //{" "}
+                  {language === "id"
+                    ? "Telemetri Langsung"
+                    : "Live Telemetry"}
+                </span>
+                <span
+                  className="font-mono text-xs"
+                  style={{ color: "var(--portfolio-muted)" }}>
+                  [GITHUB API · 3D MATRIX]
+                </span>
+              </div>
+
+              <h2
+                className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.03]"
+                style={{
+                  color: "var(--portfolio-text)",
+                  letterSpacing: "-0.03em",
+                }}>
+                {language === "id" ? "Open Source" : "Open Source"}
+                <span
+                  className="font-editorial italic font-normal ml-3"
+                  style={{ color: "var(--portfolio-accent)" }}>
+                  &amp; {language === "id" ? "Aktivitas." : "Activity."}
+                </span>
+              </h2>
+            </div>
+
+            <p
+              className="max-w-md text-sm sm:text-base leading-relaxed lg:text-right"
+              style={{ color: "var(--portfolio-muted)" }}>
+              {language === "id"
+                ? "Metrik repositori publik, visualisasi aktivitas 3D, dan pemetaan seluruh bahasa pemrograman yang digunakan."
+                : "Public repository metrics, 3D activity visualization, and telemetry of all programming languages used."}
+            </p>
           </div>
-          <h2
-            className="mb-4 text-3xl font-bold sm:text-4xl"
-            style={{
-              color: "var(--portfolio-text)",
-              letterSpacing: "-0.03em",
-            }}>
-            {language === "id"
-              ? "Open Source & Aktivitas"
-              : "Open Source & Activity"}
-          </h2>
-          <p
-            className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
-            style={{ color: "var(--portfolio-muted)" }}>
-            {language === "id"
-              ? "Metrik repositori publik, visualisasi aktivitas 3D, dan pemetaan seluruh bahasa pemrograman yang digunakan."
-              : "Public repository metrics, 3D activity visualization, and telemetry of all programming languages used."}
-          </p>
+
+          <div
+            className="h-px w-full"
+            style={{ background: "var(--portfolio-border)" }}
+          />
         </motion.div>
 
         {/* Top 4 Metrics Summary */}

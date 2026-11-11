@@ -19,7 +19,41 @@ body {
   color: var(--foreground);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
   transition: background-color 180ms ease, color 180ms ease;
+}
+
+.font-display {
+  font-family: 'Syne', var(--font-sans);
+}
+
+.font-editorial {
+  font-family: 'Instrument Serif', Georgia, serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Subtle film grain overlay for editorial anti-AI-slop texture */
+.editorial-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* Hollow stroke typography for architectural depth */
+.text-stroke-editorial {
+  -webkit-text-stroke: 1.5px var(--portfolio-border);
+  color: transparent;
+}
+
+.dark .text-stroke-editorial {
+  -webkit-text-stroke: 1.5px rgba(121, 198, 188, 0.28);
+  color: transparent;
+}
+
+.text-stroke-accent {
+  -webkit-text-stroke: 1.5px var(--portfolio-accent);
+  color: transparent;
 }
 
 button,

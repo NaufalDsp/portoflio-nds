@@ -1,12 +1,16 @@
-import { useState, useMemo } from "react";
-import { motion } from "motion/react";
-import { AlertCircle, Send, CheckCircle } from "lucide-react";
+import { useState, useMemo, useRef } from "react";
+import { AlertCircle, ArrowUpRight, Send, CheckCircle } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { useLanguage } from "../context/LanguageContext";
 import { getContactDetails, SOCIAL_LINKS } from "../data/profile";
 import {
   sendContactMessage,
   type ContactMessage,
 } from "../services/contactService";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const EMPTY_FORM_DATA: ContactMessage = {
   name: "",
@@ -21,10 +25,65 @@ export function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const contactDetails = useMemo(
     () => getContactDetails(language),
     [language],
+  );
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      if (!section) return;
+
+      gsap.fromTo(
+        ".contact-header-reveal",
+        { y: 32, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".contact-header-wrap",
+            start: "top 82%",
+          },
+        },
+      );
+
+      gsap.fromTo(
+        ".contact-header-line",
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          duration: 1.1,
+          ease: "expo.out",
+          scrollTrigger: {
+            trigger: ".contact-header-wrap",
+            start: "top 82%",
+          },
+        },
+      );
+
+      gsap.fromTo(
+        ".gsap-contact-block",
+        { y: 36, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.75,
+          stagger: 0.1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".gsap-contact-grid",
+            start: "top 82%",
+          },
+        },
+      );
+    },
+    { scope: sectionRef, dependencies: [language] },
   );
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -50,11 +109,11 @@ export function Contact() {
   };
 
   const inputStyle: React.CSSProperties = {
-    background: "var(--portfolio-surface)",
+    background: "var(--portfolio-surface-raised)",
     border: "1px solid var(--portfolio-border)",
     color: "var(--portfolio-text)",
-    borderRadius: 6,
-    padding: "10px 14px",
+    borderRadius: 10,
+    padding: "12px 15px",
     width: "100%",
     fontSize: "0.875rem",
     outline: "none",
@@ -64,63 +123,83 @@ export function Contact() {
 
   const labelStyle: React.CSSProperties = {
     color: "var(--portfolio-text)",
-    fontSize: "0.75rem",
-    fontWeight: 600,
-    letterSpacing: "0.04em",
+    fontSize: "0.72rem",
+    fontWeight: 700,
+    letterSpacing: "0.08em",
     display: "block",
-    marginBottom: 6,
+    marginBottom: 8,
     textTransform: "uppercase",
-    fontFamily: "ui-monospace, monospace",
+    fontFamily: "'JetBrains Mono', ui-monospace, monospace",
   };
 
   return (
     <section
+      ref={sectionRef}
       id="contact"
-      className="relative overflow-hidden py-24 sm:py-28"
+      className="relative overflow-hidden py-24 sm:py-32"
       style={{
         background: "var(--background)",
       }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45 }}
-          className="mx-auto mb-14 max-w-2xl text-center">
-          <p
-            className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider"
-            style={{ color: "var(--portfolio-accent)" }}>
-            {t.contact.overline}
-          </p>
-          <h2
-            className="mb-4 text-3xl font-bold sm:text-4xl"
-            style={{
-              color: "var(--portfolio-text)",
-              letterSpacing: "-0.03em",
-            }}>
-            {t.contact.title}
-          </h2>
-          <p
-            className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
-            style={{ color: "var(--portfolio-muted)" }}>
-            {t.contact.description}
-          </p>
-        </motion.div>
+        {/* ============================================================
+            ASYMMETRIC EDITORIAL HEADER (07 // GET IN TOUCH)
+           ============================================================ */}
+        <div className="contact-header-wrap mb-16 sm:mb-20">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8">
+            <div>
+              <div className="contact-header-reveal flex items-center gap-3 mb-3">
+                <span
+                  className="font-mono text-xs font-bold uppercase tracking-[0.22em] px-2.5 py-1 rounded border"
+                  style={{
+                    color: "var(--portfolio-accent)",
+                    borderColor: "var(--portfolio-border)",
+                    background: "var(--portfolio-surface)",
+                  }}>
+                  07 // {t.contact.overline}
+                </span>
+                <span
+                  className="font-mono text-xs"
+                  style={{ color: "var(--portfolio-muted)" }}>
+                  [DIRECT TRANSMISSION]
+                </span>
+              </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+              <h2
+                className="contact-header-reveal font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.03]"
+                style={{
+                  color: "var(--portfolio-text)",
+                  letterSpacing: "-0.03em",
+                }}>
+                {t.contact.title}
+                <span
+                  className="font-editorial italic font-normal ml-3"
+                  style={{ color: "var(--portfolio-accent)" }}>
+                  &amp; Collaborate.
+                </span>
+              </h2>
+            </div>
+
+            <p
+              className="contact-header-reveal max-w-md text-sm sm:text-base leading-relaxed lg:text-right"
+              style={{ color: "var(--portfolio-muted)" }}>
+              {t.contact.description}
+            </p>
+          </div>
+
+          <div
+            className="contact-header-line h-px w-full origin-left"
+            style={{ background: "var(--portfolio-border)" }}
+          />
+        </div>
+
+        <div className="gsap-contact-grid grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Left info panel */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45 }}
-            className="lg:col-span-2 flex flex-col gap-4">
+          <div className="gsap-contact-block lg:col-span-2 flex flex-col gap-4">
             {contactDetails.map(({ icon: Icon, label, value, href }) => {
               const cardContent = (
                 <>
                   <div
-                    className="flex items-center justify-center w-10 h-10 rounded-md border shrink-0 transition-colors"
+                    className="flex items-center justify-center w-11 h-11 rounded-xl border shrink-0 transition-colors"
                     style={{
                       background: "var(--portfolio-surface-raised)",
                       borderColor: "var(--portfolio-border)",
@@ -128,7 +207,7 @@ export function Contact() {
                     }}>
                     <Icon size={18} aria-hidden="true" />
                   </div>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p
                       className="font-mono text-[10px] uppercase font-bold tracking-wider mb-0.5"
                       style={{
@@ -137,13 +216,20 @@ export function Contact() {
                       {label}
                     </p>
                     <p
-                      className="text-sm font-semibold transition-colors group-hover:text-[var(--portfolio-accent)]"
+                      className="text-sm font-semibold truncate transition-colors group-hover:text-[var(--portfolio-accent)]"
                       style={{
                         color: "var(--portfolio-text)",
                       }}>
                       {value}
                     </p>
                   </div>
+                  {href && (
+                    <ArrowUpRight
+                      size={16}
+                      className="shrink-0 opacity-50 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100"
+                      style={{ color: "var(--portfolio-accent)" }}
+                    />
+                  )}
                 </>
               );
 
@@ -153,20 +239,22 @@ export function Contact() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-4 sm:p-5 rounded-lg border transition-all duration-200 group hover:border-[var(--portfolio-accent)]/50 hover:bg-black/[0.02] dark:hover:bg-white/[0.02]"
+                  className="flex items-center gap-4 p-4 sm:p-5 rounded-2xl border transition-all duration-200 group hover:-translate-y-0.5 hover:border-[var(--portfolio-accent)]"
                   style={{
                     background: "var(--portfolio-surface)",
                     borderColor: "var(--portfolio-border)",
+                    boxShadow: "var(--portfolio-shadow)",
                   }}>
                   {cardContent}
                 </a>
               ) : (
                 <div
                   key={label}
-                  className="flex items-center gap-4 p-4 sm:p-5 rounded-lg border transition-colors"
+                  className="flex items-center gap-4 p-4 sm:p-5 rounded-2xl border transition-colors"
                   style={{
                     background: "var(--portfolio-surface)",
                     borderColor: "var(--portfolio-border)",
+                    boxShadow: "var(--portfolio-shadow)",
                   }}>
                   {cardContent}
                 </div>
@@ -175,10 +263,11 @@ export function Contact() {
 
             {/* Social Links */}
             <div
-              className="p-5 rounded-lg border mt-1"
+              className="p-5 sm:p-6 rounded-2xl border mt-1"
               style={{
                 background: "var(--portfolio-surface)",
                 borderColor: "var(--portfolio-border)",
+                boxShadow: "var(--portfolio-shadow)",
               }}>
               <p
                 className="font-mono text-[10px] uppercase font-bold tracking-wider mb-3.5"
@@ -187,7 +276,7 @@ export function Contact() {
                 }}>
                 {t.contact.labels.social}
               </p>
-              <div className="flex gap-2.5">
+              <div className="flex flex-wrap gap-2.5">
                 {SOCIAL_LINKS.map(({ icon: Icon, label, href }) => (
                   <a
                     key={label}
@@ -195,31 +284,28 @@ export function Contact() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="flex items-center justify-center w-9 h-9 rounded-md border transition-all duration-200 hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-mono font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--portfolio-accent)] hover:text-[var(--portfolio-accent)]"
                     style={{
                       borderColor: "var(--portfolio-border)",
                       background: "var(--portfolio-surface-raised)",
-                      color: "var(--portfolio-muted)",
+                      color: "var(--portfolio-text)",
                     }}>
-                    <Icon size={16} />
+                    <Icon size={15} />
+                    <span>{label}</span>
                   </a>
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Right form */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.08 }}
-            className="lg:col-span-3">
+          <div className="gsap-contact-block lg:col-span-3">
             <div
-              className="p-6 sm:p-8 rounded-lg border"
+              className="p-6 sm:p-8 lg:p-10 rounded-2xl border"
               style={{
                 background: "var(--portfolio-surface)",
                 borderColor: "var(--portfolio-border)",
+                boxShadow: "var(--portfolio-shadow)",
               }}>
               {submitted ? (
                 <div className="flex flex-col items-center justify-center py-14 text-center">
@@ -235,7 +321,7 @@ export function Contact() {
                     />
                   </div>
                   <h3
-                    className="text-lg font-bold mb-2"
+                    className="font-display text-xl font-bold mb-2"
                     style={{
                       color: "var(--portfolio-text)",
                     }}>
@@ -254,7 +340,7 @@ export function Contact() {
                       setSubmitted(false);
                       setFormData(EMPTY_FORM_DATA);
                     }}
-                    className="mt-6 px-5 py-2.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90"
+                    className="mt-6 px-5 py-2.5 rounded-xl text-xs font-semibold transition-opacity hover:opacity-90 cursor-pointer"
                     style={{
                       background: "var(--portfolio-accent)",
                       color: "var(--portfolio-accent-contrast)",
@@ -263,8 +349,8 @@ export function Contact() {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                       <label style={labelStyle}>{t.contact.form.fullName}</label>
                       <input
@@ -357,7 +443,7 @@ export function Contact() {
                   {errorMessage && (
                     <div
                       role="alert"
-                      className="flex items-start gap-2.5 rounded-md border px-4 py-3 text-sm"
+                      className="flex items-start gap-2.5 rounded-xl border px-4 py-3 text-sm"
                       style={{
                         color: "var(--destructive, #b91c1c)",
                         background: "rgba(239, 68, 68, 0.08)",
@@ -370,10 +456,11 @@ export function Contact() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="inline-flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold transition-opacity duration-200 mt-2 hover:opacity-90 disabled:opacity-70"
+                    className="inline-flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 mt-1 hover:-translate-y-0.5 hover:opacity-95 disabled:opacity-70 cursor-pointer"
                     style={{
                       background: "var(--portfolio-accent)",
                       color: "var(--portfolio-accent-contrast)",
+                      boxShadow: "0 6px 20px rgba(20, 107, 102, 0.24)",
                     }}>
                     {loading ? (
                       <>
@@ -390,7 +477,7 @@ export function Contact() {
                 </form>
               )}
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
