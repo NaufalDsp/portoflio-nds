@@ -181,6 +181,9 @@ export function Hero() {
 
       mm.add("(min-width: 1024px)", () => {
         // DESKTOP (lg+): Pinned Cinematic Spatial Scroll-Zoom
+        // Calibrated targetZoom (1.28x on laptops < 950px, 1.40x on large monitors) to guarantee ample breathing room
+        const targetZoom = window.innerHeight > 950 ? 1.4 : 1.28;
+
         const scrollTl = gsap.timeline({
           scrollTrigger: {
             trigger: section,
@@ -194,7 +197,7 @@ export function Hero() {
                 progressFillRef.current.style.transform = `scaleX(${self.progress})`;
               }
               if (zoomReadoutRef.current) {
-                const currentZoom = (1 + self.progress * 0.58).toFixed(2);
+                const currentZoom = (1 + self.progress * (targetZoom - 1)).toFixed(2);
                 zoomReadoutRef.current.textContent = `${currentZoom}x`;
               }
             },
@@ -206,7 +209,7 @@ export function Hero() {
           portalWrapRef.current,
           { scale: 1 },
           {
-            scale: 1.58,
+            scale: targetZoom,
             ease: "power2.inOut",
             duration: 0.78,
           },
@@ -328,30 +331,43 @@ export function Hero() {
 
         // Deep-Focus HUD Overlay Locks In During Peak Zoom in Desktop Center Column
         if (focusHudRef.current) {
+          // 1. Reveal during peak focal zoom
           scrollTl.fromTo(
             focusHudRef.current,
             {
               opacity: 0,
-              scale: 0.86,
-              y: 18,
+              scale: 0.9,
+              y: 16,
             },
             {
               opacity: 1,
               scale: 1,
               y: 0,
-              ease: "power3.out",
-              duration: 0.42,
+              ease: "back.out(1.2)",
+              duration: 0.35,
             },
-            0.3,
+            0.28,
+          );
+
+          // 2. Graceful Dissolve before hand-off so it NEVER gets cut off or truncated by Projects section
+          scrollTl.to(
+            focusHudRef.current,
+            {
+              opacity: 0,
+              scale: 0.94,
+              y: -12,
+              ease: "power2.in",
+              duration: 0.18,
+            },
+            0.8,
           );
         }
 
-        // Final Hold & Smooth Cinematic Hand-off to Next Section
+        // Final Hold & Smooth Cinematic Hand-off to Next Section (Zero overflow boundary breaches)
         scrollTl.to(
           stage,
           {
-            scale: 1.03,
-            opacity: 0.9,
+            opacity: 0.88,
             ease: "power1.in",
             duration: 0.22,
           },
@@ -441,7 +457,7 @@ export function Hero() {
     <section
       ref={sectionRef}
       id="home"
-      className="relative min-h-[100dvh] w-full overflow-hidden flex items-center justify-center pt-16 sm:pt-20 pb-6 sm:pb-8 select-none"
+      className="relative min-h-[100dvh] w-full overflow-hidden flex items-center justify-center pt-16 sm:pt-20 pb-8 sm:pb-12 select-none"
       style={{
         background: "var(--background)",
         perspective: "1200px",
@@ -727,7 +743,7 @@ export function Hero() {
           {/* ============================================================
               CENTERPIECE COLUMN: PORTRAIT PORTAL + ORBITING SVG TEXT RINGS
              ============================================================ */}
-          <div className="md:col-span-2 lg:col-span-4 flex flex-col items-center justify-center order-1 lg:order-2 z-30 my-1 sm:my-2 lg:my-0">
+          <div className="relative md:col-span-2 lg:col-span-4 flex flex-col items-center justify-center order-1 lg:order-2 z-30 my-1 sm:my-2 lg:my-0">
             <div
               ref={portalWrapRef}
               onMouseEnter={() => setIsPortraitHovered(true)}
@@ -867,42 +883,44 @@ export function Hero() {
                   NDS // STUDIO PORTRAIT
                 </div>
               </div>
+            </div>
 
-              {/* DEEP-FOCUS HUD OVERLAY (REVEALED AS USER SCROLL-ZOOMS IN ON DESKTOP ONLY) */}
-              <div
-                ref={focusHudRef}
-                className="hidden lg:block pointer-events-none absolute -bottom-10 sm:-bottom-12 left-1/2 -translate-x-1/2 w-[256px] sm:w-[350px] lg:w-[375px] rounded-2xl border px-3 sm:px-4 py-2 sm:py-2.5 backdrop-blur-xl shadow-2xl opacity-0 z-40"
-                style={{
-                  background:
-                    "color-mix(in srgb, var(--portfolio-surface) 92%, transparent)",
-                  borderColor: "var(--portfolio-accent)",
-                }}>
-                <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-mono uppercase tracking-wider mb-1 sm:mb-1.5">
+            {/* DEEP-FOCUS HUD OVERLAY (DOCKED IN CENTER COLUMN, NEVER MULTIPLIED BY PORTAL SCALE) */}
+            <div
+              ref={focusHudRef}
+              className="hidden lg:block pointer-events-none absolute -bottom-8 xl:-bottom-10 left-1/2 -translate-x-1/2 w-[330px] xl:w-[365px] rounded-2xl border px-3.5 py-2.5 backdrop-blur-xl shadow-2xl opacity-0 z-40"
+              style={{
+                background:
+                  "color-mix(in srgb, var(--portfolio-surface) 95%, transparent)",
+                borderColor: "var(--portfolio-accent)",
+                boxShadow:
+                  "0 14px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(20, 184, 166, 0.2)",
+              }}>
+              <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider mb-1.5">
+                <span
+                  className="font-bold"
+                  style={{ color: "var(--portfolio-accent)" }}>
+                  {language === "id"
+                    ? "PRINSIP REKAYASA KODE"
+                    : "CORE ENGINEERING STANDARDS"}
+                </span>
+                <span style={{ color: "var(--portfolio-muted)" }}>
+                  GPA 3.91 / 4.00
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-1 text-[11px] font-mono font-semibold">
+                {t.hero.codeCard.principles.map((p) => (
                   <span
-                    className="font-bold"
-                    style={{ color: "var(--portfolio-accent)" }}>
-                    {language === "id"
-                      ? "PRINSIP REKAYASA KODE"
-                      : "CORE ENGINEERING STANDARDS"}
+                    key={p}
+                    className="px-2 py-0.5 rounded border"
+                    style={{
+                      background: "var(--portfolio-surface-raised)",
+                      borderColor: "var(--portfolio-border)",
+                      color: "var(--portfolio-text)",
+                    }}>
+                    {p}
                   </span>
-                  <span style={{ color: "var(--portfolio-muted)" }}>
-                    GPA 3.91 / 4.00
-                  </span>
-                </div>
-                <div className="flex flex-wrap items-center justify-between gap-1 text-[10px] sm:text-[11px] font-mono font-semibold">
-                  {t.hero.codeCard.principles.map((p) => (
-                    <span
-                      key={p}
-                      className="px-1.5 sm:px-2 py-0.5 rounded border"
-                      style={{
-                        background: "var(--portfolio-surface-raised)",
-                        borderColor: "var(--portfolio-border)",
-                        color: "var(--portfolio-text)",
-                      }}>
-                      {p}
-                    </span>
-                  ))}
-                </div>
+                ))}
               </div>
             </div>
           </div>
