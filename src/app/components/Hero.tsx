@@ -201,9 +201,10 @@ export function Hero() {
           },
         });
 
-        // Central Portrait Portal Zooms In & Rings Accelerate
-        scrollTl.to(
+        // Central Portrait Portal Zooms In & Rings Accelerate (Strictly scale >= 1.0, No shrinking on scroll start)
+        scrollTl.fromTo(
           portalWrapRef.current,
+          { scale: 1 },
           {
             scale: 1.58,
             ease: "power2.inOut",
@@ -212,8 +213,9 @@ export function Hero() {
           0,
         );
 
-        scrollTl.to(
+        scrollTl.fromTo(
           portraitImgRef.current,
+          { scale: 1 },
           {
             scale: 1.14,
             ease: "none",
@@ -222,8 +224,9 @@ export function Hero() {
           0,
         );
 
-        scrollTl.to(
+        scrollTl.fromTo(
           outerRingRef.current,
+          { scale: 1 },
           {
             scale: 1.24,
             rotation: "+=140",
@@ -234,10 +237,11 @@ export function Hero() {
           0,
         );
 
-        scrollTl.to(
+        scrollTl.fromTo(
           innerRingRef.current,
+          { scale: 1 },
           {
-            scale: 0.88,
+            scale: 1.06,
             rotation: "-=120",
             ease: "power2.inOut",
             duration: 0.78,
@@ -377,8 +381,9 @@ export function Hero() {
         });
 
         // Gentle Portal & Ring Parallax (Cards remain 100% visible and uncolliding)
-        mobileScrollTl.to(
+        mobileScrollTl.fromTo(
           portalWrapRef.current,
+          { scale: 1 },
           {
             scale: 1.08,
             y: 14,
@@ -836,7 +841,7 @@ export function Hero() {
                     ref={portraitImgRef}
                     src={portraitDarkUrl}
                     alt="Naufal Dwi Saputro — Editorial Side Profile Portrait"
-                    className="w-full h-full object-cover object-center scale-[1.05] select-none pointer-events-none"
+                    className="w-full h-full object-cover object-center scale-100 select-none pointer-events-none"
                   />
 
                   {/* Subtle Emerald-Teal Rim Light Overlay */}
