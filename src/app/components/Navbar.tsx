@@ -10,12 +10,16 @@ import {
   Check,
   FileText,
 } from "lucide-react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { useTheme } from "../context/ThemeContext";
 import { useLanguage } from "../context/LanguageContext";
 import { getNavigationLinks } from "../data/navigation";
 import { getResumeOptions } from "../data/profile";
 import { scrollToSection } from "../utils/scrollToSection";
 import { motion, AnimatePresence } from "motion/react";
+
+gsap.registerPlugin(useGSAP);
 
 const LANGUAGE_OPTIONS = [
   {
@@ -55,6 +59,12 @@ export function Navbar() {
   const [resumeDropdownOpen, setResumeDropdownOpen] = useState(false);
   const [mobileResumeOpen, setMobileResumeOpen] = useState(false);
   const [activeHref, setActiveHref] = useState<string>("#home");
+
+  const navShellRef = useRef<HTMLElement>(null);
+  const compactLayerRef = useRef<HTMLDivElement>(null);
+  const expandedLayerRef = useRef<HTMLDivElement>(null);
+  const leftBrandRef = useRef<HTMLAnchorElement>(null);
+  const rightControlsRef = useRef<HTMLDivElement>(null);
 
   const isClickingRef = useRef(false);
   const hoverTimeoutRef = useRef<number | null>(null);
@@ -97,6 +107,267 @@ export function Navbar() {
       }
     };
   }, []);
+
+  // GSAP Center-Outward Symmetrical Capsule Morph Choreography (Desktop lg+)
+  useGSAP(
+    () => {
+      const shell = navShellRef.current;
+      const compactLayer = compactLayerRef.current;
+      const expandedLayer = expandedLayerRef.current;
+      if (!shell) return;
+
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 1024px)", () => {
+        const navItems = shell.querySelectorAll(".gsap-nav-link-item");
+        const viewportW = window.innerWidth;
+        const fullBarInnerW = Math.min(1320, viewportW - 64);
+        const floatingExpandedW = Math.min(1260, viewportW - 32);
+        const floatingInnerW = Math.min(1180, floatingExpandedW - 56);
+
+        if (!scrolled) {
+          // STATE 1: Full-Width Top Architectural Bar (At top of page)
+          gsap.to(shell, {
+            width: viewportW,
+            marginTop: 0,
+            borderRadius: 0,
+            paddingLeft: 36,
+            paddingRight: 36,
+            paddingTop: 14,
+            paddingBottom: 14,
+            duration: 0.52,
+            ease: "expo.out",
+            overwrite: true,
+          });
+
+          if (compactLayer) {
+            gsap.to(compactLayer, {
+              opacity: 0,
+              scale: 0.9,
+              pointerEvents: "none",
+              duration: 0.2,
+              ease: "power2.out",
+              overwrite: true,
+            });
+          }
+
+          if (expandedLayer) {
+            gsap.to(expandedLayer, {
+              width: "100%",
+              maxWidth: fullBarInnerW,
+              opacity: 1,
+              scaleX: 1,
+              scaleY: 1,
+              pointerEvents: "auto",
+              duration: 0.48,
+              ease: "expo.out",
+              overwrite: true,
+            });
+          }
+
+          if (leftBrandRef.current && rightControlsRef.current) {
+            gsap.to([leftBrandRef.current, rightControlsRef.current], {
+              x: 0,
+              opacity: 1,
+              duration: 0.42,
+              ease: "expo.out",
+              overwrite: true,
+            });
+          }
+
+          if (navItems.length) {
+            gsap.to(navItems, {
+              opacity: 1,
+              scale: 1,
+              y: 0,
+              duration: 0.35,
+              stagger: { each: 0.018, from: "center" },
+              ease: "power3.out",
+              overwrite: true,
+            });
+          }
+        } else if (isCompactCapsule) {
+          // STATE 2: Compact Floating Capsule (Contracts symmetrically toward the center)
+          gsap.to(shell, {
+            width: 360,
+            marginTop: 14,
+            borderRadius: 9999,
+            paddingLeft: 20,
+            paddingRight: 20,
+            paddingTop: 9,
+            paddingBottom: 9,
+            duration: 0.5,
+            ease: "expo.out",
+            overwrite: true,
+          });
+
+          if (expandedLayer) {
+            gsap.to(expandedLayer, {
+              width: "100%",
+              maxWidth: floatingInnerW,
+              opacity: 0,
+              scaleX: 0.72,
+              scaleY: 0.94,
+              pointerEvents: "none",
+              duration: 0.24,
+              ease: "power3.out",
+              overwrite: true,
+            });
+          }
+
+          if (leftBrandRef.current) {
+            gsap.to(leftBrandRef.current, {
+              x: 24,
+              opacity: 0,
+              duration: 0.22,
+              ease: "power2.out",
+              overwrite: true,
+            });
+          }
+          if (rightControlsRef.current) {
+            gsap.to(rightControlsRef.current, {
+              x: -24,
+              opacity: 0,
+              duration: 0.22,
+              ease: "power2.out",
+              overwrite: true,
+            });
+          }
+
+          if (navItems.length) {
+            gsap.to(navItems, {
+              opacity: 0,
+              scale: 0.9,
+              y: 0,
+              duration: 0.18,
+              stagger: { each: 0.012, from: "edges" },
+              ease: "power2.out",
+              overwrite: true,
+            });
+          }
+
+          if (compactLayer) {
+            gsap.to(compactLayer, {
+              opacity: 1,
+              scale: 1,
+              pointerEvents: "auto",
+              duration: 0.38,
+              delay: 0.08,
+              ease: "expo.out",
+              overwrite: true,
+            });
+          }
+        } else {
+          // STATE 3: Expanded Floating Capsule on Hover (Spreads symmetrically from CENTER to LEFT & RIGHT!)
+          gsap.to(shell, {
+            width: floatingExpandedW,
+            marginTop: 14,
+            borderRadius: 9999,
+            paddingLeft: 28,
+            paddingRight: 28,
+            paddingTop: 10,
+            paddingBottom: 10,
+            duration: 0.52,
+            ease: "expo.out",
+            overwrite: true,
+          });
+
+          if (compactLayer) {
+            gsap.to(compactLayer, {
+              opacity: 0,
+              scale: 0.9,
+              pointerEvents: "none",
+              duration: 0.18,
+              ease: "power2.out",
+              overwrite: true,
+            });
+          }
+
+          if (expandedLayer) {
+            gsap.to(expandedLayer, {
+              width: "100%",
+              maxWidth: floatingInnerW,
+              opacity: 1,
+              scaleX: 1,
+              scaleY: 1,
+              pointerEvents: "auto",
+              duration: 0.48,
+              ease: "expo.out",
+              overwrite: true,
+            });
+          }
+
+          if (leftBrandRef.current) {
+            gsap.to(leftBrandRef.current, {
+              x: 0,
+              opacity: 1,
+              duration: 0.46,
+              ease: "expo.out",
+              overwrite: true,
+            });
+          }
+
+          if (rightControlsRef.current) {
+            gsap.to(rightControlsRef.current, {
+              x: 0,
+              opacity: 1,
+              duration: 0.46,
+              ease: "expo.out",
+              overwrite: true,
+            });
+          }
+
+          if (navItems.length) {
+            gsap.to(navItems, {
+              opacity: 1,
+              scale: 1,
+              y: 0,
+              duration: 0.38,
+              stagger: { each: 0.022, from: "center" },
+              ease: "expo.out",
+              overwrite: true,
+            });
+          }
+        }
+      });
+    },
+    {
+      scope: navShellRef,
+      dependencies: [scrolled, isCompactCapsule],
+    },
+  );
+
+  // Keep desktop pixel widths responsive on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024 || !navShellRef.current) return;
+      const viewportW = window.innerWidth;
+      const floatingExpandedW = Math.min(1260, viewportW - 32);
+      const floatingInnerW = Math.min(1180, floatingExpandedW - 56);
+
+      if (!scrolled) {
+        gsap.set(navShellRef.current, { width: viewportW });
+        if (expandedLayerRef.current) {
+          gsap.set(expandedLayerRef.current, {
+            maxWidth: Math.min(1320, viewportW - 64),
+          });
+        }
+      } else if (isCompactCapsule) {
+        gsap.set(navShellRef.current, { width: 360 });
+        if (expandedLayerRef.current) {
+          gsap.set(expandedLayerRef.current, { maxWidth: floatingInnerW });
+        }
+      } else {
+        gsap.set(navShellRef.current, { width: floatingExpandedW });
+        if (expandedLayerRef.current) {
+          gsap.set(expandedLayerRef.current, { maxWidth: floatingInnerW });
+        }
+      }
+    };
+
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => window.removeEventListener("resize", handleResize);
+  }, [scrolled, isCompactCapsule]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -232,23 +503,22 @@ export function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none flex flex-col items-center">
-      {/* Outer Morphing Container */}
-      <motion.nav
-        initial={{ y: -60, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      {/* Outer Morphing Shell — Centered so width changes always expand/contract symmetrically from center to left & right */}
+      <nav
+        ref={navShellRef}
         onMouseEnter={handleMouseEnterCapsule}
         onMouseLeave={handleMouseLeaveCapsule}
         style={{
+          transformOrigin: "center center",
           background: isDark
             ? scrolled
-              ? "rgba(17, 23, 25, 0.88)"
-              : "rgba(17, 23, 25, 0.75)"
+              ? "rgba(17, 23, 25, 0.9)"
+              : "rgba(17, 23, 25, 0.76)"
             : scrolled
-              ? "rgba(245, 247, 248, 0.92)"
+              ? "rgba(245, 247, 248, 0.94)"
               : "rgba(245, 247, 248, 0.82)",
           borderColor: scrolled
-            ? "color-mix(in srgb, var(--portfolio-accent) 32%, var(--portfolio-border))"
+            ? "color-mix(in srgb, var(--portfolio-accent) 34%, var(--portfolio-border))"
             : "var(--portfolio-border)",
           boxShadow: scrolled
             ? isDark
@@ -256,81 +526,54 @@ export function Navbar() {
               : "0 14px 36px rgba(20, 42, 44, 0.12), 0 0 0 1px rgba(20, 107, 102, 0.08)"
             : "none",
         }}
-        className={`pointer-events-auto backdrop-blur-2xl transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`pointer-events-auto relative mx-auto origin-center backdrop-blur-2xl transition-colors duration-300 ${
+          isCompactCapsule ? "lg:overflow-hidden" : ""
+        } ${
           scrolled
-            ? isCompactCapsule
-              ? "mt-2.5 sm:mt-3.5 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2.5rem)] lg:w-auto lg:min-w-[340px] lg:max-w-[430px] rounded-2xl lg:rounded-full border px-3.5 sm:px-5 py-2"
-              : "mt-2.5 sm:mt-3.5 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2.5rem)] max-w-6xl rounded-2xl lg:rounded-full border px-4 sm:px-6 py-2.5"
-            : "mt-0 w-full max-w-full border-b px-4 sm:px-6 lg:px-10 py-3 lg:py-4"
+            ? "mt-2.5 sm:mt-3.5 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2.5rem)] rounded-2xl lg:rounded-full border px-3.5 sm:px-5 py-2"
+            : "mt-0 w-full border-b px-4 sm:px-6 lg:px-10 py-3 lg:py-3.5"
         }`}>
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
-          {/* Brand Logo */}
-          <a
-            href="#home"
-            onClick={(e) => {
-              e.preventDefault();
-              navigateTo("#home");
-            }}
-            className="relative flex items-center group cursor-pointer shrink-0">
+        {/* ============================================================
+            LAYER A (DESKTOP lg+): COMPACT CAPSULE VIEW (DEAD-CENTERED)
+           ============================================================ */}
+        <div
+          ref={compactLayerRef}
+          aria-hidden={!isCompactCapsule}
+          className="hidden lg:flex absolute inset-0 items-center justify-center gap-3.5 px-5 select-none opacity-0 pointer-events-none">
+          <div className="flex items-center justify-center gap-3.5 shrink-0">
             <span
-              className={`font-display tracking-tight select-none font-extrabold transition-all duration-300 ${
-                isCompactCapsule ? "text-lg" : "text-xl sm:text-2xl"
-              }`}
+              className="font-display text-lg font-extrabold tracking-tight shrink-0"
               style={{
                 color: "var(--portfolio-text)",
                 letterSpacing: "-0.03em",
               }}>
-              NDS
-              <span
-                style={{ color: "var(--portfolio-accent)" }}
-                aria-hidden="true">
-                .
-              </span>
+              NDS<span style={{ color: "var(--portfolio-accent)" }}>.</span>
             </span>
-          </a>
 
-          {/* ============================================================
-              COMPACT CAPSULE INDICATOR:
-              - Always visible on Mobile & Tablet (< lg) when scrolled
-              - Visible on Desktop (lg+) when scrolled & not hovered
-             ============================================================ */}
-          <div
-            onClick={() => {
-              if (window.innerWidth < 1024) {
-                setMobileOpen((prev) => !prev);
-              }
-            }}
-            className={`items-center gap-2 sm:gap-3 px-2 py-0.5 select-none cursor-pointer lg:cursor-default ${
-              scrolled
-                ? isCompactCapsule
-                  ? "flex"
-                  : "flex lg:hidden"
-                : "hidden"
-            }`}>
             <span
-              className="hidden sm:inline-block h-3.5 w-px"
+              className="h-3.5 w-px shrink-0"
               style={{ background: "var(--portfolio-border)" }}
             />
 
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <span
                 className="h-2 w-2 rounded-full animate-pulse shrink-0"
                 style={{ background: "var(--portfolio-accent)" }}
               />
               <span
-                className="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider"
+                className="font-mono text-[11px] font-bold uppercase tracking-wider shrink-0"
                 style={{ color: "var(--portfolio-accent)" }}>
                 {SECTION_INDEX_MAP[activeHref] ?? "00"}
               </span>
               <span
-                className="font-mono text-[11px] sm:text-xs font-semibold truncate max-w-[110px] sm:max-w-none"
+                className="font-mono text-xs font-semibold truncate max-w-[130px]"
                 style={{ color: "var(--portfolio-text)" }}>
                 // {activeNavLink?.label}
               </span>
             </div>
 
             <span
-              className="h-3.5 w-px"
+              className="h-3.5 w-px shrink-0"
               style={{ background: "var(--portfolio-border)" }}
             />
 
@@ -367,63 +610,141 @@ export function Navbar() {
               </span>
             </div>
           </div>
+        </div>
 
-          {/* ============================================================
-              FULL DESKTOP NAVIGATION LINKS (lg+ AT TOP OR WHEN CAPSULE HOVERED)
-             ============================================================ */}
+        {/* ============================================================
+            LAYER B: EXPANDED SYMMETRICAL FULL BAR
+            Wrapped in `flex justify-center` with `lg:shrink-0` on expandedLayerRef
+            so shrinking `navShellRef` NEVER triggers `justify-between` flex-start right overflow!
+           ============================================================ */}
+        <div className="w-full flex justify-center">
           <div
-            className={`hidden lg:flex items-center gap-1 xl:gap-1.5 transition-all duration-300 ${
-              isCompactCapsule
-                ? "lg:hidden opacity-0 pointer-events-none w-0 overflow-hidden"
-                : "opacity-100"
-            }`}>
-            {navLinks.map((link) => {
-              const isActive = activeHref === link.href;
-              return (
-                <button
-                  key={link.href}
-                  type="button"
-                  onClick={() => navigateTo(link.href)}
-                  className={`relative px-3 py-1.5 rounded-full text-xs xl:text-[13px] font-medium transition-colors duration-200 cursor-pointer whitespace-nowrap ${
-                    isActive ? "font-semibold" : ""
-                  }`}
-                  style={{
-                    color: isActive
-                      ? "var(--portfolio-accent)"
-                      : "var(--portfolio-muted)",
-                  }}>
-                  {isActive && (
-                    <motion.span
-                      layoutId="activeCapsuleNavIndicator"
-                      className="absolute inset-0 rounded-full -z-10"
-                      style={{
-                        background:
-                          "color-mix(in srgb, var(--portfolio-accent-soft) 75%, transparent)",
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 380,
-                        damping: 30,
-                      }}
-                    />
-                  )}
-                  {link.label}
-                </button>
-              );
-            })}
-          </div>
+            ref={expandedLayerRef}
+            style={{ transformOrigin: "center center" }}
+            className="w-full max-w-7xl lg:max-w-none lg:shrink-0 flex items-center justify-between gap-2 sm:gap-3 origin-center">
+            {/* Left Brand Logo */}
+            <a
+              ref={leftBrandRef}
+              href="#home"
+              onClick={(e) => {
+                e.preventDefault();
+                navigateTo("#home");
+              }}
+              className="relative flex items-center group cursor-pointer shrink-0">
+              <span
+                className="font-display text-xl sm:text-2xl tracking-tight select-none font-extrabold"
+                style={{
+                  color: "var(--portfolio-text)",
+                  letterSpacing: "-0.03em",
+                }}>
+                NDS
+                <span
+                  style={{ color: "var(--portfolio-accent)" }}
+                  aria-hidden="true">
+                  .
+                </span>
+              </span>
+            </a>
 
-          {/* ============================================================
-              RIGHT CONTROLS (THEME, LANGUAGE, RESUME, MOBILE/TABLET MENU)
-             ============================================================ */}
+            {/* Mobile & Tablet Compact Section Indicator (< lg when scrolled) */}
+            {scrolled && (
+              <div
+                onClick={() => setMobileOpen((prev) => !prev)}
+                className="flex lg:hidden items-center gap-2 sm:gap-3 px-2 py-0.5 select-none cursor-pointer">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <span
+                    className="h-2 w-2 rounded-full animate-pulse shrink-0"
+                    style={{ background: "var(--portfolio-accent)" }}
+                  />
+                  <span
+                    className="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider"
+                    style={{ color: "var(--portfolio-accent)" }}>
+                    {SECTION_INDEX_MAP[activeHref] ?? "00"}
+                  </span>
+                  <span
+                    className="font-mono text-[11px] sm:text-xs font-semibold truncate max-w-[110px] sm:max-w-none"
+                    style={{ color: "var(--portfolio-text)" }}>
+                    // {activeNavLink?.label}
+                  </span>
+                </div>
+
+                <span
+                  className="h-3.5 w-px"
+                  style={{ background: "var(--portfolio-border)" }}
+                />
+
+                <div className="relative flex items-center justify-center w-6 h-6 shrink-0">
+                  <svg
+                    className="w-6 h-6 -rotate-90"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true">
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="9"
+                      fill="none"
+                      stroke="var(--portfolio-border)"
+                      strokeWidth="2"
+                    />
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="9"
+                      fill="none"
+                      stroke="var(--portfolio-accent)"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeDasharray={ringCircumference}
+                      strokeDashoffset={ringOffset}
+                    />
+                  </svg>
+                  <span
+                    className="font-mono text-[8px] font-bold"
+                    style={{ color: "var(--portfolio-muted)" }}>
+                    {Math.round(scrollProgress * 100)}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Center Desktop Navigation Links (Unfurls from Center Outward!) */}
+            <div className="hidden lg:flex items-center justify-center gap-0.5 xl:gap-1.5 shrink-0">
+              {navLinks.map((link) => {
+                const isActive = activeHref === link.href;
+                return (
+                  <button
+                    key={link.href}
+                    type="button"
+                    onClick={() => navigateTo(link.href)}
+                    className={`gsap-nav-link-item relative px-2.5 xl:px-3 py-1.5 rounded-full text-xs xl:text-[13px] font-medium transition-colors duration-200 cursor-pointer whitespace-nowrap ${
+                      isActive ? "font-semibold" : ""
+                    }`}
+                    style={{
+                      color: isActive
+                        ? "var(--portfolio-accent)"
+                        : "var(--portfolio-muted)",
+                    }}>
+                    {isActive && (
+                      <span
+                        className="absolute inset-0 rounded-full -z-10 transition-all duration-300"
+                        style={{
+                          background:
+                            "color-mix(in srgb, var(--portfolio-accent-soft) 75%, transparent)",
+                        }}
+                      />
+                    )}
+                    {link.label}
+                  </button>
+                );
+              })}
+            </div>
+
+          {/* Right Controls (Desktop + Mobile/Tablet) */}
           <div className="flex items-center gap-2 shrink-0">
-            {/* Desktop Language & Resume Controls (lg+) */}
+            {/* Desktop Language, Theme & Resume Controls (lg+) */}
             <div
-              className={`hidden lg:flex items-center gap-2 transition-all duration-300 ${
-                isCompactCapsule
-                  ? "lg:hidden opacity-0 pointer-events-none w-0 overflow-hidden"
-                  : "opacity-100"
-              }`}>
+              ref={rightControlsRef}
+              className="hidden lg:flex items-center gap-1.5 xl:gap-2 shrink-0">
               {/* Language Switcher Dropdown */}
               <div className="relative" ref={langDropdownRef}>
                 <button
@@ -552,7 +873,7 @@ export function Navbar() {
                   aria-expanded={resumeDropdownOpen}
                   aria-haspopup="menu"
                   aria-label={t.nav.selectResume}
-                  className="inline-flex items-center gap-1.5 px-3.5 h-9 rounded-full text-xs font-semibold transition-all duration-200 shadow-sm cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3.5 h-9 rounded-full text-xs font-semibold transition-all duration-200 shadow-sm cursor-pointer whitespace-nowrap shrink-0"
                   style={{
                     background: "var(--portfolio-accent)",
                     color: "var(--portfolio-accent-contrast)",
@@ -654,6 +975,7 @@ export function Navbar() {
                 {mobileOpen ? <X size={17} /> : <Menu size={17} />}
               </button>
             </div>
+          </div>
           </div>
         </div>
 
@@ -850,7 +1172,7 @@ export function Navbar() {
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.nav>
+      </nav>
     </header>
   );
 }
