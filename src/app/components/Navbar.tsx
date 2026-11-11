@@ -108,6 +108,18 @@ export function Navbar() {
     };
   }, []);
 
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
   // GSAP Center-Outward Symmetrical Capsule Morph Choreography (Desktop lg+)
   useGSAP(
     () => {
@@ -330,6 +342,20 @@ export function Navbar() {
           }
         }
       });
+
+      mm.add("(max-width: 1023px)", () => {
+        // MOBILE & TABLET (< lg): Clear all desktop GSAP inline overrides cleanly
+        gsap.set(
+          [
+            shell,
+            compactLayer,
+            expandedLayer,
+            leftBrandRef.current,
+            rightControlsRef.current,
+          ].filter(Boolean),
+          { clearProps: "all" },
+        );
+      });
     },
     {
       scope: navShellRef,
@@ -337,10 +363,23 @@ export function Navbar() {
     },
   );
 
-  // Keep desktop pixel widths responsive on window resize
+  // Keep desktop pixel widths responsive on window resize and clean up on mobile
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 1024 || !navShellRef.current) return;
+      if (!navShellRef.current) return;
+      if (window.innerWidth < 1024) {
+        gsap.set(
+          [
+            navShellRef.current,
+            compactLayerRef.current,
+            expandedLayerRef.current,
+            leftBrandRef.current,
+            rightControlsRef.current,
+          ].filter(Boolean),
+          { clearProps: "all" },
+        );
+        return;
+      }
       const viewportW = window.innerWidth;
       const floatingExpandedW = Math.min(1260, viewportW - 32);
       const floatingInnerW = Math.min(1180, floatingExpandedW - 56);
@@ -526,12 +565,12 @@ export function Navbar() {
               : "0 14px 36px rgba(20, 42, 44, 0.12), 0 0 0 1px rgba(20, 107, 102, 0.08)"
             : "none",
         }}
-        className={`pointer-events-auto relative mx-auto origin-center backdrop-blur-2xl transition-colors duration-300 ${
+        className={`pointer-events-auto relative mx-auto origin-center backdrop-blur-2xl transition-all duration-300 ${
           isCompactCapsule ? "lg:overflow-hidden" : ""
         } ${
           scrolled
-            ? "mt-2.5 sm:mt-3.5 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2.5rem)] rounded-2xl lg:rounded-full border px-3.5 sm:px-5 py-2"
-            : "mt-0 w-full border-b px-4 sm:px-6 lg:px-10 py-3 lg:py-3.5"
+            ? "mt-2 sm:mt-3.5 w-[calc(100%-1.25rem)] sm:w-[calc(100%-2.5rem)] rounded-full border px-3 sm:px-5 py-1.5 sm:py-2"
+            : "mt-0 w-full border-b px-4 sm:px-6 lg:px-10 py-2.5 sm:py-3 lg:py-3.5"
         }`}>
         {/* ============================================================
             LAYER A (DESKTOP lg+): COMPACT CAPSULE VIEW (DEAD-CENTERED)
@@ -577,7 +616,7 @@ export function Navbar() {
               style={{ background: "var(--portfolio-border)" }}
             />
 
-            {/* Live SVG Circular Scroll Progress Meter */}
+            {/* Live SVG Circular Scroll Progress Meter (Dead-Centered Number) */}
             <div className="relative flex items-center justify-center w-6 h-6 shrink-0">
               <svg
                 className="w-6 h-6 -rotate-90"
@@ -604,7 +643,7 @@ export function Navbar() {
                 />
               </svg>
               <span
-                className="font-mono text-[8px] font-bold"
+                className="absolute inset-0 flex items-center justify-center font-mono text-[8px] font-bold leading-none pointer-events-none"
                 style={{ color: "var(--portfolio-muted)" }}>
                 {Math.round(scrollProgress * 100)}
               </span>
@@ -621,7 +660,7 @@ export function Navbar() {
           <div
             ref={expandedLayerRef}
             style={{ transformOrigin: "center center" }}
-            className="w-full max-w-7xl lg:max-w-none lg:shrink-0 flex items-center justify-between gap-2 sm:gap-3 origin-center">
+            className="w-full max-w-7xl lg:max-w-none lg:shrink-0 flex items-center justify-between gap-1.5 sm:gap-3 origin-center">
             {/* Left Brand Logo */}
             <a
               ref={leftBrandRef}
@@ -632,7 +671,7 @@ export function Navbar() {
               }}
               className="relative flex items-center group cursor-pointer shrink-0">
               <span
-                className="font-display text-xl sm:text-2xl tracking-tight select-none font-extrabold"
+                className="font-display text-lg sm:text-xl lg:text-2xl tracking-tight select-none font-extrabold"
                 style={{
                   color: "var(--portfolio-text)",
                   letterSpacing: "-0.03em",
@@ -650,32 +689,33 @@ export function Navbar() {
             {scrolled && (
               <div
                 onClick={() => setMobileOpen((prev) => !prev)}
-                className="flex lg:hidden items-center gap-2 sm:gap-3 px-2 py-0.5 select-none cursor-pointer">
-                <div className="flex items-center gap-1.5 sm:gap-2">
+                className="flex lg:hidden items-center gap-1.5 sm:gap-2.5 px-2 py-0.5 select-none cursor-pointer rounded-full transition-colors hover:bg-black/5 dark:hover:bg-white/5 min-w-0 shrink">
+                <div className="flex items-center gap-1 sm:gap-1.5 min-w-0">
                   <span
-                    className="h-2 w-2 rounded-full animate-pulse shrink-0"
+                    className="h-1.5 w-1.5 rounded-full animate-pulse shrink-0"
                     style={{ background: "var(--portfolio-accent)" }}
                   />
                   <span
-                    className="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider"
+                    className="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider shrink-0"
                     style={{ color: "var(--portfolio-accent)" }}>
                     {SECTION_INDEX_MAP[activeHref] ?? "00"}
                   </span>
                   <span
-                    className="font-mono text-[11px] sm:text-xs font-semibold truncate max-w-[110px] sm:max-w-none"
+                    className="font-mono text-[10px] sm:text-xs font-semibold truncate max-w-[80px] sm:max-w-[130px]"
                     style={{ color: "var(--portfolio-text)" }}>
                     // {activeNavLink?.label}
                   </span>
                 </div>
 
                 <span
-                  className="h-3.5 w-px"
+                  className="h-3 w-px shrink-0 opacity-60"
                   style={{ background: "var(--portfolio-border)" }}
                 />
 
-                <div className="relative flex items-center justify-center w-6 h-6 shrink-0">
+                {/* Dead-centered Circular Scroll Progress Meter */}
+                <div className="relative flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 shrink-0">
                   <svg
-                    className="w-6 h-6 -rotate-90"
+                    className="w-5 h-5 sm:w-6 sm:h-6 -rotate-90"
                     viewBox="0 0 24 24"
                     aria-hidden="true">
                     <circle
@@ -684,7 +724,7 @@ export function Navbar() {
                       r="9"
                       fill="none"
                       stroke="var(--portfolio-border)"
-                      strokeWidth="2"
+                      strokeWidth="2.2"
                     />
                     <circle
                       cx="12"
@@ -692,14 +732,14 @@ export function Navbar() {
                       r="9"
                       fill="none"
                       stroke="var(--portfolio-accent)"
-                      strokeWidth="2"
+                      strokeWidth="2.2"
                       strokeLinecap="round"
                       strokeDasharray={ringCircumference}
                       strokeDashoffset={ringOffset}
                     />
                   </svg>
                   <span
-                    className="font-mono text-[8px] font-bold"
+                    className="absolute inset-0 flex items-center justify-center font-mono text-[7px] sm:text-[8px] font-bold leading-none pointer-events-none"
                     style={{ color: "var(--portfolio-muted)" }}>
                     {Math.round(scrollProgress * 100)}
                   </span>
@@ -931,12 +971,14 @@ export function Navbar() {
             </div>
 
             {/* Mobile & Tablet Controls (< lg: Quick Language Pill, Theme, Hamburger) */}
-            <div className="flex lg:hidden items-center gap-1.5 sm:gap-2">
+            <div className="flex lg:hidden items-center gap-1 sm:gap-2 shrink-0">
               <button
                 type="button"
                 onClick={() => setLanguage(language === "en" ? "id" : "en")}
                 aria-label={t.nav.switchLanguage}
-                className="flex items-center justify-center px-2.5 h-8 sm:h-9 rounded-xl border font-mono text-[11px] font-bold uppercase tracking-wider transition-colors"
+                className={`flex items-center justify-center px-2 sm:px-2.5 rounded-xl border font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider transition-colors ${
+                  scrolled ? "h-7.5" : "h-8 sm:h-9"
+                }`}
                 style={{
                   background: "var(--portfolio-surface)",
                   borderColor: "var(--portfolio-border)",
@@ -949,16 +991,18 @@ export function Navbar() {
                 type="button"
                 onClick={toggleTheme}
                 aria-label="Toggle theme"
-                className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl border transition-colors"
+                className={`flex items-center justify-center rounded-xl border transition-colors ${
+                  scrolled ? "w-7.5 h-7.5" : "w-8 h-8 sm:w-9 sm:h-9"
+                }`}
                 style={{
                   background: "var(--portfolio-surface)",
                   borderColor: "var(--portfolio-border)",
                   color: "var(--portfolio-text)",
                 }}>
                 {isDark ? (
-                  <Sun size={15} className="text-[#FCD34D]" />
+                  <Sun size={scrolled ? 13 : 15} className="text-[#FCD34D]" />
                 ) : (
-                  <Moon size={15} className="text-slate-600" />
+                  <Moon size={scrolled ? 13 : 15} className="text-slate-600" />
                 )}
               </button>
 
@@ -966,13 +1010,19 @@ export function Navbar() {
                 type="button"
                 onClick={() => setMobileOpen((prev) => !prev)}
                 aria-label={mobileOpen ? t.nav.closeMenu : t.nav.openMenu}
-                className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl border transition-colors duration-200"
+                className={`flex items-center justify-center rounded-xl border transition-colors duration-200 ${
+                  scrolled ? "w-7.5 h-7.5" : "w-8 h-8 sm:w-9 sm:h-9"
+                }`}
                 style={{
                   background: "var(--portfolio-surface)",
                   borderColor: "var(--portfolio-border)",
                   color: "var(--portfolio-text)",
                 }}>
-                {mobileOpen ? <X size={17} /> : <Menu size={17} />}
+                {mobileOpen ? (
+                  <X size={scrolled ? 15 : 17} />
+                ) : (
+                  <Menu size={scrolled ? 15 : 17} />
+                )}
               </button>
             </div>
           </div>
@@ -986,12 +1036,12 @@ export function Navbar() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="lg:hidden overflow-hidden border-t mt-3"
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="lg:hidden overflow-hidden border-t mt-2.5 sm:mt-3"
               style={{
                 borderColor: "var(--portfolio-border)",
               }}>
-              <div className="py-3 flex flex-col gap-2">
+              <div className="py-2.5 sm:py-3 max-h-[calc(80dvh-4rem)] overflow-y-auto pr-1 flex flex-col gap-2.5">
                 {/* 2-Column Bento Navigation Grid on Mobile & Tablet */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                   {navLinks.map((link) => {
@@ -1173,6 +1223,21 @@ export function Navbar() {
           )}
         </AnimatePresence>
       </nav>
+
+      {/* Mobile Drawer Backdrop Blur Overlay */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm -z-10 lg:hidden pointer-events-auto"
+          />
+        )}
+      </AnimatePresence>
     </header>
   );
 }

@@ -176,200 +176,154 @@ export function Hero() {
       section.addEventListener("mousemove", handleMouseMove);
       section.addEventListener("mouseleave", handleMouseLeave);
 
-      // 4. Pinned Interactive Scroll-Zoom Choreography (Responsive across Mobile, Tablet, Desktop)
+      // 4. Interactive Scroll-Zoom Choreography (Desktop: Cinematic Pinned Zoom; Mobile/Tablet: Natural Fluid Scroll)
       const mm = gsap.matchMedia();
 
-      mm.add(
-        {
-          isDesktop: "(min-width: 1024px)",
-          isTablet: "(min-width: 640px) and (max-width: 1023px)",
-          isMobile: "(max-width: 639px)",
-        },
-        (context) => {
-          const { isDesktop, isTablet } = context.conditions as {
-            isDesktop: boolean;
-            isTablet: boolean;
-            isMobile: boolean;
-          };
-
-          const targetZoom = isDesktop ? 1.58 : isTablet ? 1.32 : 1.22;
-
-          const scrollTl = gsap.timeline({
-            scrollTrigger: {
-              trigger: section,
-              start: "top top",
-              end: isDesktop ? "+=150%" : isTablet ? "+=120%" : "+=105%",
-              pin: true,
-              scrub: 0.9,
-              anticipatePin: 1,
-              onUpdate: (self) => {
-                if (progressFillRef.current) {
-                  progressFillRef.current.style.transform = `scaleX(${self.progress})`;
-                }
-                if (zoomReadoutRef.current) {
-                  const currentZoom = (
-                    1 +
-                    self.progress * (targetZoom - 1)
-                  ).toFixed(2);
-                  zoomReadoutRef.current.textContent = `${currentZoom}x`;
-                }
-              },
+      mm.add("(min-width: 1024px)", () => {
+        // DESKTOP (lg+): Pinned Cinematic Spatial Scroll-Zoom
+        const scrollTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: "+=150%",
+            pin: true,
+            scrub: 0.9,
+            anticipatePin: 1,
+            onUpdate: (self) => {
+              if (progressFillRef.current) {
+                progressFillRef.current.style.transform = `scaleX(${self.progress})`;
+              }
+              if (zoomReadoutRef.current) {
+                const currentZoom = (1 + self.progress * 0.58).toFixed(2);
+                zoomReadoutRef.current.textContent = `${currentZoom}x`;
+              }
             },
-          });
+          },
+        });
 
-          // Central Portrait Portal Zooms In & Rings Accelerate
-          scrollTl.to(
-            portalWrapRef.current,
-            {
-              scale: targetZoom,
-              y: isDesktop ? 0 : -10,
-              ease: "power2.inOut",
-              duration: 0.78,
-            },
-            0,
-          );
+        // Central Portrait Portal Zooms In & Rings Accelerate
+        scrollTl.to(
+          portalWrapRef.current,
+          {
+            scale: 1.58,
+            ease: "power2.inOut",
+            duration: 0.78,
+          },
+          0,
+        );
 
-          scrollTl.to(
-            portraitImgRef.current,
-            {
-              scale: 1.14,
-              ease: "none",
-              duration: 0.78,
-            },
-            0,
-          );
+        scrollTl.to(
+          portraitImgRef.current,
+          {
+            scale: 1.14,
+            ease: "none",
+            duration: 0.78,
+          },
+          0,
+        );
 
-          scrollTl.to(
-            outerRingRef.current,
-            {
-              scale: isDesktop ? 1.24 : 1.1,
-              rotation: "+=140",
-              opacity: 0.25,
-              ease: "power2.inOut",
-              duration: 0.78,
-            },
-            0,
-          );
+        scrollTl.to(
+          outerRingRef.current,
+          {
+            scale: 1.24,
+            rotation: "+=140",
+            opacity: 0.25,
+            ease: "power2.inOut",
+            duration: 0.78,
+          },
+          0,
+        );
 
-          scrollTl.to(
-            innerRingRef.current,
-            {
-              scale: 0.88,
-              rotation: "-=120",
-              ease: "power2.inOut",
-              duration: 0.78,
-            },
-            0,
-          );
+        scrollTl.to(
+          innerRingRef.current,
+          {
+            scale: 0.88,
+            rotation: "-=120",
+            ease: "power2.inOut",
+            duration: 0.78,
+          },
+          0,
+        );
 
-          // Monumental Backdrop Typography Splits Outward Like Cinema Curtains
-          scrollTl.to(
-            titleTopRef.current,
-            {
-              xPercent: isDesktop ? -26 : -14,
-              yPercent: isDesktop ? -16 : -10,
-              scale: 1.08,
-              opacity: 0.14,
-              ease: "power2.inOut",
-              duration: 0.75,
-            },
-            0,
-          );
+        // Monumental Backdrop Typography Splits Outward Like Cinema Curtains
+        scrollTl.to(
+          titleTopRef.current,
+          {
+            xPercent: -26,
+            yPercent: -16,
+            scale: 1.08,
+            opacity: 0.14,
+            ease: "power2.inOut",
+            duration: 0.75,
+          },
+          0,
+        );
 
-          scrollTl.to(
-            titleBottomRef.current,
-            {
-              xPercent: isDesktop ? 26 : 14,
-              yPercent: isDesktop ? 16 : 10,
-              scale: 1.08,
-              opacity: 0.14,
-              ease: "power2.inOut",
-              duration: 0.75,
-            },
-            0,
-          );
+        scrollTl.to(
+          titleBottomRef.current,
+          {
+            xPercent: 26,
+            yPercent: 16,
+            scale: 1.08,
+            opacity: 0.14,
+            ease: "power2.inOut",
+            duration: 0.75,
+          },
+          0,
+        );
 
-          // Satellite Nodes Response During Zoom
-          if (isDesktop) {
-            scrollTl.to(
-              nodeTopLeftRef.current,
-              {
-                x: -64,
-                y: -36,
-                scale: 0.94,
-                opacity: 0.32,
-                ease: "power2.inOut",
-                duration: 0.72,
-              },
-              0,
-            );
-            scrollTl.to(
-              nodeTopRightRef.current,
-              {
-                x: 64,
-                y: -36,
-                scale: 0.94,
-                opacity: 0.32,
-                ease: "power2.inOut",
-                duration: 0.72,
-              },
-              0,
-            );
-            scrollTl.to(
-              nodeBottomLeftRef.current,
-              {
-                x: -64,
-                y: 36,
-                scale: 0.94,
-                opacity: 0.32,
-                ease: "power2.inOut",
-                duration: 0.72,
-              },
-              0,
-            );
-            scrollTl.to(
-              nodeBottomRightRef.current,
-              {
-                x: 64,
-                y: 36,
-                scale: 0.94,
-                opacity: 0.32,
-                ease: "power2.inOut",
-                duration: 0.72,
-              },
-              0,
-            );
-          } else {
-            // On Mobile & Tablet, gently fade/part the surrounding cards so the zoomed portrait has clean focus
-            scrollTl.to(
-              nodeTopLeftRef.current,
-              {
-                y: -18,
-                scale: 0.96,
-                opacity: 0.4,
-                ease: "power2.inOut",
-                duration: 0.7,
-              },
-              0,
-            );
-            scrollTl.to(
-              [
-                nodeTopRightRef.current,
-                nodeBottomLeftRef.current,
-                nodeBottomRightRef.current,
-              ],
-              {
-                y: 22,
-                scale: 0.96,
-                opacity: 0.38,
-                ease: "power2.inOut",
-                duration: 0.7,
-              },
-              0,
-            );
-          }
+        // Satellite Nodes Parting on Desktop
+        scrollTl.to(
+          nodeTopLeftRef.current,
+          {
+            x: -64,
+            y: -36,
+            scale: 0.94,
+            opacity: 0.32,
+            ease: "power2.inOut",
+            duration: 0.72,
+          },
+          0,
+        );
+        scrollTl.to(
+          nodeTopRightRef.current,
+          {
+            x: 64,
+            y: -36,
+            scale: 0.94,
+            opacity: 0.32,
+            ease: "power2.inOut",
+            duration: 0.72,
+          },
+          0,
+        );
+        scrollTl.to(
+          nodeBottomLeftRef.current,
+          {
+            x: -64,
+            y: 36,
+            scale: 0.94,
+            opacity: 0.32,
+            ease: "power2.inOut",
+            duration: 0.72,
+          },
+          0,
+        );
+        scrollTl.to(
+          nodeBottomRightRef.current,
+          {
+            x: 64,
+            y: 36,
+            scale: 0.94,
+            opacity: 0.32,
+            ease: "power2.inOut",
+            duration: 0.72,
+          },
+          0,
+        );
 
-          // Deep-Focus HUD Overlay Locks In During Peak Zoom
+        // Deep-Focus HUD Overlay Locks In During Peak Zoom in Desktop Center Column
+        if (focusHudRef.current) {
           scrollTl.fromTo(
             focusHudRef.current,
             {
@@ -386,20 +340,89 @@ export function Hero() {
             },
             0.3,
           );
+        }
 
-          // Final Hold & Smooth Cinematic Hand-off to Next Section
-          scrollTl.to(
-            stage,
-            {
-              scale: 1.03,
-              opacity: 0.9,
-              ease: "power1.in",
-              duration: 0.22,
+        // Final Hold & Smooth Cinematic Hand-off to Next Section
+        scrollTl.to(
+          stage,
+          {
+            scale: 1.03,
+            opacity: 0.9,
+            ease: "power1.in",
+            duration: 0.22,
+          },
+          0.78,
+        );
+      });
+
+      mm.add("(max-width: 1023px)", () => {
+        // MOBILE & TABLET (< lg): Natural Fluid Unpinned Scroll
+        // Eliminates screen locking, card displacement, and overlapping HUD clashes
+        const mobileScrollTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.7,
+            onUpdate: (self) => {
+              if (progressFillRef.current) {
+                progressFillRef.current.style.transform = `scaleX(${self.progress})`;
+              }
+              if (zoomReadoutRef.current) {
+                const currentZoom = (1 + self.progress * 0.12).toFixed(2);
+                zoomReadoutRef.current.textContent = `${currentZoom}x`;
+              }
             },
-            0.78,
-          );
-        },
-      );
+          },
+        });
+
+        // Gentle Portal & Ring Parallax (Cards remain 100% visible and uncolliding)
+        mobileScrollTl.to(
+          portalWrapRef.current,
+          {
+            scale: 1.08,
+            y: 14,
+            ease: "none",
+          },
+          0,
+        );
+
+        mobileScrollTl.to(
+          outerRingRef.current,
+          {
+            rotation: "+=80",
+            ease: "none",
+          },
+          0,
+        );
+
+        mobileScrollTl.to(
+          innerRingRef.current,
+          {
+            rotation: "-=70",
+            ease: "none",
+          },
+          0,
+        );
+
+        mobileScrollTl.to(
+          titleTopRef.current,
+          {
+            xPercent: -12,
+            ease: "none",
+          },
+          0,
+        );
+
+        mobileScrollTl.to(
+          titleBottomRef.current,
+          {
+            xPercent: 12,
+            ease: "none",
+          },
+          0,
+        );
+      });
 
       return () => {
         section.removeEventListener("mousemove", handleMouseMove);
@@ -587,6 +610,29 @@ export function Hero() {
                   className="font-mono text-xs sm:text-sm font-semibold"
                   style={{ color: "var(--portfolio-accent)" }}
                 />
+              </div>
+
+              {/* Mobile Core Engineering Standards Pills (< lg) */}
+              <div
+                className="flex lg:hidden flex-wrap items-center gap-1.5 mt-2.5 pt-2 border-t"
+                style={{ borderColor: "var(--portfolio-border)" }}>
+                <span
+                  className="font-mono text-[9px] uppercase tracking-wider font-semibold"
+                  style={{ color: "var(--portfolio-accent)" }}>
+                  {language === "id" ? "STANDAR KODE:" : "STANDARDS:"}
+                </span>
+                {t.hero.codeCard.principles.map((p) => (
+                  <span
+                    key={p}
+                    className="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium border"
+                    style={{
+                      background: "var(--portfolio-surface-raised)",
+                      borderColor: "var(--portfolio-border)",
+                      color: "var(--portfolio-text)",
+                    }}>
+                    {p}
+                  </span>
+                ))}
               </div>
 
               <div
@@ -817,10 +863,10 @@ export function Hero() {
                 </div>
               </div>
 
-              {/* DEEP-FOCUS HUD OVERLAY (REVEALED AS USER SCROLL-ZOOMS IN) */}
+              {/* DEEP-FOCUS HUD OVERLAY (REVEALED AS USER SCROLL-ZOOMS IN ON DESKTOP ONLY) */}
               <div
                 ref={focusHudRef}
-                className="pointer-events-none absolute -bottom-10 sm:-bottom-12 left-1/2 -translate-x-1/2 w-[256px] sm:w-[350px] lg:w-[375px] rounded-2xl border px-3 sm:px-4 py-2 sm:py-2.5 backdrop-blur-xl shadow-2xl opacity-0 z-40"
+                className="hidden lg:block pointer-events-none absolute -bottom-10 sm:-bottom-12 left-1/2 -translate-x-1/2 w-[256px] sm:w-[350px] lg:w-[375px] rounded-2xl border px-3 sm:px-4 py-2 sm:py-2.5 backdrop-blur-xl shadow-2xl opacity-0 z-40"
                 style={{
                   background:
                     "color-mix(in srgb, var(--portfolio-surface) 92%, transparent)",
