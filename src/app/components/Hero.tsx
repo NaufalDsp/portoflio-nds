@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { ArrowDown, ArrowUpRight, Mail, MapPin, Sparkles, Terminal } from "lucide-react";
+import { ArrowUpRight, Mail, MapPin, Terminal } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -67,7 +67,7 @@ export function Hero() {
   const orbitText =
     language === "id"
       ? "NAUFAL DWI SAPUTRO • FULL STACK SOFTWARE ENGINEER • ARSITEKTUR BERSIH & INTERAKSI WEB • "
-      : "NAUFAL DWI SAPUTRO • FULL STACK SOFTWARE ENGINEER • CLEAN ARCHITECTURE & INTERACTIVE WEB • ";
+      : "NAUFAL DWI SAPUTRO • SOFTWARE ENGINEER • FULL STACK DEVELOPER •  AI ENTHUSIAST • ";
 
   useGSAP(
     () => {
@@ -437,7 +437,7 @@ export function Hero() {
           <div className="hidden sm:flex items-center gap-6">
             <span>LAT 7.4279° S · LON 111.0220° E</span>
             <span style={{ color: "var(--portfolio-accent)" }}>
-              [SCROLL TO ENGAGE ZOOM]
+              [SRAGEN · INDONESIA]
             </span>
           </div>
         </div>
@@ -793,12 +793,11 @@ export function Hero() {
                 }}>
                 <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider mb-1.5">
                   <span
-                    className="font-bold flex items-center gap-1"
+                    className="font-bold"
                     style={{ color: "var(--portfolio-accent)" }}>
-                    <Sparkles size={11} />
                     {language === "id"
-                      ? "FOKUS ARSITEKTUR"
-                      : "ARCHITECTURAL FOCUS"}
+                      ? "PRINSIP REKAYASA KODE"
+                      : "CORE ENGINEERING STANDARDS"}
                   </span>
                   <span style={{ color: "var(--portfolio-muted)" }}>
                     GPA 3.91 / 4.00
@@ -963,32 +962,12 @@ export function Hero() {
         </div>
 
         {/* ============================================================
-            BOTTOM INTERACTIVE SCROLL-ZOOM TELEMETRY BAR
+            BOTTOM TELEMETRY PROGRESS BAR
            ============================================================ */}
         <div
-          className="w-full max-w-xl mx-auto mt-4 lg:mt-0 lg:absolute lg:bottom-4 lg:left-1/2 lg:-translate-x-1/2 flex flex-col items-center gap-2 z-30">
-          <div className="w-full flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.18em] px-1">
-            <span
-              className="flex items-center gap-1.5"
-              style={{ color: "var(--portfolio-muted)" }}>
-              <ArrowDown
-                size={12}
-                className="animate-bounce"
-                style={{ color: "var(--portfolio-accent)" }}
-              />
-              {language === "id"
-                ? "SCROLL UNTUK ZOOM INTERAKTIF"
-                : "SCROLL FOR INTERACTIVE ZOOM"}
-            </span>
-            <span
-              className="font-semibold"
-              style={{ color: "var(--portfolio-accent)" }}>
-              ZOOM // <span ref={zoomReadoutRef}>1.00x</span>
-            </span>
-          </div>
-
+          className="w-full max-w-md mx-auto mt-4 lg:mt-0 lg:absolute lg:bottom-5 lg:left-1/2 lg:-translate-x-1/2 flex items-center gap-3 z-30">
           <div
-            className="w-full h-1 rounded-full overflow-hidden"
+            className="flex-1 h-1 rounded-full overflow-hidden"
             style={{ background: "var(--portfolio-border)" }}>
             <div
               ref={progressFillRef}
@@ -996,6 +975,11 @@ export function Hero() {
               style={{ background: "var(--portfolio-accent)" }}
             />
           </div>
+          <span
+            className="text-[10px] font-mono uppercase tracking-[0.18em] font-semibold shrink-0"
+            style={{ color: "var(--portfolio-accent)" }}>
+            <span ref={zoomReadoutRef}>1.00x</span>
+          </span>
         </div>
       </div>
     </section>

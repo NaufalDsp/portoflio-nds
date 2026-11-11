@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { Cpu, Layers } from "lucide-react";
+import { Layers } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import { getTechnologyGroups } from "../data/technologies";
 
@@ -11,6 +11,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 export function Skills() {
   const { language, t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
+  const watermarkRef = useRef<HTMLDivElement>(null);
   const marqueeRow1Ref = useRef<HTMLDivElement>(null);
   const marqueeRow2Ref = useRef<HTMLDivElement>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
@@ -53,19 +54,20 @@ export function Skills() {
       const section = sectionRef.current;
       if (!section) return;
 
-      // 1. Editorial Header Reveal
+      // 1. Scrubbed Editorial Header Reveal
       gsap.fromTo(
         ".skills-header-reveal",
-        { y: 32, opacity: 0 },
+        { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
           stagger: 0.1,
           ease: "power3.out",
           scrollTrigger: {
             trigger: ".skills-header-wrap",
-            start: "top 82%",
+            start: "top 88%",
+            end: "top 45%",
+            scrub: 0.6,
           },
         },
       );
@@ -75,16 +77,35 @@ export function Skills() {
         { scaleX: 0 },
         {
           scaleX: 1,
-          duration: 1.1,
-          ease: "expo.out",
+          ease: "none",
           scrollTrigger: {
             trigger: ".skills-header-wrap",
-            start: "top 82%",
+            start: "top 85%",
+            end: "top 40%",
+            scrub: 0.6,
           },
         },
       );
 
-      // 2. Dual-Track Velocity-Reactive Infinite Kinetic Marquee
+      // 2. Scrubbed Horizontal Backdrop Watermark
+      if (watermarkRef.current) {
+        gsap.fromTo(
+          watermarkRef.current,
+          { xPercent: 12 },
+          {
+            xPercent: -18,
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 0.8,
+            },
+          },
+        );
+      }
+
+      // 3. Dual-Track Velocity-Reactive Infinite Kinetic Marquee
       const tween1 = gsap.to(marqueeRow1Ref.current, {
         xPercent: -50,
         duration: 36,
@@ -128,31 +149,48 @@ export function Skills() {
     { scope: sectionRef, dependencies: [language] },
   );
 
-  // Animate cards whenever category filter changes
+  // Interactive Scroll-Scrubbed & Filter Transition on Domain Cards
   useGSAP(
     () => {
       if (!gridContainerRef.current) return;
-      gsap.fromTo(
-        ".gsap-skill-domain-block",
-        { y: 24, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.55,
-          stagger: 0.08,
-          ease: "power3.out",
-        },
-      );
+
+      const cards = gsap.utils.toArray<HTMLElement>(".gsap-skill-domain-block");
+      cards.forEach((card, idx) => {
+        const isLeft = idx % 2 === 0;
+        gsap.fromTo(
+          card,
+          {
+            y: 48,
+            x: activeCategory === "ALL" ? (isLeft ? -28 : 28) : 0,
+            opacity: 0.15,
+            scale: 0.96,
+          },
+          {
+            y: 0,
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 92%",
+              end: "top 58%",
+              scrub: 0.5,
+            },
+          },
+        );
+      });
+
       gsap.fromTo(
         ".gsap-skill-pill",
-        { scale: 0.92, opacity: 0, y: 12 },
+        { scale: 0.94, opacity: 0, y: 10 },
         {
           scale: 1,
           opacity: 1,
           y: 0,
-          duration: 0.4,
-          stagger: 0.02,
-          ease: "back.out(1.4)",
+          duration: 0.35,
+          stagger: 0.018,
+          ease: "power2.out",
         },
       );
     },
@@ -165,6 +203,19 @@ export function Skills() {
       id="skills"
       className="relative overflow-hidden py-24 sm:py-32"
       style={{ background: "var(--background)" }}>
+      {/* Scrubbed Kinetic Backdrop Watermark */}
+      <div
+        ref={watermarkRef}
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute top-16 left-0 whitespace-nowrap font-display font-extrabold uppercase text-stroke-editorial z-0"
+        style={{
+          fontSize: "clamp(4.5rem, 13vw, 11rem)",
+          opacity: 0.35,
+          letterSpacing: "-0.04em",
+        }}>
+        STACK // ARCHITECTURE // TOOLKIT // ECOSYSTEM
+      </div>
+
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
         {/* ============================================================
             ASYMMETRIC EDITORIAL HEADER (02 // STACK & TOOLKIT)
@@ -229,7 +280,6 @@ export function Skills() {
           background:
             "color-mix(in srgb, var(--portfolio-surface) 65%, transparent)",
         }}>
-        {/* Left & Right Edge Fade Masks */}
         <div
           className="pointer-events-none absolute inset-y-0 left-0 w-20 sm:w-36 z-10"
           style={{
@@ -303,34 +353,49 @@ export function Skills() {
       </div>
 
       {/* ============================================================
-          INTERACTIVE ARCHITECTURAL DOMAIN FILTER & MATRIX
+          SEGMENTED PILL DOCK & BALANCED 2x2 ARCHITECTURAL MATRIX
          ============================================================ */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
-        {/* Domain Filter Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-10">
-          <div className="flex flex-wrap items-center gap-2">
+        {/* Segmented Control Dock */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+          <div
+            className="inline-flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl border w-fit"
+            style={{
+              background: "var(--portfolio-surface)",
+              borderColor: "var(--portfolio-border)",
+              boxShadow: "var(--portfolio-shadow)",
+            }}>
             <button
               type="button"
               onClick={() => setActiveCategory("ALL")}
-              className="px-3.5 py-2 rounded-xl border font-mono text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-2"
+              className="px-3.5 py-2 rounded-xl font-mono text-xs font-semibold transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
               style={{
                 background:
                   activeCategory === "ALL"
                     ? "var(--portfolio-accent)"
-                    : "var(--portfolio-surface)",
+                    : "transparent",
                 color:
                   activeCategory === "ALL"
                     ? "var(--portfolio-accent-contrast)"
                     : "var(--portfolio-muted)",
-                borderColor:
-                  activeCategory === "ALL"
-                    ? "var(--portfolio-accent)"
-                    : "var(--portfolio-border)",
               }}>
               <Layers size={13} />
               <span>
-                {language === "id" ? "SEMUA DOMAIN" : "ALL DOMAINS"} (
-                {allTechnologies.length})
+                {language === "id" ? "Semua Domain" : "All Domains"}
+              </span>
+              <span
+                className="px-1.5 py-0.5 rounded-md text-[10px] font-bold"
+                style={{
+                  background:
+                    activeCategory === "ALL"
+                      ? "rgba(0,0,0,0.18)"
+                      : "var(--portfolio-surface-raised)",
+                  color:
+                    activeCategory === "ALL"
+                      ? "var(--portfolio-accent-contrast)"
+                      : "var(--portfolio-accent)",
+                }}>
+                {allTechnologies.length}
               </span>
             </button>
 
@@ -341,56 +406,50 @@ export function Skills() {
                   key={group.category}
                   type="button"
                   onClick={() => setActiveCategory(group.category)}
-                  className="px-3.5 py-2 rounded-xl border font-mono text-xs font-semibold transition-all duration-200 cursor-pointer"
+                  className="px-3.5 py-2 rounded-xl font-mono text-xs font-semibold transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
                   style={{
                     background: isSelected
                       ? "var(--portfolio-accent)"
-                      : "var(--portfolio-surface)",
+                      : "transparent",
                     color: isSelected
                       ? "var(--portfolio-accent-contrast)"
                       : "var(--portfolio-muted)",
-                    borderColor: isSelected
-                      ? "var(--portfolio-accent)"
-                      : "var(--portfolio-border)",
                   }}>
-                  {group.category} ({group.technologies.length})
+                  <span>{group.category}</span>
+                  <span
+                    className="px-1.5 py-0.5 rounded-md text-[10px] font-bold"
+                    style={{
+                      background: isSelected
+                        ? "rgba(0,0,0,0.18)"
+                        : "var(--portfolio-surface-raised)",
+                      color: isSelected
+                        ? "var(--portfolio-accent-contrast)"
+                        : "var(--portfolio-accent)",
+                    }}>
+                    {String(group.technologies.length).padStart(2, "0")}
+                  </span>
                 </button>
               );
             })}
           </div>
-
-          <div
-            className="hidden md:flex items-center gap-2 font-mono text-xs"
-            style={{ color: "var(--portfolio-muted)" }}>
-            <Cpu size={14} style={{ color: "var(--portfolio-accent)" }} />
-            <span>
-              {language === "id"
-                ? "KLIK DOMAIN UNTUK FILTER ARSITEKTUR"
-                : "SELECT DOMAIN TO FILTER ARCHITECTURE"}
-            </span>
-          </div>
         </div>
 
-        {/* Categorized Bento Architecture Matrix */}
+        {/* Symmetrical 2x2 Architectural Grid (Full-Width when 1 category is selected) */}
         <div
           ref={gridContainerRef}
-          className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          className={`grid grid-cols-1 gap-6 items-stretch ${
+            filteredGroups.length === 1 ? "lg:grid-cols-1" : "lg:grid-cols-2"
+          }`}>
           {filteredGroups.map((group, groupIndex) => {
-            const isWide =
-              filteredGroups.length === 1 ||
-              group.technologies.length >= 6 ||
-              groupIndex === 0;
+            const domainNum = String(
+              technologyGroups.findIndex((g) => g.category === group.category) +
+                1,
+            ).padStart(2, "0");
 
             return (
               <div
                 key={group.category}
-                className={`gsap-skill-domain-block rounded-2xl border p-6 sm:p-7 flex flex-col justify-between transition-colors duration-300 hover:border-[var(--portfolio-accent)] ${
-                  filteredGroups.length === 1
-                    ? "lg:col-span-12"
-                    : isWide
-                      ? "lg:col-span-7"
-                      : "lg:col-span-5"
-                }`}
+                className="gsap-skill-domain-block h-full rounded-2xl border p-6 sm:p-7 flex flex-col justify-between transition-colors duration-300 hover:border-[var(--portfolio-accent)]"
                 style={{
                   background: "var(--portfolio-surface)",
                   borderColor: "var(--portfolio-border)",
@@ -406,7 +465,7 @@ export function Skills() {
                         <span
                           className="font-mono text-[10px] font-bold uppercase tracking-[0.2em]"
                           style={{ color: "var(--portfolio-accent)" }}>
-                          DOMAIN // 0{groupIndex + 1}
+                          DOMAIN // {domainNum}
                         </span>
                       </div>
                       <h3
@@ -422,30 +481,36 @@ export function Skills() {
                     </div>
 
                     <span
-                      className="px-2.5 py-1 rounded-md border font-mono text-xs font-bold shrink-0"
+                      className="px-2.5 py-1 rounded-lg border font-mono text-xs font-bold shrink-0"
                       style={{
                         background: "var(--portfolio-surface-raised)",
                         borderColor: "var(--portfolio-border)",
                         color: "var(--portfolio-accent)",
                       }}>
-                      {String(group.technologies.length).padStart(2, "0")}
+                      {String(group.technologies.length).padStart(2, "0")}{" "}
+                      {language === "id" ? "ALAT" : "TOOLS"}
                     </span>
                   </div>
 
-                  {/* Interactive Technology Nodes Inside Domain */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {/* Uniform Technology Nodes Inside Domain */}
+                  <div
+                    className={`grid gap-3 ${
+                      filteredGroups.length === 1
+                        ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+                        : "grid-cols-2 sm:grid-cols-3"
+                    }`}>
                     {group.technologies.map((tech) => {
                       const Icon = tech.icon;
                       return (
                         <div
-                          key={tech.name}
+                          key={`${group.category}-${tech.name}`}
                           className="gsap-skill-pill group relative flex items-center gap-3 rounded-xl border p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--portfolio-accent)]"
                           style={{
                             background: "var(--portfolio-surface-raised)",
                             borderColor: "var(--portfolio-border)",
                           }}>
                           <div
-                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-transform duration-200 group-hover:scale-110"
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border transition-transform duration-200 group-hover:scale-110"
                             style={{
                               color: tech.color,
                               background: "var(--portfolio-surface)",

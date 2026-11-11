@@ -26,6 +26,7 @@ export function Contact() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const watermarkRef = useRef<HTMLDivElement>(null);
 
   const contactDetails = useMemo(
     () => getContactDetails(language),
@@ -37,18 +38,20 @@ export function Contact() {
       const section = sectionRef.current;
       if (!section) return;
 
+      // 1. Scrubbed Editorial Header Reveal
       gsap.fromTo(
         ".contact-header-reveal",
-        { y: 32, opacity: 0 },
+        { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
           stagger: 0.1,
           ease: "power3.out",
           scrollTrigger: {
             trigger: ".contact-header-wrap",
-            start: "top 82%",
+            start: "top 88%",
+            end: "top 45%",
+            scrub: 0.6,
           },
         },
       );
@@ -58,27 +61,67 @@ export function Contact() {
         { scaleX: 0 },
         {
           scaleX: 1,
-          duration: 1.1,
-          ease: "expo.out",
+          ease: "none",
           scrollTrigger: {
             trigger: ".contact-header-wrap",
-            start: "top 82%",
+            start: "top 85%",
+            end: "top 40%",
+            scrub: 0.6,
+          },
+        },
+      );
+
+      // 2. Scrubbed Kinetic Backdrop Watermark
+      if (watermarkRef.current) {
+        gsap.fromTo(
+          watermarkRef.current,
+          { xPercent: 14 },
+          {
+            xPercent: -16,
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 0.8,
+            },
+          },
+        );
+      }
+
+      // 3. Scrubbed Magnetic Convergence on Left & Right Columns
+      gsap.fromTo(
+        ".gsap-contact-left",
+        { x: -50, y: 40, scale: 0.94, opacity: 0.15 },
+        {
+          x: 0,
+          y: 0,
+          scale: 1,
+          opacity: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".gsap-contact-grid",
+            start: "top 92%",
+            end: "top 52%",
+            scrub: 0.65,
           },
         },
       );
 
       gsap.fromTo(
-        ".gsap-contact-block",
-        { y: 36, opacity: 0 },
+        ".gsap-contact-right",
+        { x: 50, y: 40, scale: 0.94, opacity: 0.15 },
         {
+          x: 0,
           y: 0,
+          scale: 1,
           opacity: 1,
-          duration: 0.75,
-          stagger: 0.1,
           ease: "power3.out",
           scrollTrigger: {
             trigger: ".gsap-contact-grid",
-            start: "top 82%",
+            start: "top 92%",
+            end: "top 52%",
+            scrub: 0.65,
           },
         },
       );
@@ -140,6 +183,19 @@ export function Contact() {
       style={{
         background: "var(--background)",
       }}>
+      {/* Scrubbed Kinetic Backdrop Watermark */}
+      <div
+        ref={watermarkRef}
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute top-16 left-0 whitespace-nowrap font-display font-extrabold uppercase text-stroke-editorial z-0"
+        style={{
+          fontSize: "clamp(4.5rem, 13vw, 11rem)",
+          opacity: 0.32,
+          letterSpacing: "-0.04em",
+        }}>
+        TRANSMISSION // DIRECT CONTACT // COLLABORATE
+      </div>
+
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
         {/* ============================================================
             ASYMMETRIC EDITORIAL HEADER (07 // GET IN TOUCH)
@@ -194,7 +250,7 @@ export function Contact() {
 
         <div className="gsap-contact-grid grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Left info panel */}
-          <div className="gsap-contact-block lg:col-span-2 flex flex-col gap-4">
+          <div className="gsap-contact-left lg:col-span-2 flex flex-col gap-4">
             {contactDetails.map(({ icon: Icon, label, value, href }) => {
               const cardContent = (
                 <>
@@ -299,7 +355,7 @@ export function Contact() {
           </div>
 
           {/* Right form */}
-          <div className="gsap-contact-block lg:col-span-3">
+          <div className="gsap-contact-right lg:col-span-3">
             <div
               className="p-6 sm:p-8 lg:p-10 rounded-2xl border"
               style={{

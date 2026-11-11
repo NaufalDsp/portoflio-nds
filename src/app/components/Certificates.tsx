@@ -47,24 +47,27 @@ export function Certificates() {
   const { language, t } = useLanguage();
   const dateLocale = language === "id" ? "id-ID" : "en-US";
   const sectionRef = useRef<HTMLElement>(null);
+  const watermarkRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
       const section = sectionRef.current;
       if (!section) return;
 
+      // 1. Scrubbed Editorial Header Reveal
       gsap.fromTo(
         ".cert-header-reveal",
-        { y: 32, opacity: 0 },
+        { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
           stagger: 0.1,
           ease: "power3.out",
           scrollTrigger: {
             trigger: ".cert-header-wrap",
-            start: "top 82%",
+            start: "top 88%",
+            end: "top 45%",
+            scrub: 0.6,
           },
         },
       );
@@ -74,30 +77,61 @@ export function Certificates() {
         { scaleX: 0 },
         {
           scaleX: 1,
-          duration: 1.1,
-          ease: "expo.out",
+          ease: "none",
           scrollTrigger: {
             trigger: ".cert-header-wrap",
-            start: "top 82%",
+            start: "top 85%",
+            end: "top 40%",
+            scrub: 0.6,
           },
         },
       );
 
-      gsap.fromTo(
-        ".gsap-cert-card",
-        { y: 36, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.65,
-          stagger: 0.06,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: ".gsap-cert-grid",
-            start: "top 82%",
+      // 2. Scrubbed Kinetic Backdrop Watermark
+      if (watermarkRef.current) {
+        gsap.fromTo(
+          watermarkRef.current,
+          { xPercent: -14 },
+          {
+            xPercent: 14,
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 0.8,
+            },
           },
-        },
-      );
+        );
+      }
+
+      // 3. Interactive Scroll-Scrubbed 3D Card Reveal per Certificate
+      const cards = gsap.utils.toArray<HTMLElement>(".gsap-cert-card");
+      cards.forEach((card, index) => {
+        const colOffset = (index % 3) - 1; // -1 (left), 0 (center), 1 (right)
+        gsap.fromTo(
+          card,
+          {
+            y: 65 + Math.abs(colOffset) * 18,
+            x: colOffset * 24,
+            scale: 0.92,
+            opacity: 0.12,
+          },
+          {
+            y: 0,
+            x: 0,
+            scale: 1,
+            opacity: 1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 95%",
+              end: "top 58%",
+              scrub: 0.6,
+            },
+          },
+        );
+      });
     },
     { scope: sectionRef, dependencies: [language] },
   );
@@ -110,6 +144,19 @@ export function Certificates() {
       style={{
         background: "var(--background)",
       }}>
+      {/* Scrubbed Kinetic Backdrop Watermark */}
+      <div
+        ref={watermarkRef}
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute top-16 left-0 whitespace-nowrap font-display font-extrabold uppercase text-stroke-editorial z-0"
+        style={{
+          fontSize: "clamp(4.5rem, 13vw, 11rem)",
+          opacity: 0.32,
+          letterSpacing: "-0.04em",
+        }}>
+        CREDENTIALS // VERIFIED LICENSES // CERTIFICATIONS
+      </div>
+
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-10">
         {/* ============================================================
             ASYMMETRIC EDITORIAL HEADER (05 // CREDENTIALS & LEARNING)

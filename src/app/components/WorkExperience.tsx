@@ -12,8 +12,10 @@ export function WorkExperience() {
   const { language, t } = useLanguage();
   const experiences = useMemo(() => getWorkExperiences(language), [language]);
   const sectionRef = useRef<HTMLElement>(null);
+  const watermarkRef = useRef<HTMLDivElement>(null);
   const timelineWrapRef = useRef<HTMLDivElement>(null);
   const beamFillRef = useRef<HTMLDivElement>(null);
+  const progressReadoutRef = useRef<HTMLSpanElement>(null);
 
   useGSAP(
     () => {
@@ -21,19 +23,20 @@ export function WorkExperience() {
       const timelineWrap = timelineWrapRef.current;
       if (!section || !timelineWrap) return;
 
-      // 1. Editorial Header Reveal
+      // 1. Scrubbed Editorial Header Reveal
       gsap.fromTo(
         ".exp-header-reveal",
-        { y: 32, opacity: 0 },
+        { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
           stagger: 0.1,
           ease: "power3.out",
           scrollTrigger: {
             trigger: ".exp-header-wrap",
-            start: "top 82%",
+            start: "top 88%",
+            end: "top 45%",
+            scrub: 0.6,
           },
         },
       );
@@ -43,16 +46,35 @@ export function WorkExperience() {
         { scaleX: 0 },
         {
           scaleX: 1,
-          duration: 1.1,
-          ease: "expo.out",
+          ease: "none",
           scrollTrigger: {
             trigger: ".exp-header-wrap",
-            start: "top 82%",
+            start: "top 85%",
+            end: "top 40%",
+            scrub: 0.6,
           },
         },
       );
 
-      // 2. Live Scrubbed Vertical Laser Beam along the Career Timeline
+      // 2. Scrubbed Kinetic Backdrop Watermark
+      if (watermarkRef.current) {
+        gsap.fromTo(
+          watermarkRef.current,
+          { xPercent: -15 },
+          {
+            xPercent: 15,
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 0.8,
+            },
+          },
+        );
+      }
+
+      // 3. Live Scrubbed Vertical Laser Beam + Percentage Readout
       if (beamFillRef.current) {
         gsap.fromTo(
           beamFillRef.current,
@@ -62,49 +84,67 @@ export function WorkExperience() {
             ease: "none",
             scrollTrigger: {
               trigger: timelineWrap,
-              start: "top 68%",
-              end: "bottom 62%",
+              start: "top 70%",
+              end: "bottom 55%",
               scrub: 0.4,
+              onUpdate: (self) => {
+                if (progressReadoutRef.current) {
+                  progressReadoutRef.current.textContent = `${Math.round(
+                    self.progress * 100,
+                  )}%`;
+                }
+              },
             },
           },
         );
       }
 
-      // 3. Experience Nodes & Cards ScrollTrigger Activation
+      // 4. Interactive Scroll-Scrubbed 3D Card Convergence & Node Activation
       const items = gsap.utils.toArray<HTMLElement>(".gsap-exp-item");
 
-      items.forEach((item) => {
+      items.forEach((item, idx) => {
         const nodeDot = item.querySelector(".gsap-exp-dot");
         const card = item.querySelector(".gsap-exp-card");
+        const isLeft = idx % 2 === 0;
 
-        gsap.fromTo(
-          card,
-          { y: 40, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.75,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: item,
-              start: "top 82%",
+        if (card) {
+          gsap.fromTo(
+            card,
+            {
+              y: 65,
+              x: isLeft ? -45 : 45,
+              scale: 0.93,
+              opacity: 0.1,
             },
-          },
-        );
+            {
+              y: 0,
+              x: 0,
+              scale: 1,
+              opacity: 1,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: item,
+                start: "top 92%",
+                end: "top 52%",
+                scrub: 0.65,
+              },
+            },
+          );
+        }
 
         if (nodeDot) {
           gsap.fromTo(
             nodeDot,
-            { scale: 0.75, opacity: 0.5 },
+            { scale: 0.5, opacity: 0.3 },
             {
               scale: 1,
               opacity: 1,
-              duration: 0.45,
               ease: "back.out(2)",
               scrollTrigger: {
                 trigger: item,
-                start: "top 68%",
-                toggleActions: "play none none reverse",
+                start: "top 80%",
+                end: "top 55%",
+                scrub: 0.5,
               },
             },
           );
@@ -120,6 +160,19 @@ export function WorkExperience() {
       id="experience"
       className="relative overflow-hidden py-24 sm:py-32"
       style={{ background: "var(--background)" }}>
+      {/* Scrubbed Kinetic Backdrop Watermark */}
+      <div
+        ref={watermarkRef}
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute top-20 left-0 whitespace-nowrap font-display font-extrabold uppercase text-stroke-editorial z-0"
+        style={{
+          fontSize: "clamp(4.5rem, 13vw, 11rem)",
+          opacity: 0.32,
+          letterSpacing: "-0.04em",
+        }}>
+        EXPERIENCE // PRODUCTION // ARCHITECTURE // CAREER
+      </div>
+
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-10">
         {/* ============================================================
             ASYMMETRIC EDITORIAL HEADER (03 // CAREER HISTORY)
@@ -127,7 +180,7 @@ export function WorkExperience() {
         <div className="exp-header-wrap mb-16 sm:mb-20">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8">
             <div>
-              <div className="exp-header-reveal flex items-center gap-3 mb-3">
+              <div className="exp-header-reveal flex flex-wrap items-center gap-3 mb-3">
                 <span
                   className="font-mono text-xs font-bold uppercase tracking-[0.22em] px-2.5 py-1 rounded border"
                   style={{
@@ -140,7 +193,15 @@ export function WorkExperience() {
                 <span
                   className="font-mono text-xs"
                   style={{ color: "var(--portfolio-muted)" }}>
-                  [0{experiences.length} INDUSTRY ROLES]
+                  [0{experiences.length} INDUSTRY ROLES · LATEST FIRST]
+                </span>
+                <span
+                  className="font-mono text-xs font-semibold px-2 py-0.5 rounded"
+                  style={{
+                    background: "var(--portfolio-accent-soft)",
+                    color: "var(--portfolio-accent-strong)",
+                  }}>
+                  SYNC // <span ref={progressReadoutRef}>0%</span>
                 </span>
               </div>
 
@@ -174,6 +235,7 @@ export function WorkExperience() {
 
         {/* ============================================================
             SCRUBBED LASER TIMELINE & ARCHITECTURAL EXPERIENCE CARDS
+            (REVERSE CHRONOLOGICAL: NEWEST AT TOP -> OLDEST AT BOTTOM)
            ============================================================ */}
         <div ref={timelineWrapRef} className="relative mx-auto max-w-5xl">
           {/* Base Track Line */}
@@ -193,7 +255,7 @@ export function WorkExperience() {
             style={{
               background:
                 "linear-gradient(to bottom, var(--portfolio-accent), var(--portfolio-accent-strong))",
-              boxShadow: "0 0 16px var(--portfolio-accent)",
+              boxShadow: "0 0 18px var(--portfolio-accent)",
             }}
           />
 
@@ -201,6 +263,10 @@ export function WorkExperience() {
             {experiences.map((experience, index) => {
               const indexLabel = String(index + 1).padStart(2, "0");
               const isLeftOnDesktop = index % 2 === 0;
+              const isCurrentRole = index === 0;
+              const hasDetails =
+                Boolean(experience.description?.trim()) ||
+                experience.achievements.length > 0;
 
               return (
                 <article
@@ -210,10 +276,14 @@ export function WorkExperience() {
                   <div
                     className="gsap-exp-dot absolute left-0 lg:left-1/2 lg:-translate-x-1/2 top-6 z-20 flex h-12 w-12 items-center justify-center rounded-full border-2 shadow-lg transition-colors"
                     style={{
-                      color: "var(--portfolio-accent)",
-                      background: "var(--portfolio-surface)",
+                      color: isCurrentRole
+                        ? "var(--portfolio-accent-contrast)"
+                        : "var(--portfolio-accent)",
+                      background: isCurrentRole
+                        ? "var(--portfolio-accent)"
+                        : "var(--portfolio-surface)",
                       borderColor: "var(--portfolio-accent)",
-                      boxShadow: "0 0 20px rgba(20, 107, 102, 0.25)",
+                      boxShadow: "0 0 22px rgba(20, 107, 102, 0.3)",
                     }}>
                     <BriefcaseBusiness size={18} aria-hidden="true" />
                   </div>
@@ -229,19 +299,36 @@ export function WorkExperience() {
                       className="gsap-exp-card group relative rounded-2xl border p-6 sm:p-7 transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--portfolio-accent)]"
                       style={{
                         background: "var(--portfolio-surface)",
-                        borderColor: "var(--portfolio-border)",
+                        borderColor: isCurrentRole
+                          ? "var(--portfolio-accent)"
+                          : "var(--portfolio-border)",
                         boxShadow: "var(--portfolio-shadow)",
                       }}>
                       {/* Top Index & Period Strip */}
                       <div
                         className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-4 border-b"
                         style={{ borderColor: "var(--portfolio-border)" }}>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <span
                             className="font-mono text-xs font-bold uppercase tracking-widest"
                             style={{ color: "var(--portfolio-accent)" }}>
                             EXP // {indexLabel}
                           </span>
+                          {isCurrentRole && (
+                            <span
+                              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-mono text-[10px] font-bold border"
+                              style={{
+                                color: "var(--portfolio-accent-strong)",
+                                background: "var(--portfolio-accent-soft)",
+                                borderColor: "var(--portfolio-accent)",
+                              }}>
+                              <span
+                                className="h-1.5 w-1.5 rounded-full animate-ping"
+                                style={{ background: "var(--portfolio-accent)" }}
+                              />
+                              {language === "id" ? "AKTIF" : "ACTIVE"}
+                            </span>
+                          )}
                           <span
                             className="rounded px-2 py-0.5 font-mono text-[10px] font-semibold"
                             style={{
@@ -275,7 +362,7 @@ export function WorkExperience() {
                       </div>
 
                       {/* Role & Company */}
-                      <div className="mb-4">
+                      <div className={hasDetails ? "mb-4" : ""}>
                         <h3
                           className="font-display text-xl sm:text-2xl font-extrabold leading-snug"
                           style={{
@@ -292,36 +379,42 @@ export function WorkExperience() {
                         </p>
                       </div>
 
-                      {/* Summary */}
-                      <p
-                        className="mb-5 text-xs sm:text-sm leading-relaxed"
-                        style={{
-                          color: "var(--portfolio-muted)",
-                        }}>
-                        {experience.description}
-                      </p>
+                      {/* Summary (only rendered if non-empty) */}
+                      {experience.description?.trim() && (
+                        <p
+                          className={`text-xs sm:text-sm leading-relaxed ${
+                            experience.achievements.length > 0 ? "mb-5" : ""
+                          }`}
+                          style={{
+                            color: "var(--portfolio-muted)",
+                          }}>
+                          {experience.description}
+                        </p>
+                      )}
 
-                      {/* Achievements */}
-                      <ul
-                        className="grid gap-2.5 pt-4 border-t"
-                        style={{ borderColor: "var(--portfolio-border)" }}>
-                        {experience.achievements.map((achievement) => (
-                          <li
-                            key={achievement}
-                            className="flex items-start gap-2.5 text-xs sm:text-sm leading-relaxed"
-                            style={{
-                              color: "var(--portfolio-muted)",
-                            }}>
-                            <CheckCircle2
-                              size={15}
-                              className="mt-0.5 shrink-0"
-                              style={{ color: "var(--portfolio-accent)" }}
-                              aria-hidden="true"
-                            />
-                            <span>{achievement}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      {/* Achievements (only rendered if non-empty) */}
+                      {experience.achievements.length > 0 && (
+                        <ul
+                          className="grid gap-2.5 pt-4 border-t"
+                          style={{ borderColor: "var(--portfolio-border)" }}>
+                          {experience.achievements.map((achievement) => (
+                            <li
+                              key={achievement}
+                              className="flex items-start gap-2.5 text-xs sm:text-sm leading-relaxed"
+                              style={{
+                                color: "var(--portfolio-muted)",
+                              }}>
+                              <CheckCircle2
+                                size={15}
+                                className="mt-0.5 shrink-0"
+                                style={{ color: "var(--portfolio-accent)" }}
+                                aria-hidden="true"
+                              />
+                              <span>{achievement}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   </div>
                 </article>
