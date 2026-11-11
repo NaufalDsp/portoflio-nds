@@ -25,7 +25,7 @@ export const translations = {
       viewProjects: "View Projects",
       contactMe: "Contact Me",
       stats: {
-        internships: "Industry Internships",
+        internships: "Industry Experience",
         webApps: "Web Applications",
         credentials: "Verified Credentials",
         gpa: "Informatics Eng. GPA (UNS)",
@@ -179,7 +179,7 @@ export const translations = {
       viewProjects: "Lihat Proyek",
       contactMe: "Hubungi Saya",
       stats: {
-        internships: "Magang Industri",
+        internships: "Pengalaman Industri",
         webApps: "Aplikasi Web",
         credentials: "Sertifikat Terverifikasi",
         gpa: "IPK D3 TI (UNS)",
