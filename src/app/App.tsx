@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import { AnimatePresence } from "motion/react";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import { Navbar } from "./components/Navbar";
@@ -49,11 +48,7 @@ function PortfolioApp() {
         minHeight: "100vh",
         scrollBehavior: "smooth",
       }}>
-      <AnimatePresence>
-        {showLoader && (
-          <AppLoader key="portfolio-loader" onComplete={completeLoader} />
-        )}
-      </AnimatePresence>
+      {showLoader && <AppLoader onComplete={completeLoader} />}
       <CursorSpotlight />
       <Navbar />
       <main>
