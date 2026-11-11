@@ -73,22 +73,50 @@ export function Hero() {
       const stage = stageRef.current;
       if (!section || !stage) return;
 
+      const textNodes = [
+        nodeTopLeftRef.current,
+        nodeTopRightRef.current,
+        nodeBottomLeftRef.current,
+        nodeBottomRightRef.current,
+        titleTopRef.current,
+        titleBottomRef.current,
+      ].filter(Boolean);
+
+      const restoreCrispText = () => {
+        gsap.set(textNodes, {
+          clearProps: "transform,opacity",
+        });
+      };
+
       // 1. Entrance Choreography on Initial Load
       const introTl = gsap.timeline({
         defaults: { ease: "power3.out" },
+        onComplete: restoreCrispText,
       });
 
       introTl
         .fromTo(
           portalWrapRef.current,
           { scale: 0.72, opacity: 0, rotate: -10 },
-          { scale: 1, opacity: 1, rotate: 0, duration: 1.15 },
+          {
+            scale: 1,
+            opacity: 1,
+            rotate: 0,
+            duration: 1.15,
+            clearProps: "rotate",
+          },
           0.08,
         )
         .fromTo(
           [titleTopRef.current, titleBottomRef.current],
           { yPercent: 30, opacity: 0 },
-          { yPercent: 0, opacity: 1, duration: 1.05, stagger: 0.1 },
+          {
+            yPercent: 0,
+            opacity: 1,
+            duration: 1.05,
+            stagger: 0.1,
+            clearProps: "transform,opacity",
+          },
           0.18,
         )
         .fromTo(
@@ -98,13 +126,13 @@ export function Hero() {
             nodeBottomLeftRef.current,
             nodeBottomRightRef.current,
           ],
-          { y: 24, opacity: 0, scale: 0.96 },
+          { y: 24, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            scale: 1,
             duration: 0.85,
             stagger: 0.07,
+            clearProps: "transform,opacity",
           },
           0.3,
         );
@@ -192,6 +220,9 @@ export function Hero() {
             pin: true,
             scrub: 0.9,
             anticipatePin: 1,
+            onLeaveBack: () => {
+              restoreCrispText();
+            },
             onUpdate: (self) => {
               if (progressFillRef.current) {
                 progressFillRef.current.style.transform = `scaleX(${self.progress})`;
@@ -200,8 +231,15 @@ export function Hero() {
                 const currentZoom = (1 + self.progress * (targetZoom - 1)).toFixed(2);
                 zoomReadoutRef.current.textContent = `${currentZoom}x`;
               }
+              if (self.progress === 0) {
+                restoreCrispText();
+              }
             },
           },
+        });
+
+        scrollTl.eventCallback("onReverseComplete", () => {
+          restoreCrispText();
         });
 
         // Central Portrait Portal Zooms In & Rings Accelerate (Strictly scale >= 1.0, No shrinking on scroll start)
@@ -252,13 +290,13 @@ export function Hero() {
           0,
         );
 
-        // Monumental Backdrop Typography Splits Outward Like Cinema Curtains
-        scrollTl.to(
+        // Monumental Backdrop Typography Splits Outward Like Cinema Curtains (No scale down/up to preserve 100% font raster sharpness)
+        scrollTl.fromTo(
           titleTopRef.current,
+          { xPercent: 0, yPercent: 0, opacity: 1 },
           {
-            xPercent: -26,
-            yPercent: -16,
-            scale: 1.08,
+            xPercent: -24,
+            yPercent: -12,
             opacity: 0.14,
             ease: "power2.inOut",
             duration: 0.75,
@@ -266,12 +304,12 @@ export function Hero() {
           0,
         );
 
-        scrollTl.to(
+        scrollTl.fromTo(
           titleBottomRef.current,
+          { xPercent: 0, yPercent: 0, opacity: 1 },
           {
-            xPercent: 26,
-            yPercent: 16,
-            scale: 1.08,
+            xPercent: 24,
+            yPercent: 12,
             opacity: 0.14,
             ease: "power2.inOut",
             duration: 0.75,
@@ -279,50 +317,50 @@ export function Hero() {
           0,
         );
 
-        // Satellite Nodes Parting on Desktop
-        scrollTl.to(
+        // Satellite Nodes Parting on Desktop (Horizontally and slightly vertically, No scale downscaling to prevent font raster blur)
+        scrollTl.fromTo(
           nodeTopLeftRef.current,
+          { x: 0, y: 0, opacity: 1 },
           {
-            x: -64,
-            y: -36,
-            scale: 0.94,
-            opacity: 0.32,
+            x: -68,
+            y: -28,
+            opacity: 0.18,
             ease: "power2.inOut",
             duration: 0.72,
           },
           0,
         );
-        scrollTl.to(
+        scrollTl.fromTo(
           nodeTopRightRef.current,
+          { x: 0, y: 0, opacity: 1 },
           {
-            x: 64,
-            y: -36,
-            scale: 0.94,
-            opacity: 0.32,
+            x: 68,
+            y: -28,
+            opacity: 0.18,
             ease: "power2.inOut",
             duration: 0.72,
           },
           0,
         );
-        scrollTl.to(
+        scrollTl.fromTo(
           nodeBottomLeftRef.current,
+          { x: 0, y: 0, opacity: 1 },
           {
-            x: -64,
-            y: 36,
-            scale: 0.94,
-            opacity: 0.32,
+            x: -68,
+            y: 28,
+            opacity: 0.18,
             ease: "power2.inOut",
             duration: 0.72,
           },
           0,
         );
-        scrollTl.to(
+        scrollTl.fromTo(
           nodeBottomRightRef.current,
+          { x: 0, y: 0, opacity: 1 },
           {
-            x: 64,
-            y: 36,
-            scale: 0.94,
-            opacity: 0.32,
+            x: 68,
+            y: 28,
+            opacity: 0.18,
             ease: "power2.inOut",
             duration: 0.72,
           },
@@ -362,17 +400,6 @@ export function Hero() {
             0.8,
           );
         }
-
-        // Final Hold & Smooth Cinematic Hand-off to Next Section (Zero overflow boundary breaches)
-        scrollTl.to(
-          stage,
-          {
-            opacity: 0.88,
-            ease: "power1.in",
-            duration: 0.22,
-          },
-          0.78,
-        );
       });
 
       mm.add("(max-width: 1023px)", () => {
@@ -384,6 +411,9 @@ export function Hero() {
             start: "top top",
             end: "bottom top",
             scrub: 0.7,
+            onLeaveBack: () => {
+              restoreCrispText();
+            },
             onUpdate: (self) => {
               if (progressFillRef.current) {
                 progressFillRef.current.style.transform = `scaleX(${self.progress})`;
@@ -391,6 +421,9 @@ export function Hero() {
               if (zoomReadoutRef.current) {
                 const currentZoom = (1 + self.progress * 0.12).toFixed(2);
                 zoomReadoutRef.current.textContent = `${currentZoom}x`;
+              }
+              if (self.progress === 0) {
+                restoreCrispText();
               }
             },
           },
@@ -445,9 +478,17 @@ export function Hero() {
         );
       });
 
+      const handleNativeScroll = () => {
+        if (window.scrollY === 0) {
+          restoreCrispText();
+        }
+      };
+      window.addEventListener("scroll", handleNativeScroll, { passive: true });
+
       return () => {
         section.removeEventListener("mousemove", handleMouseMove);
         section.removeEventListener("mouseleave", handleMouseLeave);
+        window.removeEventListener("scroll", handleNativeScroll);
       };
     },
     { scope: sectionRef, dependencies: [language] },
@@ -460,7 +501,6 @@ export function Hero() {
       className="relative min-h-[100dvh] w-full overflow-hidden flex items-center justify-center pt-16 sm:pt-20 pb-8 sm:pb-12 select-none"
       style={{
         background: "var(--background)",
-        perspective: "1200px",
       }}>
       {/* Architectural Grid + Radial Vignette */}
       <div
@@ -748,7 +788,8 @@ export function Hero() {
               ref={portalWrapRef}
               onMouseEnter={() => setIsPortraitHovered(true)}
               onMouseLeave={() => setIsPortraitHovered(false)}
-              className="relative flex items-center justify-center w-[236px] h-[236px] sm:w-[310px] sm:h-[310px] lg:w-[395px] lg:h-[395px]">
+              className="relative flex items-center justify-center w-[236px] h-[236px] sm:w-[310px] sm:h-[310px] lg:w-[395px] lg:h-[395px]"
+              style={{ perspective: "1000px" }}>
               {/* OUTER ROTATING SVG ORBITAL TEXT RING */}
               <svg
                 ref={outerRingRef}
@@ -775,6 +816,7 @@ export function Hero() {
                   className="font-mono uppercase font-semibold"
                   textLength="1340"
                   lengthAdjust="spacing"
+                  textRendering="geometricPrecision"
                   style={{
                     fontSize: "12.5px",
                     letterSpacing: "0.22em",
@@ -871,16 +913,21 @@ export function Hero() {
                   />
                 </div>
 
-                {/* Floating Coordinate Badge on Portal Rim */}
+                {/* Floating Role & System Identity Badge on Portal Rim */}
                 <div
-                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border text-[9px] sm:text-[10px] font-mono uppercase tracking-widest whitespace-nowrap shadow-lg backdrop-blur-md"
+                  className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border text-[9px] sm:text-[10px] font-mono uppercase tracking-wider whitespace-nowrap shadow-lg backdrop-blur-md flex items-center gap-1.5"
                   style={{
                     background: "var(--portfolio-surface)",
                     borderColor: "var(--portfolio-accent)",
                     color: "var(--portfolio-text)",
                   }}>
-                  <span style={{ color: "var(--portfolio-accent)" }}>●</span>{" "}
-                  NDS // STUDIO PORTRAIT
+                  <span
+                    className="w-1.5 h-1.5 rounded-full animate-pulse"
+                    style={{ background: "var(--portfolio-accent)" }}
+                  />
+                  <span className="font-semibold">
+                    NDS // SOFTWARE ENGINEER
+                  </span>
                 </div>
               </div>
             </div>
