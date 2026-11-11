@@ -106,16 +106,17 @@ export function Certificates() {
       }
 
       // 3. Interactive Scroll-Scrubbed 3D Card Reveal per Certificate
+      const isDesktop = window.innerWidth >= 1024;
       const cards = gsap.utils.toArray<HTMLElement>(".gsap-cert-card");
       cards.forEach((card, index) => {
         const colOffset = (index % 3) - 1; // -1 (left), 0 (center), 1 (right)
         gsap.fromTo(
           card,
           {
-            y: 65 + Math.abs(colOffset) * 18,
-            x: colOffset * 24,
-            scale: 0.92,
-            opacity: 0.12,
+            y: 55 + (isDesktop ? Math.abs(colOffset) * 18 : 0),
+            x: isDesktop ? colOffset * 22 : 0,
+            scale: 0.93,
+            opacity: 0.14,
           },
           {
             y: 0,

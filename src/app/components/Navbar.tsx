@@ -243,10 +243,10 @@ export function Navbar() {
           background: isDark
             ? scrolled
               ? "rgba(17, 23, 25, 0.88)"
-              : "rgba(17, 23, 25, 0.72)"
+              : "rgba(17, 23, 25, 0.75)"
             : scrolled
               ? "rgba(245, 247, 248, 0.92)"
-              : "rgba(245, 247, 248, 0.78)",
+              : "rgba(245, 247, 248, 0.82)",
           borderColor: scrolled
             ? "color-mix(in srgb, var(--portfolio-accent) 32%, var(--portfolio-border))"
             : "var(--portfolio-border)",
@@ -259,11 +259,11 @@ export function Navbar() {
         className={`pointer-events-auto backdrop-blur-2xl transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           scrolled
             ? isCompactCapsule
-              ? "mt-3.5 w-[calc(100%-2rem)] md:w-auto md:min-w-[330px] md:max-w-[420px] rounded-2xl md:rounded-full border px-4 sm:px-5 py-2"
-              : "mt-3.5 w-[calc(100%-2rem)] max-w-6xl rounded-2xl md:rounded-full border px-5 sm:px-7 py-2.5"
-            : "mt-0 w-full max-w-full border-b px-6 lg:px-10 py-3.5 lg:py-4"
+              ? "mt-2.5 sm:mt-3.5 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2.5rem)] lg:w-auto lg:min-w-[340px] lg:max-w-[430px] rounded-2xl lg:rounded-full border px-3.5 sm:px-5 py-2"
+              : "mt-2.5 sm:mt-3.5 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2.5rem)] max-w-6xl rounded-2xl lg:rounded-full border px-4 sm:px-6 py-2.5"
+            : "mt-0 w-full max-w-full border-b px-4 sm:px-6 lg:px-10 py-3 lg:py-4"
         }`}>
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
           {/* Brand Logo */}
           <a
             href="#home"
@@ -290,79 +290,91 @@ export function Navbar() {
           </a>
 
           {/* ============================================================
-              COMPACT CAPSULE INDICATOR (SHOWN ON DESKTOP WHEN SCROLLED & NOT HOVERED)
-             ============================================================ */}
-          {isCompactCapsule && (
-            <div className="hidden md:flex items-center gap-3 px-2 py-0.5 select-none">
-              <span
-                className="h-3.5 w-px"
-                style={{ background: "var(--portfolio-border)" }}
-              />
-
-              <div className="flex items-center gap-2">
-                <span
-                  className="h-2 w-2 rounded-full animate-pulse"
-                  style={{ background: "var(--portfolio-accent)" }}
-                />
-                <span
-                  className="font-mono text-[11px] font-bold uppercase tracking-wider"
-                  style={{ color: "var(--portfolio-accent)" }}>
-                  {SECTION_INDEX_MAP[activeHref] ?? "00"}
-                </span>
-                <span
-                  className="font-mono text-xs font-semibold"
-                  style={{ color: "var(--portfolio-text)" }}>
-                  // {activeNavLink?.label}
-                </span>
-              </div>
-
-              <span
-                className="h-3.5 w-px"
-                style={{ background: "var(--portfolio-border)" }}
-              />
-
-              {/* Live SVG Circular Scroll Progress Meter */}
-              <div className="relative flex items-center justify-center w-6 h-6">
-                <svg
-                  className="w-6 h-6 -rotate-90"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true">
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="9"
-                    fill="none"
-                    stroke="var(--portfolio-border)"
-                    strokeWidth="2"
-                  />
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="9"
-                    fill="none"
-                    stroke="var(--portfolio-accent)"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeDasharray={ringCircumference}
-                    strokeDashoffset={ringOffset}
-                  />
-                </svg>
-                <span
-                  className="font-mono text-[8px] font-bold"
-                  style={{ color: "var(--portfolio-muted)" }}>
-                  {Math.round(scrollProgress * 100)}
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* ============================================================
-              FULL DESKTOP NAVIGATION LINKS (SHOWN AT TOP OR WHEN CAPSULE HOVERED)
+              COMPACT CAPSULE INDICATOR:
+              - Always visible on Mobile & Tablet (< lg) when scrolled
+              - Visible on Desktop (lg+) when scrolled & not hovered
              ============================================================ */}
           <div
-            className={`hidden md:flex items-center gap-1 lg:gap-1.5 transition-all duration-300 ${
+            onClick={() => {
+              if (window.innerWidth < 1024) {
+                setMobileOpen((prev) => !prev);
+              }
+            }}
+            className={`items-center gap-2 sm:gap-3 px-2 py-0.5 select-none cursor-pointer lg:cursor-default ${
+              scrolled
+                ? isCompactCapsule
+                  ? "flex"
+                  : "flex lg:hidden"
+                : "hidden"
+            }`}>
+            <span
+              className="hidden sm:inline-block h-3.5 w-px"
+              style={{ background: "var(--portfolio-border)" }}
+            />
+
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span
+                className="h-2 w-2 rounded-full animate-pulse shrink-0"
+                style={{ background: "var(--portfolio-accent)" }}
+              />
+              <span
+                className="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider"
+                style={{ color: "var(--portfolio-accent)" }}>
+                {SECTION_INDEX_MAP[activeHref] ?? "00"}
+              </span>
+              <span
+                className="font-mono text-[11px] sm:text-xs font-semibold truncate max-w-[110px] sm:max-w-none"
+                style={{ color: "var(--portfolio-text)" }}>
+                // {activeNavLink?.label}
+              </span>
+            </div>
+
+            <span
+              className="h-3.5 w-px"
+              style={{ background: "var(--portfolio-border)" }}
+            />
+
+            {/* Live SVG Circular Scroll Progress Meter */}
+            <div className="relative flex items-center justify-center w-6 h-6 shrink-0">
+              <svg
+                className="w-6 h-6 -rotate-90"
+                viewBox="0 0 24 24"
+                aria-hidden="true">
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="9"
+                  fill="none"
+                  stroke="var(--portfolio-border)"
+                  strokeWidth="2"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="9"
+                  fill="none"
+                  stroke="var(--portfolio-accent)"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeDasharray={ringCircumference}
+                  strokeDashoffset={ringOffset}
+                />
+              </svg>
+              <span
+                className="font-mono text-[8px] font-bold"
+                style={{ color: "var(--portfolio-muted)" }}>
+                {Math.round(scrollProgress * 100)}
+              </span>
+            </div>
+          </div>
+
+          {/* ============================================================
+              FULL DESKTOP NAVIGATION LINKS (lg+ AT TOP OR WHEN CAPSULE HOVERED)
+             ============================================================ */}
+          <div
+            className={`hidden lg:flex items-center gap-1 xl:gap-1.5 transition-all duration-300 ${
               isCompactCapsule
-                ? "hidden opacity-0 pointer-events-none w-0 overflow-hidden"
+                ? "lg:hidden opacity-0 pointer-events-none w-0 overflow-hidden"
                 : "opacity-100"
             }`}>
             {navLinks.map((link) => {
@@ -372,7 +384,7 @@ export function Navbar() {
                   key={link.href}
                   type="button"
                   onClick={() => navigateTo(link.href)}
-                  className={`relative px-3 py-1.5 rounded-full text-xs lg:text-[13px] font-medium transition-colors duration-200 cursor-pointer whitespace-nowrap ${
+                  className={`relative px-3 py-1.5 rounded-full text-xs xl:text-[13px] font-medium transition-colors duration-200 cursor-pointer whitespace-nowrap ${
                     isActive ? "font-semibold" : ""
                   }`}
                   style={{
@@ -402,14 +414,14 @@ export function Navbar() {
           </div>
 
           {/* ============================================================
-              RIGHT CONTROLS (THEME, LANGUAGE, RESUME, MOBILE MENU)
+              RIGHT CONTROLS (THEME, LANGUAGE, RESUME, MOBILE/TABLET MENU)
              ============================================================ */}
           <div className="flex items-center gap-2 shrink-0">
-            {/* Desktop Language & Resume Controls (Hidden in compact pill to keep capsule ultra-sleek, shown on hover) */}
+            {/* Desktop Language & Resume Controls (lg+) */}
             <div
-              className={`hidden md:flex items-center gap-2 transition-all duration-300 ${
+              className={`hidden lg:flex items-center gap-2 transition-all duration-300 ${
                 isCompactCapsule
-                  ? "hidden opacity-0 pointer-events-none w-0 overflow-hidden"
+                  ? "lg:hidden opacity-0 pointer-events-none w-0 overflow-hidden"
                   : "opacity-100"
               }`}>
               {/* Language Switcher Dropdown */}
@@ -597,22 +609,35 @@ export function Navbar() {
               </div>
             </div>
 
-            {/* Mobile Controls (Theme + Hamburger) */}
-            <div className="flex md:hidden items-center gap-2">
+            {/* Mobile & Tablet Controls (< lg: Quick Language Pill, Theme, Hamburger) */}
+            <div className="flex lg:hidden items-center gap-1.5 sm:gap-2">
+              <button
+                type="button"
+                onClick={() => setLanguage(language === "en" ? "id" : "en")}
+                aria-label={t.nav.switchLanguage}
+                className="flex items-center justify-center px-2.5 h-8 sm:h-9 rounded-xl border font-mono text-[11px] font-bold uppercase tracking-wider transition-colors"
+                style={{
+                  background: "var(--portfolio-surface)",
+                  borderColor: "var(--portfolio-border)",
+                  color: "var(--portfolio-accent)",
+                }}>
+                {language === "en" ? "EN" : "ID"}
+              </button>
+
               <button
                 type="button"
                 onClick={toggleTheme}
                 aria-label="Toggle theme"
-                className="flex items-center justify-center w-9 h-9 rounded-xl border transition-colors"
+                className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl border transition-colors"
                 style={{
                   background: "var(--portfolio-surface)",
                   borderColor: "var(--portfolio-border)",
                   color: "var(--portfolio-text)",
                 }}>
                 {isDark ? (
-                  <Sun size={16} className="text-[#FCD34D]" />
+                  <Sun size={15} className="text-[#FCD34D]" />
                 ) : (
-                  <Moon size={16} className="text-slate-600" />
+                  <Moon size={15} className="text-slate-600" />
                 )}
               </button>
 
@@ -620,19 +645,19 @@ export function Navbar() {
                 type="button"
                 onClick={() => setMobileOpen((prev) => !prev)}
                 aria-label={mobileOpen ? t.nav.closeMenu : t.nav.openMenu}
-                className="flex items-center justify-center w-9 h-9 rounded-xl border transition-colors duration-200"
+                className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl border transition-colors duration-200"
                 style={{
                   background: "var(--portfolio-surface)",
                   borderColor: "var(--portfolio-border)",
                   color: "var(--portfolio-text)",
                 }}>
-                {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+                {mobileOpen ? <X size={17} /> : <Menu size={17} />}
               </button>
             </div>
           </div>
         </div>
 
-        {/* Mobile Menu Drawer */}
+        {/* Mobile & Tablet Menu Drawer (< lg) */}
         <AnimatePresence>
           {mobileOpen && (
             <motion.div
@@ -640,176 +665,186 @@ export function Navbar() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="md:hidden overflow-hidden border-t mt-3"
+              className="lg:hidden overflow-hidden border-t mt-3"
               style={{
                 borderColor: "var(--portfolio-border)",
               }}>
-              <div className="py-3 flex flex-col gap-1.5">
-                {navLinks.map((link) => (
-                  <button
-                    key={link.href}
-                    type="button"
-                    onClick={() => navigateTo(link.href)}
-                    className={`text-left text-sm py-2 px-3 rounded-xl transition-colors duration-200 ${
-                      activeHref === link.href ? "font-semibold" : ""
-                    }`}
-                    style={{
-                      background:
-                        activeHref === link.href
-                          ? "var(--portfolio-accent-soft)"
-                          : "transparent",
-                      color:
-                        activeHref === link.href
-                          ? "var(--portfolio-accent)"
-                          : "var(--portfolio-muted)",
-                    }}>
-                    {link.label}
-                  </button>
-                ))}
-
-                {/* Mobile Language Row */}
-                <div
-                  className="pt-3 border-t mt-1"
-                  style={{ borderColor: "var(--portfolio-border)" }}>
-                  <button
-                    type="button"
-                    onClick={() => setMobileLangOpen((prev) => !prev)}
-                    className="w-full flex items-center justify-between py-2 px-3 text-xs font-mono font-medium rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                    style={{ color: "var(--portfolio-muted)" }}>
-                    <span className="flex items-center gap-2">
-                      <Globe
-                        size={14}
-                        className="text-[var(--portfolio-accent)]"
-                      />
-                      <span>Language / Bahasa:</span>
-                      <span
-                        className="font-bold uppercase tracking-wider px-1.5 py-0.5 rounded text-[11px]"
+              <div className="py-3 flex flex-col gap-2">
+                {/* 2-Column Bento Navigation Grid on Mobile & Tablet */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                  {navLinks.map((link) => {
+                    const isActive = activeHref === link.href;
+                    const idxCode = SECTION_INDEX_MAP[link.href] ?? "00";
+                    return (
+                      <button
+                        key={link.href}
+                        type="button"
+                        onClick={() => navigateTo(link.href)}
+                        className={`flex items-center gap-2 text-left text-xs sm:text-sm py-2.5 px-3 rounded-xl border transition-colors duration-200 ${
+                          isActive ? "font-semibold" : ""
+                        }`}
                         style={{
-                          background: "var(--portfolio-surface-raised)",
-                          color: "var(--portfolio-accent)",
+                          background: isActive
+                            ? "var(--portfolio-accent-soft)"
+                            : "var(--portfolio-surface-raised)",
+                          borderColor: isActive
+                            ? "var(--portfolio-accent)"
+                            : "var(--portfolio-border)",
+                          color: isActive
+                            ? "var(--portfolio-accent)"
+                            : "var(--portfolio-text)",
                         }}>
-                        {language === "en" ? "EN • English" : "ID • Indonesia"}
-                      </span>
-                    </span>
-                    <ChevronDown
-                      size={14}
-                      className={`transition-transform duration-200 ${
-                        mobileLangOpen
-                          ? "rotate-180 text-[var(--portfolio-accent)]"
-                          : "opacity-70"
-                      }`}
-                    />
-                  </button>
-
-                  <AnimatePresence>
-                    {mobileLangOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden mt-1.5 flex flex-col gap-1 p-1 rounded-xl border"
-                        style={{
-                          background: "var(--portfolio-surface-raised)",
-                          borderColor: "var(--portfolio-border)",
-                        }}>
-                        {LANGUAGE_OPTIONS.map((opt) => {
-                          const isSelected = language === opt.code;
-                          return (
-                            <button
-                              key={opt.code}
-                              type="button"
-                              onClick={() => {
-                                setLanguage(opt.code);
-                                setMobileLangOpen(false);
-                              }}
-                              className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors ${
-                                isSelected
-                                  ? "bg-[var(--portfolio-accent)]/15 text-[var(--portfolio-accent)] font-semibold"
-                                  : "text-[var(--portfolio-text)] hover:bg-black/5 dark:hover:bg-white/5"
-                              }`}>
-                              <div className="flex items-center gap-2">
-                                <span className="font-sans font-medium">
-                                  {opt.nativeLabel}
-                                </span>
-                                <span className="text-[10px] font-mono opacity-60">
-                                  ({opt.badge})
-                                </span>
-                              </div>
-                              {isSelected && (
-                                <Check
-                                  size={14}
-                                  className="text-[var(--portfolio-accent)] shrink-0"
-                                />
-                              )}
-                            </button>
-                          );
-                        })}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        <span
+                          className="font-mono text-[10px] opacity-70"
+                          style={{ color: "var(--portfolio-accent)" }}>
+                          {idxCode}
+                        </span>
+                        <span className="truncate">{link.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
 
-                {/* Mobile Resume Row */}
+                {/* Mobile & Tablet Language + Resume Row */}
                 <div
-                  className="pt-2 border-t mt-1"
+                  className="pt-2.5 border-t grid grid-cols-1 sm:grid-cols-2 gap-2"
                   style={{ borderColor: "var(--portfolio-border)" }}>
-                  <button
-                    type="button"
-                    onClick={() => setMobileResumeOpen((prev) => !prev)}
-                    className="w-full flex items-center justify-between py-2.5 px-3 rounded-xl text-xs font-semibold shadow-sm transition-all"
-                    style={{
-                      background: "var(--portfolio-accent)",
-                      color: "var(--portfolio-accent-contrast)",
-                    }}>
-                    <span className="flex items-center gap-2">
-                      <Download size={14} />
-                      <span>{t.nav.downloadCv}</span>
-                    </span>
-                    <ChevronDown
-                      size={14}
-                      className={`transition-transform duration-200 ${
-                        mobileResumeOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setMobileLangOpen((prev) => !prev)}
+                      className="w-full flex items-center justify-between py-2.5 px-3 text-xs font-mono font-medium rounded-xl border transition-colors"
+                      style={{
+                        background: "var(--portfolio-surface-raised)",
+                        borderColor: "var(--portfolio-border)",
+                        color: "var(--portfolio-muted)",
+                      }}>
+                      <span className="flex items-center gap-2">
+                        <Globe
+                          size={14}
+                          className="text-[var(--portfolio-accent)]"
+                        />
+                        <span>
+                          {language === "en" ? "EN • English" : "ID • Indonesia"}
+                        </span>
+                      </span>
+                      <ChevronDown
+                        size={14}
+                        className={`transition-transform duration-200 ${
+                          mobileLangOpen
+                            ? "rotate-180 text-[var(--portfolio-accent)]"
+                            : "opacity-70"
+                        }`}
+                      />
+                    </button>
 
-                  <AnimatePresence>
-                    {mobileResumeOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden mt-2 flex flex-col gap-1.5 p-1.5 rounded-xl border"
-                        style={{
-                          background: "var(--portfolio-surface-raised)",
-                          borderColor: "var(--portfolio-border)",
-                        }}>
-                        {resumeOptions.map((opt) => (
-                          <a
-                            key={opt.id}
-                            href={opt.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => {
-                              setMobileResumeOpen(false);
-                              setMobileOpen(false);
-                            }}
-                            className="flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors hover:bg-black/5 dark:hover:bg-white/5 font-medium"
-                            style={{ color: "var(--portfolio-text)" }}>
-                            <span className="font-mono text-xs font-semibold">
-                              {opt.label}
-                            </span>
-                            <FileText
-                              size={14}
-                              className="text-[var(--portfolio-muted)] shrink-0 ml-2"
-                            />
-                          </a>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                    <AnimatePresence>
+                      {mobileLangOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden mt-1.5 flex flex-col gap-1 p-1 rounded-xl border"
+                          style={{
+                            background: "var(--portfolio-surface-raised)",
+                            borderColor: "var(--portfolio-border)",
+                          }}>
+                          {LANGUAGE_OPTIONS.map((opt) => {
+                            const isSelected = language === opt.code;
+                            return (
+                              <button
+                                key={opt.code}
+                                type="button"
+                                onClick={() => {
+                                  setLanguage(opt.code);
+                                  setMobileLangOpen(false);
+                                }}
+                                className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors ${
+                                  isSelected
+                                    ? "bg-[var(--portfolio-accent)]/15 text-[var(--portfolio-accent)] font-semibold"
+                                    : "text-[var(--portfolio-text)] hover:bg-black/5 dark:hover:bg-white/5"
+                                }`}>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-sans font-medium">
+                                    {opt.nativeLabel}
+                                  </span>
+                                  <span className="text-[10px] font-mono opacity-60">
+                                    ({opt.badge})
+                                  </span>
+                                </div>
+                                {isSelected && (
+                                  <Check
+                                    size={14}
+                                    className="text-[var(--portfolio-accent)] shrink-0"
+                                  />
+                                )}
+                              </button>
+                            );
+                          })}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setMobileResumeOpen((prev) => !prev)}
+                      className="w-full flex items-center justify-between py-2.5 px-3 rounded-xl text-xs font-semibold shadow-sm transition-all"
+                      style={{
+                        background: "var(--portfolio-accent)",
+                        color: "var(--portfolio-accent-contrast)",
+                      }}>
+                      <span className="flex items-center gap-2">
+                        <Download size={14} />
+                        <span>{t.nav.downloadCv}</span>
+                      </span>
+                      <ChevronDown
+                        size={14}
+                        className={`transition-transform duration-200 ${
+                          mobileResumeOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+
+                    <AnimatePresence>
+                      {mobileResumeOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden mt-1.5 flex flex-col gap-1 p-1 rounded-xl border"
+                          style={{
+                            background: "var(--portfolio-surface-raised)",
+                            borderColor: "var(--portfolio-border)",
+                          }}>
+                          {resumeOptions.map((opt) => (
+                            <a
+                              key={opt.id}
+                              href={opt.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => {
+                                setMobileResumeOpen(false);
+                                setMobileOpen(false);
+                              }}
+                              className="flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors hover:bg-black/5 dark:hover:bg-white/5 font-medium"
+                              style={{ color: "var(--portfolio-text)" }}>
+                              <span className="font-mono text-xs font-semibold">
+                                {opt.label}
+                              </span>
+                              <FileText
+                                size={14}
+                                className="text-[var(--portfolio-muted)] shrink-0 ml-2"
+                              />
+                            </a>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
               </div>
             </motion.div>

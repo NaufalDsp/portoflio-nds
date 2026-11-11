@@ -162,9 +162,10 @@ export function GithubActivity() {
       );
 
       // 5. Scrubbed Bottom Dual Telemetry Panels (Left & Right Convergence)
+      const isDesktop = window.innerWidth >= 1024;
       gsap.fromTo(
         ".gsap-gh-panel-left",
-        { x: -45, y: 40, scale: 0.95, opacity: 0.15 },
+        { x: isDesktop ? -40 : 0, y: 40, scale: 0.95, opacity: 0.15 },
         {
           x: 0,
           y: 0,
@@ -182,7 +183,7 @@ export function GithubActivity() {
 
       gsap.fromTo(
         ".gsap-gh-panel-right",
-        { x: 45, y: 40, scale: 0.95, opacity: 0.15 },
+        { x: isDesktop ? 40 : 0, y: 40, scale: 0.95, opacity: 0.15 },
         {
           x: 0,
           y: 0,

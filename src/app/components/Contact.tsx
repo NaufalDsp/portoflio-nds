@@ -90,9 +90,10 @@ export function Contact() {
       }
 
       // 3. Scrubbed Magnetic Convergence on Left & Right Columns
+      const isDesktop = window.innerWidth >= 1024;
       gsap.fromTo(
         ".gsap-contact-left",
-        { x: -50, y: 40, scale: 0.94, opacity: 0.15 },
+        { x: isDesktop ? -45 : 0, y: 40, scale: 0.95, opacity: 0.15 },
         {
           x: 0,
           y: 0,
@@ -110,7 +111,7 @@ export function Contact() {
 
       gsap.fromTo(
         ".gsap-contact-right",
-        { x: 50, y: 40, scale: 0.94, opacity: 0.15 },
+        { x: isDesktop ? 45 : 0, y: 40, scale: 0.95, opacity: 0.15 },
         {
           x: 0,
           y: 0,

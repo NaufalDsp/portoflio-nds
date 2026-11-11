@@ -154,14 +154,20 @@ export function Skills() {
     () => {
       if (!gridContainerRef.current) return;
 
+      const isDesktopOrTablet = window.innerWidth >= 768;
       const cards = gsap.utils.toArray<HTMLElement>(".gsap-skill-domain-block");
       cards.forEach((card, idx) => {
         const isLeft = idx % 2 === 0;
         gsap.fromTo(
           card,
           {
-            y: 48,
-            x: activeCategory === "ALL" ? (isLeft ? -28 : 28) : 0,
+            y: 42,
+            x:
+              activeCategory === "ALL" && isDesktopOrTablet
+                ? isLeft
+                  ? -24
+                  : 24
+                : 0,
             opacity: 0.15,
             scale: 0.96,
           },
@@ -356,10 +362,10 @@ export function Skills() {
           SEGMENTED PILL DOCK & BALANCED 2x2 ARCHITECTURAL MATRIX
          ============================================================ */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
-        {/* Segmented Control Dock */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+        {/* Segmented Control Dock (Scrollable on narrow mobile, wrapped on tablet/desktop) */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 sm:mb-10">
           <div
-            className="inline-flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl border w-fit"
+            className="flex overflow-x-auto sm:flex-wrap items-center gap-1.5 p-1.5 rounded-2xl border max-w-full"
             style={{
               background: "var(--portfolio-surface)",
               borderColor: "var(--portfolio-border)",
@@ -368,7 +374,7 @@ export function Skills() {
             <button
               type="button"
               onClick={() => setActiveCategory("ALL")}
-              className="px-3.5 py-2 rounded-xl font-mono text-xs font-semibold transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
+              className="px-3 sm:px-3.5 py-2 rounded-xl font-mono text-xs font-semibold transition-all duration-200 cursor-pointer inline-flex items-center gap-2 shrink-0 whitespace-nowrap"
               style={{
                 background:
                   activeCategory === "ALL"
@@ -406,7 +412,7 @@ export function Skills() {
                   key={group.category}
                   type="button"
                   onClick={() => setActiveCategory(group.category)}
-                  className="px-3.5 py-2 rounded-xl font-mono text-xs font-semibold transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
+                  className="px-3 sm:px-3.5 py-2 rounded-xl font-mono text-xs font-semibold transition-all duration-200 cursor-pointer inline-flex items-center gap-2 shrink-0 whitespace-nowrap"
                   style={{
                     background: isSelected
                       ? "var(--portfolio-accent)"
@@ -434,11 +440,11 @@ export function Skills() {
           </div>
         </div>
 
-        {/* Symmetrical 2x2 Architectural Grid (Full-Width when 1 category is selected) */}
+        {/* Symmetrical 2x2 Architectural Grid on Tablet (md) & Desktop (lg) */}
         <div
           ref={gridContainerRef}
-          className={`grid grid-cols-1 gap-6 items-stretch ${
-            filteredGroups.length === 1 ? "lg:grid-cols-1" : "lg:grid-cols-2"
+          className={`grid grid-cols-1 gap-5 sm:gap-6 items-stretch ${
+            filteredGroups.length === 1 ? "md:grid-cols-1" : "md:grid-cols-2"
           }`}>
           {filteredGroups.map((group, groupIndex) => {
             const domainNum = String(
@@ -494,10 +500,10 @@ export function Skills() {
 
                   {/* Uniform Technology Nodes Inside Domain */}
                   <div
-                    className={`grid gap-3 ${
+                    className={`grid gap-2.5 sm:gap-3 ${
                       filteredGroups.length === 1
                         ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
-                        : "grid-cols-2 sm:grid-cols-3"
+                        : "grid-cols-2 sm:grid-cols-3 md:grid-cols-2 xl:grid-cols-3"
                     }`}>
                     {group.technologies.map((tech) => {
                       const Icon = tech.icon;

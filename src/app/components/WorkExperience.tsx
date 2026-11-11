@@ -100,6 +100,7 @@ export function WorkExperience() {
       }
 
       // 4. Interactive Scroll-Scrubbed 3D Card Convergence & Node Activation
+      const isDesktop = window.innerWidth >= 1024;
       const items = gsap.utils.toArray<HTMLElement>(".gsap-exp-item");
 
       items.forEach((item, idx) => {
@@ -111,10 +112,10 @@ export function WorkExperience() {
           gsap.fromTo(
             card,
             {
-              y: 65,
-              x: isLeft ? -45 : 45,
-              scale: 0.93,
-              opacity: 0.1,
+              y: 55,
+              x: isDesktop ? (isLeft ? -45 : 45) : 0,
+              scale: 0.94,
+              opacity: 0.12,
             },
             {
               y: 0,
@@ -241,7 +242,7 @@ export function WorkExperience() {
           {/* Base Track Line */}
           <div
             aria-hidden="true"
-            className="absolute bottom-8 left-[23px] lg:left-1/2 lg:-translate-x-1/2 top-6 w-[2px]"
+            className="absolute bottom-8 left-[19px] sm:left-[23px] lg:left-1/2 lg:-translate-x-1/2 top-6 w-[2px]"
             style={{
               background: "var(--portfolio-border)",
             }}
@@ -251,7 +252,7 @@ export function WorkExperience() {
           <div
             ref={beamFillRef}
             aria-hidden="true"
-            className="absolute bottom-8 left-[23px] lg:left-1/2 lg:-translate-x-1/2 top-6 w-[2px] origin-top"
+            className="absolute bottom-8 left-[19px] sm:left-[23px] lg:left-1/2 lg:-translate-x-1/2 top-6 w-[2px] origin-top"
             style={{
               background:
                 "linear-gradient(to bottom, var(--portfolio-accent), var(--portfolio-accent-strong))",
@@ -259,7 +260,7 @@ export function WorkExperience() {
             }}
           />
 
-          <div className="space-y-12 sm:space-y-16">
+          <div className="space-y-10 sm:space-y-14 lg:space-y-16">
             {experiences.map((experience, index) => {
               const indexLabel = String(index + 1).padStart(2, "0");
               const isLeftOnDesktop = index % 2 === 0;
@@ -271,10 +272,10 @@ export function WorkExperience() {
               return (
                 <article
                   key={experience.id}
-                  className="gsap-exp-item relative grid grid-cols-1 lg:grid-cols-12 items-start pl-14 sm:pl-16 lg:pl-0">
+                  className="gsap-exp-item relative grid grid-cols-1 lg:grid-cols-12 items-start pl-12 sm:pl-16 lg:pl-0">
                   {/* Central Glowing Node on Timeline */}
                   <div
-                    className="gsap-exp-dot absolute left-0 lg:left-1/2 lg:-translate-x-1/2 top-6 z-20 flex h-12 w-12 items-center justify-center rounded-full border-2 shadow-lg transition-colors"
+                    className="gsap-exp-dot absolute left-0 lg:left-1/2 lg:-translate-x-1/2 top-5 sm:top-6 z-20 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border-2 shadow-lg transition-colors"
                     style={{
                       color: isCurrentRole
                         ? "var(--portfolio-accent-contrast)"
@@ -285,7 +286,7 @@ export function WorkExperience() {
                       borderColor: "var(--portfolio-accent)",
                       boxShadow: "0 0 22px rgba(20, 107, 102, 0.3)",
                     }}>
-                    <BriefcaseBusiness size={18} aria-hidden="true" />
+                    <BriefcaseBusiness size={17} aria-hidden="true" />
                   </div>
 
                   {/* Card Column (Alternates Left/Right on Desktop) */}
